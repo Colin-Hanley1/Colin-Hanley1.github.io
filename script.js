@@ -1,171 +1,176 @@
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
+/* ===================================================
+   Colin Hanley — Portfolio 2026
+   =================================================== */
+
+const $  = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============ YEAR ============ */
 $("#year").textContent = new Date().getFullYear();
 
+/* ============ LIVE CLOCK / LOCATION ============ */
+(function clock() {
+  const el = $("#liveClock");
+  if (!el) return;
+  const update = () => {
+    const d = new Date();
+    // Central Time (Tuscaloosa). Use local formatting.
+    const opts = { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Chicago" };
+    const time = d.toLocaleTimeString("en-US", opts);
+    el.textContent = `TUSC / ${time}`;
+  };
+  update();
+  setInterval(update, 30000);
+})();
+
+/* ============ THEME TOGGLE ============ */
 const themeToggle = $("#themeToggle");
+const themeIcon   = $(".theme-icon");
 function setTheme(dark) {
   document.documentElement.classList.toggle("theme-dark", dark);
   themeToggle.setAttribute("aria-pressed", String(dark));
+  if (themeIcon) themeIcon.textContent = dark ? "◑" : "◐";
   localStorage.setItem("theme", dark ? "dark" : "light");
 }
+setTheme(document.documentElement.classList.contains("theme-dark"));
 themeToggle?.addEventListener("click", () => {
-  const dark = !document.documentElement.classList.contains("theme-dark");
-  setTheme(dark);
+  setTheme(!document.documentElement.classList.contains("theme-dark"));
 });
 
+/* ============ MOBILE NAV ============ */
 const navToggle = $(".nav-toggle");
-const navMenu = $("#nav-menu");
+const navLinks  = $("#nav-menu");
 navToggle?.addEventListener("click", () => {
-  const open = navMenu.classList.toggle("open");
+  const open = navLinks.classList.toggle("is-open");
   navToggle.setAttribute("aria-expanded", String(open));
 });
-
-$$('.nav-links a').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const id = a.getAttribute('href');
-    document.querySelector(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    navMenu.classList.remove("open");
+$$(".nav-links a").forEach(a => {
+  a.addEventListener("click", () => {
+    navLinks.classList.remove("is-open");
     navToggle?.setAttribute("aria-expanded", "false");
   });
 });
 
-const sections = $$("main section");
-const navLinks = $$(".nav-links a");
-const spy = () => {
-  let current = "";
-  const pos = window.scrollY + 100;
-  sections.forEach(sec => {
-    if (pos >= sec.offsetTop && pos < sec.offsetTop + sec.offsetHeight) current = sec.id;
+/* ============ SMOOTH SCROLL (nav only; html smooth handles the rest) ============ */
+$$('.nav-links a[href^="#"], .foot-row a[href^="#"], .skip-link').forEach(a => {
+  a.addEventListener("click", e => {
+    const id = a.getAttribute("href");
+    if (!id || id === "#") return;
+    const target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    const top = target.getBoundingClientRect().top + window.scrollY - 60;
+    window.scrollTo({ top, behavior: prefersReducedMotion ? "auto" : "smooth" });
   });
-  navLinks.forEach(link => {
+});
+
+/* ============ SCROLL PROGRESS ============ */
+const progressBar = $(".scroll-progress span");
+const onScroll = () => {
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (scrolled / max) * 100 : 0;
+  if (progressBar) progressBar.style.width = pct + "%";
+};
+document.addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+
+/* ============ SCROLL SPY ============ */
+const sections = $$("main section[id], header#top");
+const navItems = $$(".nav-links a");
+const spy = () => {
+  const pos = window.scrollY + 120;
+  let current = "top";
+  sections.forEach(sec => {
+    if (pos >= sec.offsetTop) current = sec.id;
+  });
+  navItems.forEach(link => {
     link.classList.toggle("active", link.getAttribute("href") === `#${current}`);
   });
 };
-document.addEventListener('scroll', spy);
+document.addEventListener("scroll", spy, { passive: true });
+spy();
 
-(function typewriter() {
-  const el = $(".typewrite-text");
-  if (!el) return;
-  const rotate = JSON.parse(el.dataset.rotate || "[]");
-  let loop = 0, txt = "", isDeleting = false, speed = 80;
-  function tick() {
-    const full = rotate[loop % rotate.length];
-    txt = isDeleting ? full.substring(0, txt.length - 1) : full.substring(0, txt.length + 1);
-    el.textContent = txt;
+/* ============ REVEAL ON SCROLL ============ */
+const revealTargets = $$(".reveal");
+if ("IntersectionObserver" in window && !prefersReducedMotion) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("is-in");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  revealTargets.forEach(el => io.observe(el));
+} else {
+  revealTargets.forEach(el => el.classList.add("is-in"));
+}
 
-    let delta = isDeleting ? speed / 1.6 : speed;
-    if (!isDeleting && txt === full) { delta = 1200; isDeleting = true; }
-    else if (isDeleting && txt === "") { isDeleting = false; loop++; delta = 300; }
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // No animation: set first phrase
-      el.textContent = rotate[0];
-      return;
-    }
-    setTimeout(tick, delta);
-  }
-  tick();
-})();
-
-const counters = $$(".stat-number");
-const counterObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    const el = e.target;
-    const target = parseInt(el.dataset.count, 10) || 0;
-    let cur = 0;
-    const step = Math.ceil(target / 60);
-    const tick = () => {
-      cur += step;
-      if (cur >= target) { el.textContent = target; return; }
-      el.textContent = cur;
-      requestAnimationFrame(tick);
-    };
-    tick();
-    counterObs.unobserve(el);
-  });
-}, { threshold: 0.4 });
-counters.forEach(c => counterObs.observe(c));
-
-const chips = $$(".chip");
-const cards = $$(".project-card");
+/* ============ PROJECT FILTER ============ */
+const chips   = $$(".chip");
+const projects = $$(".work .project");
 chips.forEach(chip => chip.addEventListener("click", () => {
-  chips.forEach(c => c.classList.remove("is-active"));
+  chips.forEach(c => {
+    c.classList.remove("is-active");
+    c.setAttribute("aria-selected", "false");
+  });
   chip.classList.add("is-active");
+  chip.setAttribute("aria-selected", "true");
   const tag = chip.dataset.filter;
-  cards.forEach(card => {
-    const show = tag === "all" || (card.dataset.tags || "").includes(tag);
-    card.style.display = show ? "" : "none";
+  projects.forEach(p => {
+    const show = tag === "all" || (p.dataset.tags || "").includes(tag);
+    p.classList.toggle("is-hidden", !show);
   });
 }));
 
-$$("[data-modal]").forEach(btn => {
-  const target = btn.getAttribute("data-modal");
-  const dlg = $(target);
-  btn.addEventListener("click", () => dlg?.showModal());
-});
-$$(".modal [data-close]").forEach(btn => {
-  btn.addEventListener("click", () => btn.closest("dialog")?.close());
-});
-
-/* ========= COPY EMAIL ========= */
-$("#copyEmail")?.addEventListener("click", (e) => {
-  const email = e.currentTarget.getAttribute("data-email");
-  navigator.clipboard.writeText(email).then(() => {
-    e.currentTarget.textContent = "Copied!";
-    setTimeout(() => (e.currentTarget.textContent = "Copy Email"), 1200);
+/* ============ COPY EMAIL ============ */
+const copyBtn = $("#copyEmail");
+copyBtn?.addEventListener("click", () => {
+  const email = copyBtn.getAttribute("data-email");
+  navigator.clipboard?.writeText(email).then(() => {
+    const label = copyBtn.querySelector(".mono");
+    const original = label.textContent;
+    label.textContent = "Copied";
+    copyBtn.classList.add("copied");
+    setTimeout(() => {
+      label.textContent = original;
+      copyBtn.classList.remove("copied");
+    }, 1500);
   });
 });
 
+/* ============ ALBUMS ============ */
 const albums = [
-  {
-    title: "Songs in the Key of Life — Stevie Wonder",
-    cover: "images/skl.png",
-    link: "https://open.spotify.com/album/6YUCc2RiXcEKS9ibuZxjt0?si=9uktxpWFSZWC1YWupyKW4Q"
-  },
-  {
-    title: "Scenery - Ryo Fukui",
-    cover: "images/scenery.png",
-    link: "https://open.spotify.com/album/5Uny0mkKiVGDat7H6SNDyS?si=W3yaVLXUREa3XFQ7pAZxkQ"
-  },
-  {
-    title: "Combat Rock — The Clash",
-    cover: "images/cr.png",
-    link: "https://open.spotify.com/album/1ZH5g1RDq3GY1OvyD0w0s2?si=YxKjjApJTQ-JSJ8LZp1Uzw"
-  },
-  {
-    title: "Currents - Tame Impala",
-    cover: "images/currents.png",
-    link: "https://open.spotify.com/album/79dL7FLiJFOO0EoehUHQBv?si=DRanZKjmR3Sfez1_Wev88Q"
-  },
-  {
-    title: "By and By - Caamp",
-    cover: "images/bb.png",
-    link: "https://open.spotify.com/album/1wohWQ8y4RpdANgxZDa4MF?si=xJeVmlgQS4G08sbHQImq-w"
-  },
-  {
-    title: "Can't Buy a Thrill — Steely Dan",
-    cover: "images/cbat.png",
-    link: "https://open.spotify.com/album/4Gh6pRaXqXTtJx4plAJbBw?si=yfKEZQJbRoCl1gzdve_jsw"
-  }
+  { title: "Songs in the Key of Life", artist: "Stevie Wonder", cover: "images/skl.png",     link: "https://open.spotify.com/album/6YUCc2RiXcEKS9ibuZxjt0" },
+  { title: "Scenery",                  artist: "Ryo Fukui",     cover: "images/scenery.png", link: "https://open.spotify.com/album/5Uny0mkKiVGDat7H6SNDyS" },
+  { title: "Combat Rock",              artist: "The Clash",     cover: "images/cr.png",      link: "https://open.spotify.com/album/1ZH5g1RDq3GY1OvyD0w0s2" },
+  { title: "Currents",                 artist: "Tame Impala",   cover: "images/currents.png",link: "https://open.spotify.com/album/79dL7FLiJFOO0EoehUHQBv" },
+  { title: "By and By",                artist: "Caamp",         cover: "images/bb.png",      link: "https://open.spotify.com/album/1wohWQ8y4RpdANgxZDa4MF" },
+  { title: "Can't Buy a Thrill",       artist: "Steely Dan",    cover: "images/cbat.png",    link: "https://open.spotify.com/album/4Gh6pRaXqXTtJx4plAJbBw" }
 ];
 const albumGrid = $("#albumGrid");
 if (albumGrid) {
   albumGrid.innerHTML = albums.map(a => `
     <a class="album" href="${a.link}" target="_blank" rel="noopener">
-      <img loading="lazy" src="${a.cover}" alt="${a.title} cover art">
-      <p>${a.title}</p>
+      <img loading="lazy" src="${a.cover}" alt="${a.title} — ${a.artist}">
+      <p><b>${a.title}</b>${a.artist}</p>
     </a>
   `).join("");
 }
 
-const toTop = $(".to-top");
-let lastY = 0;
-document.addEventListener("scroll", () => {
-  const y = window.scrollY;
-  if (!toTop) return;
-  toTop.style.opacity = y > 600 ? "1" : "0";
-  lastY = y;
+/* ============ KEYBOARD ============ */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && navLinks.classList.contains("is-open")) {
+    navLinks.classList.remove("is-open");
+    navToggle?.setAttribute("aria-expanded", "false");
+  }
+  // Cmd/Ctrl + K — focus first nav link (quick nav)
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    navItems[0]?.focus();
+  }
 });

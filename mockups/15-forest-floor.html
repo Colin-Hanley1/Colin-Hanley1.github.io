@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley / Forest Floor Notebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,600&family=Kalam:wght@300;400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest-deep: #0d1a10;
+    --forest:      #162a1a;
+    --forest-2:    #1f3824;
+    --moss:        #4a6338;
+    --moss-lt:     #7a9560;
+    --fern:        #8fb074;
+    --bark:        #3d2e1c;
+    --bark-2:      #5c4326;
+    --cream:       #ece4c9;       /* old notebook page */
+    --cream-soft:  rgba(236, 228, 201, 0.88);
+    --amber:       #d4943a;       /* lichen / honey */
+    --rust:        #9c4a1f;       /* spore print */
+    --mushroom:    #c97c4e;
+    --ink:         #0a120c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--forest-deep);
+    color: var(--cream);
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 17px; line-height: 1.65;
+    min-height: 100vh;
+    font-feature-settings: "liga", "dlig";
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 1200px 700px at 25% 20%, rgba(74,99,56,.18), transparent 70%),
+      radial-gradient(ellipse 900px 600px at 80% 70%, rgba(212,148,58,.06), transparent 70%),
+      radial-gradient(ellipse 600px 400px at 50% 100%, rgba(143,176,116,.08), transparent 70%),
+      linear-gradient(180deg, var(--forest-deep) 0%, #070e08 100%);
+    background-attachment: fixed;
+  }
+  /* heavy organic noise */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    opacity: .18;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* spore particles */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(143,176,116,.18) 1px, transparent 2px),
+      radial-gradient(circle at 72% 35%, rgba(236,228,201,.12) 1px, transparent 2px),
+      radial-gradient(circle at 40% 75%, rgba(143,176,116,.15) 1px, transparent 2px),
+      radial-gradient(circle at 88% 88%, rgba(212,148,58,.2) 1px, transparent 2px),
+      radial-gradient(circle at 25% 60%, rgba(143,176,116,.1) 1px, transparent 2px);
+    background-size: 400px 400px, 350px 350px, 500px 500px, 280px 280px, 440px 440px;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .hand { font-family: "Kalam", cursive; }
+  .mono-like { font-family: "Inter", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 40px 32px; position: relative; z-index: 2; }
+
+  /* TOP FIELD STRIP */
+  .field-strip {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 14px 20px;
+    background: rgba(13,26,16,.75);
+    border: 1px solid var(--moss);
+    border-left: 4px solid var(--amber);
+    margin-bottom: 56px;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--fern);
+    text-transform: uppercase;
+  }
+  .field-strip .leaf { color: var(--amber); font-size: 14px; }
+  .field-strip b { color: var(--cream); }
+  .field-strip .center { text-align: center; }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 64px;
+    align-items: start;
+    padding: 40px 0 80px;
+    position: relative;
+  }
+
+  /* background mushroom silhouettes */
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    opacity: .06;
+    pointer-events: none;
+  }
+  .hero::before {
+    bottom: 40px; left: -40px;
+    width: 200px; height: 180px;
+    background: radial-gradient(ellipse at 50% 35%, var(--mushroom) 25%, transparent 55%);
+  }
+  .hero::after {
+    top: 80px; right: -60px;
+    width: 260px; height: 220px;
+    background: radial-gradient(ellipse at 50% 35%, var(--amber) 20%, transparent 55%);
+  }
+
+  .hero-main { position: relative; z-index: 2; }
+  .hero-main .season {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--moss);
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-main h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(60px, 10vw, 148px);
+    line-height: .85;
+    letter-spacing: -0.035em;
+    color: var(--cream);
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero-main h1 em {
+    display: block;
+    font-style: italic;
+    color: var(--amber);
+    font-weight: 400;
+  }
+  .hero-main h1 .curl {
+    display: inline-block;
+    font-family: "Kalam", cursive;
+    font-size: .35em;
+    color: var(--moss-lt);
+    font-style: normal;
+    font-weight: 400;
+    vertical-align: .6em;
+    margin-left: .3em;
+    transform: rotate(-6deg);
+  }
+
+  .hero-main .lede {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--cream);
+    max-width: 60ch;
+    margin-top: 24px;
+  }
+  .hero-main .lede em { color: var(--amber); font-style: italic; font-weight: 400; }
+  .hero-main .lede i { color: var(--fern); font-style: italic; }
+
+  .hero-main .scribble {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--moss);
+  }
+  .hero-main .scribble .hand {
+    font-family: "Kalam", cursive;
+    font-size: 22px;
+    color: var(--amber);
+    line-height: 1.4;
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+  .hero-main .scribble .hand em { color: var(--fern); font-style: italic; }
+  .hero-main .scribble .date {
+    font-family: "Kalam", cursive;
+    font-size: 17px;
+    color: var(--moss-lt);
+    margin-top: 10px;
+    transform: rotate(1deg);
+    display: inline-block;
+  }
+
+  /* RIGHT PANEL — field card */
+  .field-card {
+    background: var(--cream);
+    color: var(--ink);
+    padding: 28px 28px 24px;
+    position: relative;
+    transform: rotate(1.5deg);
+    box-shadow:
+      2px 3px 12px rgba(0,0,0,.45),
+      inset 0 0 0 1px rgba(138,94,40,.2);
+    margin-top: 40px;
+  }
+  .field-card::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--bark);
+    pointer-events: none;
+    opacity: .4;
+  }
+  .field-card::after {
+    content: "";
+    position: absolute;
+    top: -8px; left: 30px; right: 30px; height: 16px;
+    background: rgba(212, 148, 58, 0.65);
+    border-left: 1px dashed rgba(0,0,0,.25);
+    border-right: 1px dashed rgba(0,0,0,.25);
+    transform: rotate(-2deg);
+  }
+
+  .field-card h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--rust);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--bark-2);
+    text-align: center;
+  }
+
+  .field-card dl {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .field-card dt {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--bark);
+    padding-top: 4px;
+  }
+  .field-card dd {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .field-card dd b { font-style: normal; color: var(--rust); font-weight: 600; }
+
+  .field-card .hand-note {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--bark-2);
+    font-family: "Kalam", cursive;
+    font-size: 17px;
+    color: var(--rust);
+    line-height: 1.4;
+    transform: rotate(-0.5deg);
+  }
+
+  /* SECTION HEAD — foliage style */
+  .foliage-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    margin: 80px 0 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--moss);
+    position: relative;
+  }
+  .foliage-head::before {
+    content: "";
+    position: absolute;
+    bottom: -6px; left: 0;
+    width: 80px; height: 11px;
+    background:
+      radial-gradient(circle at 10% 50%, var(--amber) 3px, transparent 4px),
+      radial-gradient(circle at 30% 50%, var(--amber) 3px, transparent 4px),
+      radial-gradient(circle at 50% 50%, var(--amber) 3px, transparent 4px),
+      radial-gradient(circle at 70% 50%, var(--amber) 3px, transparent 4px),
+      radial-gradient(circle at 90% 50%, var(--amber) 3px, transparent 4px);
+  }
+  .foliage-head .numeral {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 72px;
+    color: var(--amber);
+    line-height: .8;
+    font-weight: 300;
+  }
+  .foliage-head h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+  }
+  .foliage-head h2 em {
+    font-style: italic;
+    color: var(--amber);
+    font-weight: 400;
+  }
+  .foliage-head h2 small {
+    display: block;
+    font-family: "Kalam", cursive;
+    font-size: 20px;
+    color: var(--fern);
+    margin-top: 6px;
+  }
+  .foliage-head .bearing {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--moss-lt);
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .foliage-head .bearing b { color: var(--amber); }
+
+  /* SPECIMENS — projects as fungi specimens */
+  .specimens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 48px;
+  }
+  .specimen {
+    position: relative;
+    padding: 28px 0 28px 100px;
+    border-bottom: 1px solid var(--moss);
+    transition: padding-left .4s ease;
+  }
+  .specimen:last-child, .specimen:nth-last-child(2) { border-bottom: none; }
+  .specimen:hover { padding-left: 110px; }
+
+  /* mushroom cap marker */
+  .specimen .cap {
+    position: absolute;
+    left: 16px; top: 28px;
+    width: 68px;
+    text-align: center;
+  }
+  .specimen .cap .shape {
+    width: 68px; height: 40px;
+    background: radial-gradient(ellipse at 50% 40%, var(--mushroom) 0%, var(--rust) 70%);
+    border-radius: 50% 50% 8% 8% / 90% 90% 10% 10%;
+    position: relative;
+    margin-bottom: 0;
+    box-shadow: 0 3px 10px rgba(156,74,31,.35);
+  }
+  .specimen .cap .shape::before {
+    content: "";
+    position: absolute;
+    left: 10%; top: 15%;
+    width: 15%; height: 20%;
+    background: rgba(236,228,201,.55);
+    border-radius: 50%;
+  }
+  .specimen .cap .shape::after {
+    content: "";
+    position: absolute;
+    right: 25%; top: 30%;
+    width: 8%; height: 10%;
+    background: rgba(236,228,201,.45);
+    border-radius: 50%;
+  }
+  .specimen .cap .stem {
+    width: 14px; height: 24px;
+    background: linear-gradient(180deg, #e6dcb8, #a89572);
+    margin: -2px auto 0;
+    border-radius: 2px 2px 6px 6px;
+  }
+  .specimen .cap .label {
+    font-family: "Kalam", cursive;
+    font-size: 14px;
+    color: var(--amber);
+    margin-top: 4px;
+    transform: rotate(-2deg);
+  }
+  .specimen:nth-child(2) .cap .shape { background: radial-gradient(ellipse at 50% 40%, var(--amber) 0%, #8f5e1f 70%); box-shadow: 0 3px 10px rgba(143,94,31,.35); }
+  .specimen:nth-child(3) .cap .shape { background: radial-gradient(ellipse at 50% 40%, #c97c4e 0%, #6a2818 70%); box-shadow: 0 3px 10px rgba(106,40,24,.35); }
+  .specimen:nth-child(4) .cap .shape { background: radial-gradient(ellipse at 50% 40%, var(--fern) 0%, #3a5228 70%); box-shadow: 0 3px 10px rgba(58,82,40,.4); }
+
+  .specimen .latin {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--moss-lt);
+    letter-spacing: .05em;
+  }
+  .specimen .latin b { color: var(--amber); font-weight: 500; }
+  .specimen h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.015em;
+    margin: 6px 0 4px;
+  }
+  .specimen h3 em { font-style: italic; color: var(--amber); }
+  .specimen .tools {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--fern);
+    text-transform: uppercase;
+    padding: 8px 0;
+    border-top: 1px dashed rgba(143,176,116,.25);
+    border-bottom: 1px dashed rgba(143,176,116,.25);
+    margin: 10px 0 12px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .specimen p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--cream);
+    opacity: .92;
+    max-width: 52ch;
+  }
+  .specimen p em { color: var(--amber); font-style: italic; }
+
+  .specimen .note {
+    margin-top: 12px;
+    font-family: "Kalam", cursive;
+    font-size: 18px;
+    color: var(--moss-lt);
+    line-height: 1.35;
+    transform: rotate(-0.5deg);
+    display: inline-block;
+  }
+  .specimen .note::before { content: "— "; color: var(--amber); }
+
+  .specimen .link {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    color: var(--amber);
+    border-bottom: 1px solid var(--amber);
+    padding-bottom: 2px;
+    font-size: 15px;
+  }
+  .specimen .link:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* DISCIPLINES — moss patches */
+  .moss-patches {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .moss-patch {
+    padding: 24px 20px;
+    background: rgba(22,42,26,.6);
+    border: 1px solid var(--moss);
+    border-top: 2px solid var(--amber);
+    position: relative;
+    transition: transform .3s, border-color .3s;
+  }
+  .moss-patch:hover {
+    transform: translateY(-4px);
+    border-color: var(--amber);
+  }
+  .moss-patch::before {
+    content: "";
+    position: absolute;
+    top: -4px; left: 30px;
+    width: 40px; height: 4px;
+    background:
+      radial-gradient(circle at 20% 50%, var(--amber) 2px, transparent 3px),
+      radial-gradient(circle at 50% 50%, var(--amber) 2px, transparent 3px),
+      radial-gradient(circle at 80% 50%, var(--amber) 2px, transparent 3px);
+  }
+  .moss-patch .numeral {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .moss-patch h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.05;
+    color: var(--cream);
+    margin: 6px 0 10px;
+    letter-spacing: -0.005em;
+  }
+  .moss-patch h4 em { font-style: italic; color: var(--amber); }
+  .moss-patch p {
+    font-size: 14px;
+    color: var(--fern);
+    line-height: 1.55;
+  }
+  .moss-patch .tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 2px 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 9px;
+    letter-spacing: .15em;
+    color: var(--amber);
+    text-transform: uppercase;
+    border: 1px solid var(--amber);
+  }
+
+  /* CLEARING — contact */
+  .clearing {
+    margin-top: 80px;
+    padding: 72px 48px;
+    position: relative;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at center, rgba(212,148,58,.1), transparent 70%),
+      rgba(13,26,16,.5);
+    border-top: 1px solid var(--moss);
+    border-bottom: 1px solid var(--moss);
+  }
+  .clearing::before, .clearing::after {
+    content: "❋";
+    position: absolute;
+    color: var(--amber);
+    font-size: 20px;
+  }
+  .clearing::before { top: 20px; left: 30px; }
+  .clearing::after  { bottom: 20px; right: 30px; }
+
+  .clearing .invitation {
+    font-family: "Kalam", cursive;
+    font-size: 24px;
+    color: var(--amber);
+    margin-bottom: 12px;
+    display: inline-block;
+    transform: rotate(-1deg);
+  }
+  .clearing h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 80px);
+    line-height: .95;
+    letter-spacing: -0.025em;
+    color: var(--cream);
+    max-width: 20ch;
+    margin: 10px auto 18px;
+  }
+  .clearing h2 em { font-style: italic; color: var(--amber); font-weight: 400; }
+  .clearing .email {
+    display: inline-block;
+    padding: 14px 28px;
+    margin: 10px;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--cream);
+    border-bottom: 1px solid var(--amber);
+    transition: color .2s, border-color .2s;
+  }
+  .clearing .email:hover { color: var(--amber); }
+  .clearing .other {
+    margin-top: 20px;
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--fern);
+    text-transform: uppercase;
+  }
+  .clearing .other a {
+    border-bottom: 1px solid var(--moss);
+    padding-bottom: 2px;
+  }
+  .clearing .other a:hover { color: var(--amber); border-color: var(--amber); }
+
+  /* FOOTER */
+  .undergrowth {
+    margin-top: 48px;
+    padding: 20px 0;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--moss-lt);
+    text-transform: uppercase;
+  }
+  .undergrowth b { color: var(--amber); }
+
+  @media (max-width: 900px) {
+    .hero, .specimens, .moss-patches { grid-template-columns: 1fr; }
+    .field-card { margin-top: 32px; }
+    .foliage-head { grid-template-columns: 1fr; gap: 12px; }
+    .foliage-head .bearing { text-align: left; }
+    .field-strip { grid-template-columns: 1fr; text-align: center; gap: 8px; }
+    .specimen { padding-left: 90px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="field-strip">
+      <span><span class="leaf">❋</span> HANLEY / FIELD NOTEBOOK N° <b>01</b></span>
+      <span class="center">APRIL MMXXVI · <b>EARLY SPRING</b> · UNDER A CANOPY OF OAKS</span>
+      <span>GROWING ZONE <b>8a</b> <span class="leaf">❋</span></span>
+    </div>
+
+    <section class="hero">
+      <div class="hero-main">
+        <span class="season">❋ spring collection · 2026 ❋</span>
+        <h1>
+          Colin<br/>
+          <em>Hanley, <span class="curl">— of the forest floor</span></em>
+        </h1>
+        <p class="lede">
+          A student of mathematics and data science at the University of Alabama, most often found in <em>low-traffic corners</em> of a dataset, where the interesting things grow. I tend ML models, CV pipelines, and analytics tools for <i>healthcare, sports, and conservation</i>.
+        </p>
+
+        <div class="scribble">
+          <p class="hand">
+            "fruits best after rain." <em>— field notes, apr. 13</em>
+          </p><br/>
+          <p class="date">— collected in Tuscaloosa, AL</p>
+        </div>
+      </div>
+
+      <aside class="field-card">
+        <h3>❋ specimen label ❋</h3>
+        <dl>
+          <dt>Genus</dt><dd>Hanley</dd>
+          <dt>Species</dt><dd><b>colinus</b></dd>
+          <dt>Habitat</dt><dd>University of Alabama</dd>
+          <dt>Substrate</dt><dd>ML · CV · math</dd>
+          <dt>Season</dt><dd>Year-round</dd>
+          <dt>Status</dt><dd><b>Open to work</b></dd>
+          <dt>Contact</dt><dd>colinhanleydev<br/>@gmail.com</dd>
+        </dl>
+        <p class="hand-note">
+          — fruiting reliably in<br/>
+          nutrient-rich datasets.
+        </p>
+      </aside>
+    </section>
+
+    <div class="foliage-head">
+      <div class="numeral">ii.</div>
+      <h2>Specimens <em>collected</em> in the field<small>— four fruitings from recent walks —</small></h2>
+      <div class="bearing">EAST FACING SLOPE<br/><b>4 ENTRIES</b></div>
+    </div>
+
+    <section class="specimens">
+      <article class="specimen">
+        <div class="cap">
+          <div class="shape"></div>
+          <div class="stem"></div>
+          <div class="label">no. 01</div>
+        </div>
+        <p class="latin"><b>Familia</b> · ML / Data Eng</p>
+        <h3>HL7 <em>redactor</em></h3>
+        <p class="tools">
+          <span>Python</span><span>· Streamlit</span><span>· Regex</span><span>★ 2nd UA Innovate</span>
+        </p>
+        <p>Found deep in hospital informatics, parsing HL7 medical messages and de-identifying PHI with rules and regex. Fruits a point-and-click UI for analysts. Prefers clean data. <em>Award-winning.</em></p>
+        <p class="note">easily confused with its toxic cousin, "ad-hoc script"</p>
+        <a class="link" href="#">— see repository →</a>
+      </article>
+
+      <article class="specimen">
+        <div class="cap">
+          <div class="shape"></div>
+          <div class="stem"></div>
+          <div class="label">no. 02</div>
+        </div>
+        <p class="latin"><b>Familia</b> · Simulation</p>
+        <h3>Outbreak <em>simulans</em></h3>
+        <p class="tools">
+          <span>Python</span><span>· Mesa</span><span>· Agent-based</span>
+        </p>
+        <p>An agent-based simulation of outbreak dynamics with interventions — testing, lockdowns, vaccines — producing visuals that travel well to non-technical rooms. <em>Policy-ready.</em></p>
+        <p class="note">best observed during intervention windows</p>
+        <a class="link" href="#">— see repository →</a>
+      </article>
+
+      <article class="specimen">
+        <div class="cap">
+          <div class="shape"></div>
+          <div class="stem"></div>
+          <div class="label">no. 03</div>
+        </div>
+        <p class="latin"><b>Familia</b> · Computer Vision</p>
+        <h3>Infrared <em>venator</em></h3>
+        <p class="tools">
+          <span>PyTorch</span><span>· YOLOv5</span><span>· UAV thermal</span>
+        </p>
+        <p>A rare find. Fine-tuned detector for UAV thermal imagery with a pseudo-label pipeline and real-time inference path, suited for <em>conservation fieldwork</em>. Fruits at dusk.</p>
+        <p class="note">may be obscured by leaf litter or poor signal</p>
+        <a class="link" href="#">— see the paper →</a>
+      </article>
+
+      <article class="specimen">
+        <div class="cap">
+          <div class="shape"></div>
+          <div class="stem"></div>
+          <div class="label">no. 04</div>
+        </div>
+        <p class="latin"><b>Familia</b> · Optimization</p>
+        <h3>Genetic <em>drafterum</em></h3>
+        <p class="tools">
+          <span>Python</span><span>· Dash</span><span>· GA</span>
+        </p>
+        <p>A small genetic algorithm for fantasy football draft strategy, wrapped in a Dash application. <em>Field-tested</em> on draft night. Prefers competitive environments.</p>
+        <p class="note">annual; fruits once in september</p>
+        <a class="link" href="#">— see repository →</a>
+      </article>
+    </section>
+
+    <div class="foliage-head">
+      <div class="numeral">iii.</div>
+      <h2>Taxonomy of <em>skills</em> &amp; methods<small>— what's in the forager's basket —</small></h2>
+      <div class="bearing">FOUR FAMILIES · ONE FORAGER</div>
+    </div>
+
+    <section class="moss-patches">
+      <div class="moss-patch">
+        <div class="numeral">i.</div>
+        <h4>Machine <em>learning</em></h4>
+        <p>PyTorch, TensorFlow, HuggingFace &amp; fine-tuning LLMs.</p>
+        <span class="tag">❋ PRIMARY ❋</span>
+      </div>
+      <div class="moss-patch">
+        <div class="numeral">ii.</div>
+        <h4>Mathematics</h4>
+        <p>Probability, linear algebra, optimization, MATLAB.</p>
+        <span class="tag">❋ FOUNDATION ❋</span>
+      </div>
+      <div class="moss-patch">
+        <div class="numeral">iii.</div>
+        <h4>Data <em>engineering</em></h4>
+        <p>SQL modeling, Pandas, NumPy, reliable pipelines.</p>
+        <span class="tag">❋ DAILY ❋</span>
+      </div>
+      <div class="moss-patch">
+        <div class="numeral">iv.</div>
+        <h4><em>Visualization</em></h4>
+        <p>Streamlit, Dash, Tableau &amp; product instincts.</p>
+        <span class="tag">❋ FRUITING ❋</span>
+      </div>
+    </section>
+
+    <section class="clearing">
+      <p class="invitation">— leave word at the clearing —</p>
+      <h2>If you <em>find</em> something interesting, tell me about it.</h2>
+      <a class="email" href="mailto:colinhanleydev@gmail.com">colinhanleydev@gmail.com</a>
+      <div class="other">
+        <a href="#">❋ LinkedIn</a>
+        <a href="#">❋ GitHub</a>
+        <a href="#">❋ Résumé</a>
+      </div>
+    </section>
+
+    <div class="undergrowth">
+      <span>© MMXXVI · C. HANLEY</span>
+      <span>❋ TREAD GENTLY · LEAVE SPORES ❋</span>
+      <span>RETURN TO THE <b>CANOPY</b> ↑</span>
+    </div>
+  </div>
+</body>
+</html>

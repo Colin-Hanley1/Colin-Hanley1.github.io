@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley — Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=GT+Sectra&family=PP+Editorial&family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #f5f4f0;
+    --bg-2:     #eeece5;
+    --ink:      #111110;
+    --ink-soft: #3a3a36;
+    --muted:    #878480;
+    --line:     #1a1a18;
+    --hair:     #d6d3c9;
+    --accent:   #b8462b;    /* terracotta */
+    --serif:    "Newsreader", Georgia, serif;
+    --sans:     "Inter", -apple-system, system-ui, sans-serif;
+    --mono:     "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  em { font-style: italic; font-family: var(--serif); }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* =============== NAV =============== */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(245, 244, 240, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 18px 40px;
+    align-items: center;
+  }
+  .nav .brand {
+    grid-column: 1 / span 3;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .nav .brand .mark {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--ink);
+    display: inline-grid; place-items: center;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .nav ul {
+    list-style: none;
+    grid-column: 5 / span 6;
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+  }
+  .nav ul a {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 4px 0;
+    position: relative;
+  }
+  .nav ul a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s ease;
+  }
+  .nav ul a:hover::after { transform: scaleX(1); }
+  .nav ul a span {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .nav .cta {
+    grid-column: 11 / span 2;
+    justify-self: end;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    transition: background .25s, color .25s;
+  }
+  .nav .cta:hover { background: var(--ink); color: var(--bg); }
+
+  /* =============== HERO =============== */
+  .hero {
+    padding-top: 160px;
+    padding-bottom: 80px;
+  }
+  .hero-kicker {
+    grid-column: 2 / span 10;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .hero-kicker .dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .hero-kicker .line { flex: 1; }
+  .hero-kicker .year {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  .hero-title {
+    grid-column: 2 / span 10;
+    font-family: var(--serif);
+    font-weight: 200;
+    font-size: clamp(72px, 12vw, 186px);
+    line-height: .86;
+    letter-spacing: -0.055em;
+    color: var(--ink);
+    margin-bottom: 48px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+
+  .hero-sub {
+    grid-column: 2 / span 5;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink);
+    max-width: 38ch;
+    padding-top: 16px;
+    border-top: 1px solid var(--ink);
+  }
+  .hero-sub em { color: var(--accent); }
+
+  .hero-meta {
+    grid-column: 8 / span 4;
+    padding-top: 16px;
+    border-top: 1px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 16px;
+  }
+  .hero-meta .m-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-meta .m-block .k {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-meta .m-block .v {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.3;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .hero-meta .m-block .v b { font-style: normal; color: var(--accent); font-weight: 500; }
+
+  /* sun / circle element */
+  .sun-mark {
+    grid-column: 12;
+    justify-self: end;
+    width: 48px; height: 48px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    position: relative;
+    margin-top: -140px;
+  }
+  .sun-mark::before {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .sun-mark::after {
+    content: "N. 34° 12'";
+    position: absolute;
+    top: 58px; right: 0;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* =============== SECTION LABEL =============== */
+  .section-label {
+    padding: 120px 0 32px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 60px;
+  }
+  .section-label .tag {
+    grid-column: 2 / span 2;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .15em;
+  }
+  .section-label h2 {
+    grid-column: 4 / span 6;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(32px, 4.5vw, 56px);
+    line-height: .95;
+    letter-spacing: -0.03em;
+  }
+  .section-label h2 em { font-style: italic; color: var(--accent); }
+  .section-label .sub {
+    grid-column: 10 / span 3;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+    align-self: end;
+  }
+
+  /* =============== ABOUT =============== */
+  .about {
+    padding-bottom: 100px;
+  }
+  .about .prose {
+    grid-column: 4 / span 6;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 56ch;
+  }
+  .about .prose p { margin-bottom: 20px; }
+  .about .prose em { color: var(--accent); font-style: italic; }
+  .about .facts {
+    grid-column: 10 / span 3;
+    align-self: start;
+  }
+  .about .facts .block {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .about .facts .block:first-child { border-top: 1px solid var(--ink); }
+  .about .facts .block .k {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .about .facts .block .v {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .about .facts .block .v b { font-style: normal; color: var(--accent); font-weight: 500; }
+
+  /* =============== PROJECTS =============== */
+  .projects {
+    padding-bottom: 80px;
+  }
+  .project {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--hair);
+    align-items: baseline;
+    position: relative;
+    transition: padding .5s;
+  }
+  .project:first-of-type { border-top: 1px solid var(--ink); }
+  .project:hover { background: rgba(184, 70, 43, 0.03); }
+  .project:hover h3 { color: var(--accent); }
+
+  .project .idx {
+    grid-column: 2 / span 1;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .1em;
+  }
+  .project .idx b {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 56px;
+    color: var(--ink);
+    line-height: .9;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .project h3 {
+    grid-column: 4 / span 5;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    transition: color .35s;
+  }
+  .project h3 em { font-style: italic; color: var(--accent); font-weight: 400; }
+
+  .project .meta {
+    grid-column: 9 / span 3;
+    align-self: start;
+  }
+  .project .meta .stack {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 12px;
+  }
+  .project .meta .stack b { color: var(--accent); }
+  .project .meta p {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    margin-bottom: 14px;
+  }
+  .project .meta a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .project .meta a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .project .year {
+    grid-column: 12;
+    justify-self: end;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+  }
+
+  /* =============== DISCIPLINES =============== */
+  .disciplines {
+    padding-bottom: 120px;
+  }
+  .d-list {
+    grid-column: 2 / span 10;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .d-card {
+    padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .d-card .n {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .d-card h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  .d-card h4 em { font-style: italic; color: var(--accent); }
+  .d-card p {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  /* =============== CONTACT =============== */
+  .contact {
+    padding: 100px 0 140px;
+    border-top: 1px solid var(--ink);
+  }
+  .contact .tag {
+    grid-column: 2 / span 2;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .15em;
+  }
+  .contact h2 {
+    grid-column: 2 / span 8;
+    font-family: var(--serif);
+    font-weight: 200;
+    font-size: clamp(56px, 9vw, 148px);
+    line-height: .88;
+    letter-spacing: -0.04em;
+    margin-top: 32px;
+    max-width: 14ch;
+  }
+  .contact h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .contact .actions {
+    grid-column: 2 / span 10;
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ink);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .contact .actions a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--hair);
+    transition: border-color .3s;
+  }
+  .contact .actions a:hover { border-color: var(--accent); }
+  .contact .actions a:hover .v { color: var(--accent); }
+  .contact .actions .k {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .contact .actions .v {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink);
+    transition: color .3s;
+  }
+
+  /* =============== FOOTER =============== */
+  .foot {
+    padding: 28px 0;
+    border-top: 1px solid var(--hair);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 40px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .foot-grid span:nth-child(1) { grid-column: 1 / span 4; }
+  .foot-grid span:nth-child(2) {
+    grid-column: 5 / span 4;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .foot-grid span:nth-child(3) { grid-column: 9 / span 4; text-align: right; }
+
+  @media (max-width: 1000px) {
+    .grid, .nav-grid, .foot-grid { grid-template-columns: 1fr; padding: 0 24px; }
+    .nav ul { display: none; }
+    .nav .brand { grid-column: 1; }
+    .nav .cta { grid-column: 1; justify-self: end; }
+    .hero-title, .hero-sub, .hero-meta, .hero-kicker,
+    .about .prose, .about .facts,
+    .projects .project .idx, .projects .project h3, .projects .project .meta, .projects .project .year,
+    .disciplines .d-list, .contact .tag, .contact h2, .contact .actions,
+    .section-label .tag, .section-label h2, .section-label .sub {
+      grid-column: 1;
+    }
+    .project { grid-template-columns: 1fr; }
+    .d-list, .contact .actions { grid-template-columns: 1fr; gap: 16px; }
+    .sun-mark { display: none; }
+    .nav-grid { padding: 14px 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-grid">
+      <a class="brand" href="#top">
+        <span class="mark">H</span>
+        Hanley <em>Studio</em>
+      </a>
+      <ul>
+        <li><a href="#work"><span>01</span> Work</a></li>
+        <li><a href="#studio"><span>02</span> Studio</a></li>
+        <li><a href="#practice"><span>03</span> Practice</a></li>
+        <li><a href="#contact"><span>04</span> Contact</a></li>
+      </ul>
+      <a class="cta" href="#">Résumé ↗</a>
+    </div>
+  </nav>
+
+  <header class="grid hero" id="top">
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      <span class="mono">Portfolio · 2026 · Tuscaloosa, Alabama</span>
+      <span class="line"></span>
+      <span class="year">— MMXXVI</span>
+    </div>
+
+    <h1 class="hero-title">
+      Colin <em>Hanley,</em><br/>
+      data science<br/>
+      &amp; <em>applied math.</em>
+    </h1>
+
+    <p class="hero-sub">
+      A student of <em>mathematics</em> and data science at the University of Alabama. I design and deploy predictive models — turning raw, uncooperative data into decisions and dashboards.
+    </p>
+
+    <div class="hero-meta">
+      <div class="m-block">
+        <span class="k">Practice</span>
+        <span class="v"><b>ML</b> · CV · Analytics</span>
+      </div>
+      <div class="m-block">
+        <span class="k">Status</span>
+        <span class="v">Open to <b>work</b></span>
+      </div>
+      <div class="m-block">
+        <span class="k">Based</span>
+        <span class="v">Tuscaloosa, AL</span>
+      </div>
+      <div class="m-block">
+        <span class="k">Recognition</span>
+        <span class="v"><b>2nd</b> · UA Innovate</span>
+      </div>
+    </div>
+
+    <div class="sun-mark"></div>
+  </header>
+
+  <section class="grid section-label" id="studio">
+    <span class="tag">§ 01 / STUDIO</span>
+    <h2>An introduction, <em>briefly.</em></h2>
+    <p class="sub">— or, what to expect before reading further into the work.</p>
+  </section>
+
+  <section class="grid about">
+    <div class="prose">
+      <p>Hi — I'm Colin, a Data Science and Mathematics student at the University of Alabama. I'm drawn to problems where statistics, engineering, and plain curiosity overlap: healthcare informatics, sports analytics, computer vision, and the occasional spreadsheet no one else wants to open.</p>
+      <p>I care about the part where numbers start telling a story. Give me a messy dataset and a hard question and I'll come back with a <em>model</em>, a <em>visualization</em>, and a strong opinion about what to do next.</p>
+    </div>
+    <aside class="facts">
+      <div class="block">
+        <span class="k">Education</span>
+        <span class="v">B.S. Math &amp; <b>Data Science</b></span>
+      </div>
+      <div class="block">
+        <span class="k">Institution</span>
+        <span class="v">Univ. of Alabama</span>
+      </div>
+      <div class="block">
+        <span class="k">Interests</span>
+        <span class="v">Healthcare · Sports · CV</span>
+      </div>
+      <div class="block">
+        <span class="k">Recognition</span>
+        <span class="v"><b>2nd place</b> · UA Innovate</span>
+      </div>
+      <div class="block">
+        <span class="k">Availability</span>
+        <span class="v">Open to <b>roles &amp; freelance</b></span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="grid section-label" id="work">
+    <span class="tag">§ 02 / WORK</span>
+    <h2>Selected <em>projects.</em></h2>
+    <p class="sub">— four pieces, each shipped and field-tested in the wild.</p>
+  </section>
+
+  <section class="grid projects">
+    <article class="project">
+      <div class="idx">No.<b>01</b></div>
+      <h3>HL7 Parser &amp;<br/><em>PHI Redactor</em></h3>
+      <div class="meta">
+        <span class="stack">Python · Streamlit · Regex · <b>2nd UA Innovate</b></span>
+        <p>Parsed HL7 medical messages and de-identified PHI with rules and regex, shipping a point-and-click UI for analysts.</p>
+        <a href="#">View project →</a>
+      </div>
+      <span class="year">2026</span>
+    </article>
+
+    <article class="project">
+      <div class="idx">No.<b>02</b></div>
+      <h3>Agent-Based<br/><em>COVID-19 Simulator</em></h3>
+      <div class="meta">
+        <span class="stack">Python · Mesa · <b>Agent-based</b></span>
+        <p>Simulated outbreak dynamics with interventions and produced policy-ready visualizations of tradeoffs.</p>
+        <a href="#">View project →</a>
+      </div>
+      <span class="year">2025</span>
+    </article>
+
+    <article class="project">
+      <div class="idx">No.<b>03</b></div>
+      <h3>Poacher Detection<br/><em>in Infrared</em></h3>
+      <div class="meta">
+        <span class="stack">PyTorch · YOLOv5 · <b>Computer Vision</b></span>
+        <p>Fine-tuned detector for UAV thermal imagery, with pseudo-label pipeline and real-time inference.</p>
+        <a href="#">View paper →</a>
+      </div>
+      <span class="year">2025</span>
+    </article>
+
+    <article class="project">
+      <div class="idx">No.<b>04</b></div>
+      <h3>Genetic<br/><em>Fantasy Drafter</em></h3>
+      <div class="meta">
+        <span class="stack">Python · Dash · <b>Genetic Algorithms</b></span>
+        <p>A genetic algorithm for fantasy football draft strategy, wrapped in a Dash app I used on draft night.</p>
+        <a href="#">View project →</a>
+      </div>
+      <span class="year">2024</span>
+    </article>
+  </section>
+
+  <section class="grid section-label" id="practice">
+    <span class="tag">§ 03 / PRACTICE</span>
+    <h2>Instruments <em>&amp; methods.</em></h2>
+    <p class="sub">— what I reach for, in roughly the order I reach for it.</p>
+  </section>
+
+  <section class="grid disciplines">
+    <div class="d-list">
+      <div class="d-card">
+        <span class="n">I. PRIMARY</span>
+        <h4>Machine <em>Learning</em></h4>
+        <p>PyTorch, TensorFlow, HuggingFace, LLM fine-tuning, evaluation pipelines.</p>
+      </div>
+      <div class="d-card">
+        <span class="n">II. FOUNDATION</span>
+        <h4>Mathematics</h4>
+        <p>Probability, linear algebra, optimization, and the occasional MATLAB notebook.</p>
+      </div>
+      <div class="d-card">
+        <span class="n">III. DAILY</span>
+        <h4>Data <em>Engineering</em></h4>
+        <p>SQL modeling &amp; performance, Pandas, NumPy, clean and reliable pipelines.</p>
+      </div>
+      <div class="d-card">
+        <span class="n">IV. SHIPPING</span>
+        <h4>Visualization</h4>
+        <p>Streamlit, Dash, Tableau, and the product instincts to ship things people use.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid contact" id="contact">
+    <span class="tag">§ 04 / CONTACT</span>
+    <h2>Let's talk about your <em>hardest question.</em></h2>
+    <div class="actions">
+      <a href="mailto:colinhanleydev@gmail.com">
+        <span class="k">Email ↗</span>
+        <span class="v">colinhanleydev@gmail.com</span>
+      </a>
+      <a href="#">
+        <span class="k">LinkedIn ↗</span>
+        <span class="v">colin-hanley1836</span>
+      </a>
+      <a href="#">
+        <span class="k">GitHub ↗</span>
+        <span class="v">Colin-Hanley1</span>
+      </a>
+      <a href="#">
+        <span class="k">Résumé ↓</span>
+        <span class="v">Download PDF</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid">
+      <span>© MMXXVI · Colin Hanley</span>
+      <span>— designed &amp; built with care in Tuscaloosa —</span>
+      <span>Return to top ↑</span>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley Expedition — Summit Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Caveat:wght@500;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas:    #1d2530;     /* dark slate */
+    --canvas-2:  #2a3240;
+    --panel:     #dbd4c2;     /* weathered canvas */
+    --panel-2:   #c8c0a8;
+    --leather:   #5a3a23;
+    --rope:      #a8733e;
+    --ice:       #c5d4dd;
+    --ice-2:     #8fa4b2;
+    --sky:       #4a6882;
+    --warn:      #e85a3a;
+    --ink:       #141820;
+    --ink-soft:  #2a3240;
+    --brass:     #b8923e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--canvas);
+    color: var(--ice);
+    font-family: "Crimson Pro", Georgia, serif;
+    font-size: 17px; line-height: 1.6;
+    min-height: 100vh;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 900px 600px at 20% 10%, rgba(74,104,130,.25), transparent 65%),
+      radial-gradient(ellipse 700px 500px at 85% 80%, rgba(20,24,32,.7), transparent 65%),
+      linear-gradient(180deg, var(--canvas) 0%, #0f141b 100%);
+    background-attachment: fixed;
+  }
+  /* atmospheric noise */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    opacity: .14; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* subtle contour mountain lines */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: .06;
+    background-image:
+      radial-gradient(ellipse 400px 200px at 70% 30%, transparent 50%, var(--ice) 51%, var(--ice) 52%, transparent 53%),
+      radial-gradient(ellipse 340px 170px at 70% 30%, transparent 60%, var(--ice) 61%, var(--ice) 62%, transparent 63%),
+      radial-gradient(ellipse 280px 140px at 70% 30%, transparent 60%, var(--ice) 61%, var(--ice) 62%, transparent 63%);
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "Oswald", sans-serif; letter-spacing: .15em; text-transform: uppercase; }
+  .hand { font-family: "Caveat", cursive; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 32px; position: relative; z-index: 2; }
+
+  /* TOP EXPEDITION BAR */
+  .expedition-bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 14px 20px;
+    background: rgba(10,14,22,.6);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(197,212,221,.2);
+    border-left: 4px solid var(--warn);
+    margin-bottom: 40px;
+  }
+  .expedition-bar .badge {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--warn);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .expedition-bar .badge .pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--warn);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--warn);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: .4; transform: scale(1.2); } }
+  .expedition-bar .center {
+    text-align: center;
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .3em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+  }
+  .expedition-bar .center b { color: var(--ice); }
+  .expedition-bar .right {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+  }
+  .expedition-bar .right b { color: var(--brass); }
+
+  /* HERO — summit photograph panel */
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid rgba(197,212,221,.15);
+  }
+
+  .hero-main { position: relative; }
+  .hero-main .kicker {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .35em;
+    color: var(--warn);
+    text-transform: uppercase;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(197,212,221,.2);
+    margin-bottom: 20px;
+  }
+  .hero-main h1 {
+    font-family: "Crimson Pro", serif;
+    font-weight: 300;
+    font-size: clamp(56px, 10vw, 140px);
+    line-height: .86;
+    letter-spacing: -0.03em;
+    color: var(--ice);
+    margin-bottom: 12px;
+  }
+  .hero-main h1 em {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--brass);
+  }
+  .hero-main .sub {
+    font-family: "Crimson Pro", serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ice-2);
+    max-width: 56ch;
+    margin-top: 18px;
+    line-height: 1.5;
+  }
+  .hero-main .sub em { color: var(--ice); font-style: italic; }
+
+  .hero-main .caveat-note {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(197,212,221,.2);
+  }
+  .hero-main .caveat-note .hand {
+    font-family: "Caveat", cursive;
+    font-size: 26px;
+    color: var(--brass);
+    transform: rotate(-1deg);
+    display: inline-block;
+    line-height: 1.3;
+  }
+
+  /* right panel — vitals */
+  .vitals {
+    background: rgba(10,14,22,.55);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(197,212,221,.2);
+    border-top: 3px solid var(--warn);
+    padding: 24px 24px 20px;
+    align-self: start;
+    position: relative;
+  }
+  .vitals::before {
+    content: "EXPEDITION LOG";
+    position: absolute;
+    top: -11px; left: 20px;
+    background: var(--canvas);
+    padding: 0 10px;
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    letter-spacing: .25em;
+    color: var(--warn);
+  }
+  .vitals h3 {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(197,212,221,.15);
+  }
+  .vitals .row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(197,212,221,.12);
+    font-size: 14px;
+  }
+  .vitals .row:last-of-type { border-bottom: none; }
+  .vitals .k {
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    color: var(--ice-2);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .vitals .v {
+    font-family: "Crimson Pro", serif;
+    font-style: italic;
+    color: var(--ice);
+    font-size: 16px;
+  }
+  .vitals .v b { font-style: normal; color: var(--brass); font-weight: 600; }
+  .vitals .gauge {
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    color: var(--brass);
+    letter-spacing: .1em;
+    padding-top: 6px;
+  }
+
+  .vitals .weather {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(197,212,221,.15);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+  .vitals .weather div {
+    padding: 6px;
+    background: rgba(197,212,221,.05);
+    border: 1px solid rgba(197,212,221,.1);
+  }
+  .vitals .weather .big {
+    font-family: "Crimson Pro", serif;
+    font-size: 22px;
+    color: var(--ice);
+    line-height: 1;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .vitals .weather .lbl {
+    font-family: "Oswald", sans-serif;
+    font-size: 9px;
+    letter-spacing: .12em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+  }
+
+  /* SECTION HEADS */
+  .waypoint-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+    margin: 60px 0 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(197,212,221,.15);
+  }
+  .waypoint-head .marker {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border: 2px solid var(--warn);
+    font-family: "Oswald", sans-serif;
+    font-size: 13px;
+    color: var(--warn);
+    letter-spacing: 0;
+    font-weight: 700;
+    position: relative;
+  }
+  .waypoint-head .marker::before {
+    content: "";
+    position: absolute; inset: 3px;
+    border: 1px dashed var(--warn);
+  }
+  .waypoint-head h2 {
+    font-family: "Crimson Pro", serif;
+    font-weight: 300;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ice);
+  }
+  .waypoint-head h2 em { font-style: italic; color: var(--brass); font-weight: 400; }
+  .waypoint-head .alt {
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .waypoint-head .alt b { color: var(--brass); }
+
+  /* CAMP CARDS — projects */
+  .camps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .camp {
+    background: rgba(10,14,22,.55);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(197,212,221,.15);
+    padding: 28px 28px 24px;
+    position: relative;
+    transition: border-color .3s, transform .3s;
+  }
+  .camp:hover {
+    border-color: var(--brass);
+    transform: translateY(-3px);
+  }
+
+  .camp::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 28px;
+    width: 40px; height: 3px;
+    background: var(--warn);
+  }
+
+  .camp .camp-num {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--warn);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 10px;
+  }
+  .camp .camp-num .coord {
+    font-family: "Crimson Pro", serif;
+    font-style: italic;
+    color: var(--ice-2);
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .camp h3 {
+    font-family: "Crimson Pro", serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    margin: 12px 0 6px;
+    letter-spacing: -0.01em;
+    color: var(--ice);
+  }
+  .camp h3 em { font-style: italic; color: var(--brass); }
+  .camp .altitude {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+    padding: 10px 0;
+    margin-bottom: 12px;
+    border-top: 1px solid rgba(197,212,221,.12);
+    border-bottom: 1px solid rgba(197,212,221,.12);
+  }
+  .camp .altitude b { color: var(--ice); }
+  .camp p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ice-2);
+    max-width: 52ch;
+  }
+  .camp p em { color: var(--ice); font-style: italic; }
+
+  .camp .log-entry {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(197,212,221,.15);
+    font-family: "Caveat", cursive;
+    font-size: 19px;
+    color: var(--brass);
+    line-height: 1.3;
+    transform: rotate(-0.5deg);
+  }
+
+  .camp .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 8px 14px;
+    border: 1px solid var(--brass);
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--brass);
+    text-transform: uppercase;
+    transition: all .2s;
+  }
+  .camp .link:hover { background: var(--brass); color: var(--ink); }
+
+  /* GEAR LIST — skills */
+  .gear-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .gear {
+    background: rgba(10,14,22,.55);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(197,212,221,.12);
+    padding: 20px;
+    position: relative;
+  }
+  .gear::before {
+    content: "■";
+    position: absolute;
+    top: 16px; right: 16px;
+    color: var(--warn);
+    font-size: 10px;
+  }
+  .gear .id {
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(197,212,221,.1);
+    margin-bottom: 12px;
+  }
+  .gear h4 {
+    font-family: "Crimson Pro", serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.05;
+    color: var(--ice);
+    margin-bottom: 8px;
+  }
+  .gear h4 em { font-style: italic; color: var(--brass); }
+  .gear ul {
+    list-style: none;
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    color: var(--ice-2);
+    letter-spacing: .05em;
+  }
+  .gear ul li {
+    padding: 5px 0;
+    border-bottom: 1px dotted rgba(197,212,221,.1);
+  }
+  .gear ul li::before { content: "▸ "; color: var(--brass); }
+
+  /* BASECAMP — contact */
+  .basecamp {
+    margin-top: 60px;
+    padding: 56px 40px;
+    background:
+      linear-gradient(135deg, rgba(74,104,130,.25), rgba(10,14,22,.6));
+    border: 1px solid rgba(197,212,221,.2);
+    border-top: 3px solid var(--warn);
+    position: relative;
+    text-align: center;
+  }
+  .basecamp::before {
+    content: "BASECAMP · COMMS OPEN";
+    position: absolute;
+    top: -11px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--canvas);
+    padding: 0 14px;
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    letter-spacing: .3em;
+    color: var(--warn);
+    text-transform: uppercase;
+  }
+  .basecamp h2 {
+    font-family: "Crimson Pro", serif;
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 78px);
+    line-height: .95;
+    letter-spacing: -0.02em;
+    color: var(--ice);
+    max-width: 22ch;
+    margin: 10px auto 14px;
+  }
+  .basecamp h2 em {
+    font-style: italic;
+    color: var(--brass);
+    font-weight: 400;
+  }
+  .basecamp .radio-note {
+    font-family: "Caveat", cursive;
+    font-size: 24px;
+    color: var(--warn);
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .basecamp .actions {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  }
+  .basecamp a.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    font-family: "Oswald", sans-serif;
+    font-size: 12px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    border: 1px solid var(--ice);
+    color: var(--ice);
+    transition: all .2s;
+  }
+  .basecamp a.cta:hover {
+    background: var(--ice);
+    color: var(--ink);
+  }
+  .basecamp a.cta.primary {
+    background: var(--warn);
+    border-color: var(--warn);
+    color: var(--ink);
+  }
+  .basecamp a.cta.primary:hover { background: var(--brass); border-color: var(--brass); }
+
+  /* FOOTER */
+  .foot {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(197,212,221,.15);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--ice-2);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .hero, .camps, .gear-list { grid-template-columns: 1fr; }
+    .vitals { margin-top: 24px; }
+    .expedition-bar { grid-template-columns: 1fr; text-align: center; gap: 8px; }
+    .waypoint-head { grid-template-columns: 1fr; gap: 8px; }
+    .waypoint-head .alt { text-align: left; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="expedition-bar">
+      <span class="badge"><span class="pulse"></span> EXPEDITION ACTIVE · HANLEY SOLO 2026</span>
+      <span class="center">LOG N° <b>01</b> &nbsp;·&nbsp; DAY <b>113</b> &nbsp;·&nbsp; EL. <b>6,240ft</b> &nbsp;·&nbsp; BEARING <b>N 72° E</b></span>
+      <span class="right">WEATHER: <b>CLEAR</b> · WIND: <b>12 KT NW</b></span>
+    </div>
+
+    <section class="hero">
+      <div class="hero-main">
+        <p class="kicker">⋆ Expedition Leader · Colin Hanley ⋆ MMXXVI ⋆</p>
+        <h1>Into the<br/><em>Data Range.</em></h1>
+        <p class="sub">
+          <em>Solo expedition</em> through predictive modeling, applied mathematics,
+          and the occasional cold dataset. Gear checked. Route mapped.
+          Currently bivouacked in Tuscaloosa, AL — preparing the next ascent.
+        </p>
+        <div class="caveat-note">
+          <p class="hand">
+            — find me where the gradients get steep. —<br/>
+            &nbsp;&nbsp;&nbsp;— C.H., field journal, apr. '26
+          </p>
+        </div>
+      </div>
+
+      <aside class="vitals">
+        <h3>Expedition Vitals</h3>
+        <div class="row">
+          <span class="k">Climber</span>
+          <span class="v">Colin J. <b>Hanley</b></span>
+          <span class="gauge">◉</span>
+        </div>
+        <div class="row">
+          <span class="k">Party</span>
+          <span class="v">Solo</span>
+          <span class="gauge">1 / 1</span>
+        </div>
+        <div class="row">
+          <span class="k">Base</span>
+          <span class="v">Univ. of <b>Alabama</b></span>
+          <span class="gauge">34° 12' N</span>
+        </div>
+        <div class="row">
+          <span class="k">Discipline</span>
+          <span class="v">Data Sci. &amp; <b>Math</b></span>
+          <span class="gauge">active</span>
+        </div>
+        <div class="row">
+          <span class="k">Route grade</span>
+          <span class="v">Open to <b>expeditions</b></span>
+          <span class="gauge">V · 5.10</span>
+        </div>
+
+        <div class="weather">
+          <div>
+            <span class="big">6,240</span>
+            <span class="lbl">Current ft.</span>
+          </div>
+          <div>
+            <span class="big">-4°</span>
+            <span class="lbl">Temp</span>
+          </div>
+          <div>
+            <span class="big">12kt</span>
+            <span class="lbl">Wind NW</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="waypoint-head">
+      <div class="marker">II</div>
+      <h2>Camps &amp; <em>ascents</em> — dispatches from the route</h2>
+      <div class="alt">4 SUMMITS BAGGED<br/><b>ROUTE COMPLETE</b></div>
+    </div>
+
+    <section class="camps">
+      <article class="camp">
+        <p class="camp-num">⋄ CAMP I · ML / DATA ENG <span class="coord">34.21° N · 87.57° W</span></p>
+        <h3>HL7 Parser<br/>&amp; <em>PHI Redactor</em></h3>
+        <div class="altitude">
+          <span>⬆ <b>6,850 ft</b></span>
+          <span>GRADE <b>V+</b></span>
+          <span>DAYS <b>14</b></span>
+        </div>
+        <p>First ascent on the route. Parses HL7 medical messages and de-identifies PHI with rules and regex, shipping a point-and-click UI for analysts.</p>
+        <p class="log-entry">— radioed down: "second place at UA Innovate. warm tent tonight." —</p>
+        <a class="link" href="#">⚑ REPO ROUTE ↗</a>
+      </article>
+
+      <article class="camp">
+        <p class="camp-num">⋄ CAMP II · SIMULATION <span class="coord">33.95° N · 87.12° W</span></p>
+        <h3>Outbreak<br/><em>Ridge</em></h3>
+        <div class="altitude">
+          <span>⬆ <b>7,120 ft</b></span>
+          <span>GRADE <b>IV</b></span>
+          <span>DAYS <b>22</b></span>
+        </div>
+        <p>Agent-based model of outbreak dynamics with interventions — testing, lockdowns, vaccines — producing policy-facing visualizations.</p>
+        <p class="log-entry">— "policy-ready. slept above the clouds tonight." —</p>
+        <a class="link" href="#">⚑ REPO ROUTE ↗</a>
+      </article>
+
+      <article class="camp">
+        <p class="camp-num">⋄ CAMP III · COMPUTER VISION <span class="coord">34.08° N · 87.44° W</span></p>
+        <h3>Infrared<br/><em>Traverse</em></h3>
+        <div class="altitude">
+          <span>⬆ <b>7,480 ft</b></span>
+          <span>GRADE <b>V</b></span>
+          <span>DAYS <b>31</b></span>
+        </div>
+        <p>Fine-tuned detector for UAV thermal imagery. Pseudo-label pipeline, real-time inference — suitable for conservation field work.</p>
+        <p class="log-entry">— "poachers invisible no longer. snow on the tent." —</p>
+        <a class="link" href="#">⚑ PAPER ↗</a>
+      </article>
+
+      <article class="camp">
+        <p class="camp-num">⋄ CAMP IV · OPTIMIZATION <span class="coord">34.30° N · 87.60° W</span></p>
+        <h3>Genetic<br/><em>Drafter</em></h3>
+        <div class="altitude">
+          <span>⬆ <b>6,950 ft</b></span>
+          <span>GRADE <b>IV+</b></span>
+          <span>DAYS <b>9</b></span>
+        </div>
+        <p>A genetic algorithm for fantasy football draft strategy, wrapped in a Dash application used live on draft night.</p>
+        <p class="log-entry">— "draft night: held the line. warm dinner." —</p>
+        <a class="link" href="#">⚑ REPO ROUTE ↗</a>
+      </article>
+    </section>
+
+    <div class="waypoint-head">
+      <div class="marker">III</div>
+      <h2>Gear <em>manifest</em> — instruments checked &amp; packed</h2>
+      <div class="alt">ALL EQUIPMENT <b>OPERATIONAL</b></div>
+    </div>
+
+    <section class="gear-list">
+      <div class="gear">
+        <div class="id">ITEM 01 · PRIMARY</div>
+        <h4><em>Machine</em><br/>Learning</h4>
+        <ul>
+          <li>PyTorch</li>
+          <li>TensorFlow</li>
+          <li>HuggingFace</li>
+          <li>Fine-tuning LLMs</li>
+        </ul>
+      </div>
+      <div class="gear">
+        <div class="id">ITEM 02 · FOUNDATION</div>
+        <h4>Mathematics</h4>
+        <ul>
+          <li>Probability</li>
+          <li>Linear algebra</li>
+          <li>Optimization</li>
+          <li>MATLAB</li>
+        </ul>
+      </div>
+      <div class="gear">
+        <div class="id">ITEM 03 · DAILY</div>
+        <h4><em>Data</em><br/>Engineering</h4>
+        <ul>
+          <li>SQL modeling</li>
+          <li>Pandas</li>
+          <li>NumPy</li>
+          <li>Pipelines</li>
+        </ul>
+      </div>
+      <div class="gear">
+        <div class="id">ITEM 04 · SHIPPING</div>
+        <h4>Visualization</h4>
+        <ul>
+          <li>Streamlit</li>
+          <li>Dash</li>
+          <li>Tableau</li>
+          <li>Product sense</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="basecamp">
+      <p class="radio-note">— radio comms open —</p>
+      <h2>Plan an <em>expedition</em> together.</h2>
+      <div class="actions">
+        <a class="cta primary" href="mailto:colinhanleydev@gmail.com">✉ colinhanleydev@gmail.com</a>
+        <a class="cta" href="#">LINKEDIN ↗</a>
+        <a class="cta" href="#">GITHUB ↗</a>
+        <a class="cta" href="#">EXPEDITION CV ↓</a>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>© MMXXVI · HANLEY EXPEDITION CO.</span>
+      <span>★ LEAVE NO TRACE · SHIP NO HACKS ★</span>
+      <span>END OF LOG N° 01 / RETURN TO BASE ↑</span>
+    </div>
+  </div>
+</body>
+</html>

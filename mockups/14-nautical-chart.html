@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley Harbor Chart N° 01</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Unica+One&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --chart:      #ecdfc0;     /* aged nautical parchment */
+    --chart-2:    #e2d4a8;
+    --sea:        #3a6b80;     /* muted navy */
+    --sea-deep:   #1e3a4e;
+    --sea-deepest:#0e2030;
+    --foam:       #b8c9c7;
+    --brass:      #a6742a;
+    --brass-lt:   #d4a24a;
+    --rust:       #8a3a1e;
+    --ink:        #1b1a16;
+    --ink-soft:   #3a3524;
+    --line:       #5a4a22;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--chart);
+    color: var(--ink);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 17px; line-height: 1.65;
+    min-height: 100vh;
+    font-feature-settings: "liga", "dlig";
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% 15%, rgba(58,107,128,.08), transparent 65%),
+      radial-gradient(ellipse 600px 400px at 88% 85%, rgba(138,58,30,.07), transparent 65%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(166,116,42,.04), transparent 70%);
+  }
+  /* chart noise + water texture */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 98;
+    opacity: .22; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* decorative compass rose + rhumb lines */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: .08;
+    background-image:
+      radial-gradient(circle at 85% 15%, transparent 48%, var(--sea-deep) 49%, var(--sea-deep) 50%, transparent 51%),
+      radial-gradient(circle at 85% 15%, transparent 58%, var(--sea-deep) 59%, var(--sea-deep) 60%, transparent 61%),
+      radial-gradient(circle at 85% 15%, transparent 68%, var(--sea-deep) 69%, var(--sea-deep) 70%, transparent 71%);
+    background-size: 560px 560px, 560px 560px, 560px 560px;
+    background-position: 60% 5%, 60% 5%, 60% 5%;
+    background-repeat: no-repeat;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .mono { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .1em; }
+  .display { font-family: "Unica One", sans-serif; letter-spacing: .03em; text-transform: uppercase; }
+
+  .chart-sheet {
+    position: relative;
+    z-index: 2;
+    max-width: 1260px;
+    margin: 32px auto;
+    padding: 36px 36px 48px;
+    background: transparent;
+    border: 2px solid var(--sea-deep);
+    box-shadow:
+      0 0 0 8px var(--chart),
+      0 0 0 10px var(--sea-deep),
+      0 20px 60px rgba(14,32,48,.25);
+  }
+  /* compass decoration in corner */
+  .compass {
+    position: absolute;
+    top: 40px; right: 40px;
+    width: 140px; height: 140px;
+    pointer-events: none;
+    opacity: .85;
+  }
+  .compass svg { width: 100%; height: 100%; }
+
+  /* CARTOUCHE — chart title block */
+  .cartouche {
+    position: relative;
+    padding: 36px 48px 32px;
+    margin-bottom: 24px;
+    border: 2px solid var(--sea-deep);
+    background:
+      repeating-linear-gradient(45deg,
+        var(--chart) 0 8px,
+        var(--chart-2) 8px 16px),
+      var(--chart);
+    box-shadow: inset 0 0 0 6px var(--chart), inset 0 0 0 7px var(--sea-deep);
+  }
+
+  .cartouche .top-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--sea-deep);
+  }
+  .cartouche .top-meta b { color: var(--rust); }
+
+  .cartouche h1 {
+    font-family: "Unica One", sans-serif;
+    font-weight: 400;
+    font-size: clamp(56px, 10vw, 140px);
+    line-height: .88;
+    letter-spacing: 0.01em;
+    color: var(--sea-deep);
+    text-transform: uppercase;
+    text-align: center;
+    margin: 30px 0 8px;
+    text-shadow:
+      1px 1px 0 rgba(14,32,48,.18);
+  }
+  .cartouche h1 em {
+    display: block;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--rust);
+    font-size: .45em;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 10px;
+  }
+
+  .cartouche .subtitle {
+    text-align: center;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink);
+    max-width: 58ch;
+    margin: 14px auto 20px;
+    line-height: 1.55;
+  }
+  .cartouche .subtitle em { color: var(--rust); font-weight: 500; }
+
+  .cartouche .byline {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--sea-deep);
+    font-family: "Cormorant Garamond", serif;
+    font-variant: small-caps;
+    font-size: 13px;
+    letter-spacing: .15em;
+    color: var(--ink-soft);
+  }
+  .cartouche .byline span b { color: var(--rust); font-weight: 600; }
+
+  .cartouche .ornament {
+    text-align: center;
+    color: var(--rust);
+    margin: 20px 0 0;
+    font-size: 22px;
+    letter-spacing: .4em;
+  }
+
+  /* SECTION DIVIDER — soundings style */
+  .divider {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    margin: 56px 0 28px;
+    padding: 12px 0;
+    border-top: 1px solid var(--sea-deep);
+    border-bottom: 1px solid var(--sea-deep);
+    position: relative;
+  }
+  .divider::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 0; right: 0; height: 1px;
+    background: repeating-linear-gradient(90deg,
+      var(--sea-deep) 0 6px,
+      transparent 6px 12px);
+    opacity: .25;
+  }
+  .divider .chart-n {
+    font-family: "Unica One", sans-serif;
+    font-size: 36px;
+    color: var(--rust);
+    padding: 4px 16px;
+    background: var(--chart);
+    border: 2px solid var(--rust);
+    position: relative;
+  }
+  .divider .chart-n small {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+    color: var(--rust);
+    letter-spacing: .2em;
+    margin-top: -4px;
+  }
+  .divider h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1;
+    color: var(--sea-deep);
+    background: var(--chart);
+    padding: 0 20px;
+    position: relative;
+  }
+  .divider h2 em { color: var(--rust); }
+  .divider .bearing {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    background: var(--chart);
+    padding: 0 14px;
+    text-align: right;
+  }
+  .divider .bearing b { color: var(--rust); }
+
+  /* DEPTH SOUNDINGS — projects as sounded depths */
+  .soundings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .sounding {
+    background:
+      repeating-linear-gradient(-45deg,
+        rgba(58,107,128,.04) 0 2px,
+        transparent 2px 12px),
+      var(--chart);
+    border: 1px solid var(--sea-deep);
+    padding: 28px 28px 24px;
+    position: relative;
+    transition: transform .35s, box-shadow .35s;
+  }
+  .sounding:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 5px 5px 0 var(--sea-deep);
+  }
+
+  .sounding::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; width: 24px; height: 24px;
+    border-top: 3px solid var(--rust);
+    border-left: 3px solid var(--rust);
+  }
+  .sounding::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; right: -1px; width: 24px; height: 24px;
+    border-bottom: 3px solid var(--rust);
+    border-right: 3px solid var(--rust);
+  }
+
+  .sounding .ref {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--sea-deep);
+  }
+  .sounding .ref .depth {
+    color: var(--rust);
+    font-size: 18px;
+    letter-spacing: 0;
+  }
+  .sounding .ref .depth b { font-size: 22px; }
+
+  .sounding h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.05;
+    color: var(--sea-deep);
+    margin: 16px 0 4px;
+    letter-spacing: -0.005em;
+  }
+  .sounding h3 em { font-style: italic; color: var(--rust); }
+
+  .sounding .hazards {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding: 8px 0 12px;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .sounding .hazards b { color: var(--rust); }
+
+  .sounding p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+    max-width: 52ch;
+  }
+  .sounding p em { color: var(--sea-deep); font-style: italic; }
+
+  .sounding .pilot-note {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(58,107,128,.08);
+    border-left: 3px solid var(--sea-deep);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--sea-deep);
+  }
+  .sounding .pilot-note::before {
+    content: "— Pilot's note: ";
+    font-variant: small-caps;
+    font-style: normal;
+    letter-spacing: .08em;
+    color: var(--rust);
+    font-weight: 500;
+  }
+
+  .sounding .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--rust);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rust);
+    padding-bottom: 2px;
+  }
+  .sounding .link:hover { color: var(--sea-deep); border-color: var(--sea-deep); }
+
+  /* TIDE TABLE — skills */
+  .tide-table {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 2px solid var(--sea-deep);
+    background: var(--chart);
+  }
+  .tide-card {
+    padding: 24px 20px;
+    border-right: 1px solid var(--sea-deep);
+    position: relative;
+  }
+  .tide-card:last-child { border-right: none; }
+  .tide-card:nth-child(even) {
+    background: rgba(58,107,128,.05);
+  }
+
+  .tide-card .roman {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--rust);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .tide-card .bell {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--sea-deep);
+    margin-bottom: 12px;
+  }
+  .tide-card h4 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.1;
+    color: var(--sea-deep);
+    margin-bottom: 6px;
+  }
+  .tide-card h4 em { font-style: italic; color: var(--rust); }
+  .tide-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  /* LIGHTHOUSE — contact */
+  .lighthouse {
+    margin-top: 64px;
+    padding: 56px 48px;
+    position: relative;
+    text-align: center;
+    background:
+      repeating-linear-gradient(0deg,
+        rgba(58,107,128,.03) 0 2px,
+        transparent 2px 4px),
+      var(--chart);
+    border: 2px solid var(--sea-deep);
+    box-shadow: inset 0 0 0 6px var(--chart), inset 0 0 0 7px var(--sea-deep);
+  }
+
+  .lighthouse .beacon {
+    display: inline-block;
+    padding: 6px 18px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--rust);
+    text-transform: uppercase;
+    border: 1px solid var(--rust);
+    margin-bottom: 14px;
+  }
+  .lighthouse h2 {
+    font-family: "Unica One", sans-serif;
+    font-size: clamp(40px, 7vw, 88px);
+    line-height: .92;
+    color: var(--sea-deep);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .lighthouse h2 em {
+    display: block;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--rust);
+    font-size: .42em;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 8px;
+  }
+  .lighthouse .coord {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: .15em;
+    margin: 20px 0 28px;
+  }
+  .lighthouse .actions {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  }
+  .lighthouse a.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border: 1.5px solid var(--sea-deep);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--sea-deep);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    transition: all .2s;
+    background: var(--chart);
+  }
+  .lighthouse a.btn:hover { background: var(--sea-deep); color: var(--chart); }
+  .lighthouse a.btn.primary {
+    background: var(--rust);
+    border-color: var(--rust);
+    color: var(--chart);
+  }
+  .lighthouse a.btn.primary:hover {
+    background: var(--sea-deep);
+    border-color: var(--sea-deep);
+  }
+
+  /* FOOTER — log strip */
+  .log-foot {
+    margin-top: 40px;
+    padding: 16px 0;
+    border-top: 2px solid var(--sea-deep);
+    border-bottom: 2px solid var(--sea-deep);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: "Cormorant Garamond", serif;
+    font-variant: small-caps;
+    font-size: 12px;
+    letter-spacing: .15em;
+    color: var(--ink-soft);
+  }
+  .log-foot b { color: var(--rust); }
+
+  @media (max-width: 900px) {
+    .soundings, .tide-table { grid-template-columns: 1fr; }
+    .tide-card { border-right: none; border-bottom: 1px solid var(--sea-deep); }
+    .divider { grid-template-columns: 1fr; text-align: center; gap: 10px; }
+    .divider h2, .divider .bearing { text-align: center; }
+    .compass { display: none; }
+    .cartouche h1 { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+  <div class="chart-sheet">
+
+    <!-- compass rose decoration -->
+    <div class="compass">
+      <svg viewBox="0 0 200 200" fill="none" stroke="#1e3a4e">
+        <circle cx="100" cy="100" r="90" stroke-width="1"/>
+        <circle cx="100" cy="100" r="72" stroke-width="1"/>
+        <circle cx="100" cy="100" r="50" stroke-width="1" stroke-dasharray="2,3"/>
+        <g stroke-width="1">
+          <line x1="100" y1="10" x2="100" y2="190"/>
+          <line x1="10" y1="100" x2="190" y2="100"/>
+          <line x1="36" y1="36" x2="164" y2="164"/>
+          <line x1="164" y1="36" x2="36" y2="164"/>
+        </g>
+        <polygon points="100,20 106,100 100,180 94,100" fill="#8a3a1e" stroke="#8a3a1e"/>
+        <polygon points="20,100 100,94 180,100 100,106" fill="#1e3a4e" stroke="#1e3a4e"/>
+        <text x="100" y="30" text-anchor="middle" font-family="Unica One" font-size="14" fill="#8a3a1e">N</text>
+        <text x="175" y="104" text-anchor="middle" font-family="Unica One" font-size="14" fill="#1e3a4e">E</text>
+        <text x="100" y="188" text-anchor="middle" font-family="Unica One" font-size="14" fill="#1e3a4e">S</text>
+        <text x="25" y="104" text-anchor="middle" font-family="Unica One" font-size="14" fill="#1e3a4e">W</text>
+      </svg>
+    </div>
+
+    <section class="cartouche">
+      <div class="top-meta">
+        <span>⊕ CHART N° <b>01</b> · HANLEY HARBOR SURVEY</span>
+        <span>SCALE <b>1 : 40,000</b></span>
+        <span>DATUM · <b>WGS 84</b></span>
+      </div>
+
+      <h1>
+        Hanley<br/>Harbor
+        <em>— a portfolio chart of data science waters —</em>
+      </h1>
+
+      <p class="subtitle">
+        Here lie the navigable channels of one <em>Colin Hanley</em> — student of mathematics and data science at the University of Alabama. Soundings taken in MMXXVI. Waters open for trade, new commissions, and difficult questions.
+      </p>
+
+      <p class="ornament">⚓ ✦ ⚓ ✦ ⚓</p>
+
+      <div class="byline">
+        <span>Surveyed by <b>C. Hanley</b></span>
+        <span>Home Port · <b>Tuscaloosa, AL</b></span>
+        <span>34° 12' N · 87° 34' W</span>
+        <span>Edition <b>I</b> · Corrected Apr. 26</span>
+      </div>
+    </section>
+
+    <div class="divider">
+      <div class="chart-n">II<small>CHART</small></div>
+      <h2>Depth <em>soundings</em> — four charted wrecks &amp; landings</h2>
+      <div class="bearing">BEARING <b>N 72° E</b><br/>4 FATHOMED PROJECTS</div>
+    </div>
+
+    <section class="soundings">
+      <article class="sounding">
+        <p class="ref">
+          <span>⊕ STATION SH-01 · ML / DATA ENG</span>
+          <span class="depth"><b>42</b>ƒm</span>
+        </p>
+        <h3>The HL7 <em>Passage</em></h3>
+        <p class="hazards">
+          <span><b>GEAR</b> · Python</span>
+          <span><b>·</b> Streamlit</span>
+          <span><b>·</b> Regex</span>
+          <span><b>AWARD</b> · 2nd UA Innovate</span>
+        </p>
+        <p>Navigates HL7 medical messages and redacts PHI with <em>rules &amp; regex</em> — delivered as a point-and-click interface so analysts may sail without charts.</p>
+        <p class="pilot-note">waters clear; hospital compliance officers report safe passage.</p>
+        <a class="link" href="#">⚓ REPOSITORY CHART ↗</a>
+      </article>
+
+      <article class="sounding">
+        <p class="ref">
+          <span>⊕ STATION SH-02 · SIMULATION</span>
+          <span class="depth"><b>38</b>ƒm</span>
+        </p>
+        <h3>Outbreak <em>Shoals</em></h3>
+        <p class="hazards">
+          <span><b>GEAR</b> · Python</span>
+          <span><b>·</b> Mesa</span>
+          <span><b>·</b> ABM</span>
+          <span><b>TIDE</b> · POLICY-READY</span>
+        </p>
+        <p>An agent-based simulation of <em>outbreak dynamics</em> — testing, lockdowns, vaccines — returning clear visuals for policymakers to steer by.</p>
+        <p class="pilot-note">interventions plotted; tide tables provided.</p>
+        <a class="link" href="#">⚓ REPOSITORY CHART ↗</a>
+      </article>
+
+      <article class="sounding">
+        <p class="ref">
+          <span>⊕ STATION SH-03 · COMPUTER VISION</span>
+          <span class="depth"><b>54</b>ƒm</span>
+        </p>
+        <h3>Infrared <em>Strait</em></h3>
+        <p class="hazards">
+          <span><b>GEAR</b> · PyTorch</span>
+          <span><b>·</b> YOLOv5</span>
+          <span><b>·</b> Thermal UAV</span>
+          <span><b>RISK</b> · POACHERS</span>
+        </p>
+        <p>Fine-tuned detector for UAV thermal imagery — pseudo-label pipeline, real-time inference, suitable for <em>conservation patrols</em>.</p>
+        <p class="pilot-note">running lights detected in the dark; captain advises vigilance.</p>
+        <a class="link" href="#">⚓ FULL PAPER ↗</a>
+      </article>
+
+      <article class="sounding">
+        <p class="ref">
+          <span>⊕ STATION SH-04 · OPTIMIZATION</span>
+          <span class="depth"><b>31</b>ƒm</span>
+        </p>
+        <h3>Genetic <em>Bay</em></h3>
+        <p class="hazards">
+          <span><b>GEAR</b> · Python</span>
+          <span><b>·</b> Dash</span>
+          <span><b>·</b> Genetic algorithms</span>
+          <span><b>SEASON</b> · DRAFT NIGHT</span>
+        </p>
+        <p>A <em>genetic algorithm</em> for fantasy football draft strategy, wrapped in a Dash application — sea-tested on draft night with favorable winds.</p>
+        <p class="pilot-note">fair currents; model held the line.</p>
+        <a class="link" href="#">⚓ REPOSITORY CHART ↗</a>
+      </article>
+    </section>
+
+    <div class="divider">
+      <div class="chart-n">III<small>CHART</small></div>
+      <h2>Tide tables — <em>instruments</em> aboard</h2>
+      <div class="bearing">FOUR TIDES · ONE SAILOR</div>
+    </div>
+
+    <section class="tide-table">
+      <div class="tide-card">
+        <div class="roman">i.</div>
+        <div class="bell">HIGH TIDE · PRIMARY</div>
+        <h4>Machine<br/><em>Learning</em></h4>
+        <p>PyTorch, TensorFlow, HuggingFace &amp; fine-tuning LLMs.</p>
+      </div>
+      <div class="tide-card">
+        <div class="roman">ii.</div>
+        <div class="bell">NEAP TIDE · FOUNDATION</div>
+        <h4>Mathematics</h4>
+        <p>Probability, linear algebra, optimization, MATLAB.</p>
+      </div>
+      <div class="tide-card">
+        <div class="roman">iii.</div>
+        <div class="bell">DAILY · WORKING CHARTS</div>
+        <h4>Data<br/><em>Engineering</em></h4>
+        <p>SQL modeling, Pandas, NumPy, reliable pipelines.</p>
+      </div>
+      <div class="tide-card">
+        <div class="roman">iv.</div>
+        <div class="bell">SHIP'S LOG · TRANSIT</div>
+        <h4>Visualization</h4>
+        <p>Streamlit, Dash, Tableau &amp; product instincts.</p>
+      </div>
+    </section>
+
+    <section class="lighthouse">
+      <span class="beacon">⚡ LIGHTHOUSE · SIGNAL LIT ⚡</span>
+      <h2>Hail from<em>the lighthouse keeper.</em></h2>
+      <p class="coord">⊕ N 34° 12' 00" · W 87° 34' 00" · BEACON ACTIVE</p>
+      <div class="actions">
+        <a class="btn primary" href="mailto:colinhanleydev@gmail.com">✉ colinhanleydev@gmail.com</a>
+        <a class="btn" href="#">⚓ LINKEDIN</a>
+        <a class="btn" href="#">⚓ GITHUB</a>
+        <a class="btn" href="#">⚓ RÉSUMÉ PDF</a>
+      </div>
+    </section>
+
+    <div class="log-foot">
+      <span>Ship's Log · <b>MMXXVI</b></span>
+      <span>— Chart surveyed &amp; inked by C. Hanley —</span>
+      <span>Return to Home Port <b>↑</b></span>
+    </div>
+  </div>
+</body>
+</html>

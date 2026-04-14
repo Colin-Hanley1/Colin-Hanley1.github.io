@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley.io — Mockup 05</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #070810;
+    --bg-1: #0d0f1a;
+    --bg-2: #141727;
+    --text: #e8ebf5;
+    --text-dim: #8a90a8;
+    --text-faint: #4a5068;
+    --border: rgba(255,255,255,.08);
+    --border-bright: rgba(255,255,255,.14);
+    --cyan: #00e5ff;
+    --magenta: #ff2d9d;
+    --lime: #a4ff42;
+    --glass: rgba(20, 23, 40, 0.5);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg-0);
+    color: var(--text);
+    font-family: "Geist", -apple-system, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "Geist Mono", monospace; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ambient blobs */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(600px 400px at 15% 10%, rgba(0,229,255,.25), transparent 60%),
+      radial-gradient(700px 500px at 85% 20%, rgba(255,45,157,.22), transparent 60%),
+      radial-gradient(900px 600px at 50% 100%, rgba(164,255,66,.12), transparent 60%);
+    filter: blur(30px);
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1280px; margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+
+  /* top nav */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .logo-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 14px var(--cyan), 0 0 28px rgba(0,229,255,.4);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: .5; transform: scale(1.15); } }
+  .brand small { font-weight: 400; color: var(--text-dim); font-size: 12px; margin-left: 4px; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-links a {
+    padding: 6px 12px; border-radius: 8px; font-size: 13px;
+    color: var(--text-dim); transition: all .2s;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.06); }
+  .nav-links a.active {
+    color: var(--text); background: rgba(255,255,255,.08);
+    border: 1px solid var(--border-bright);
+  }
+  .cta {
+    padding: 8px 14px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--cyan), #0087ff);
+    color: #000; font-weight: 600; font-size: 13px;
+    border: 1px solid rgba(0,229,255,.4);
+    box-shadow: 0 0 24px rgba(0,229,255,.35), inset 0 1px 0 rgba(255,255,255,.5);
+  }
+
+  /* hero dashboard */
+  .hero-dash {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .panel {
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .panel::before {
+    content: ""; position: absolute; inset: 0;
+    border-radius: 18px; padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,.14), transparent 50%);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+
+  .p-hero { grid-column: 1; grid-row: 1 / span 2; padding: 40px; }
+  .p-hero .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(164,255,66,.12);
+    border: 1px solid rgba(164,255,66,.35);
+    color: var(--lime); font-size: 11px; font-weight: 500;
+    font-family: "Geist Mono", monospace;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .p-hero .status .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--lime); box-shadow: 0 0 10px var(--lime);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .p-hero h1 {
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: .96;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    margin: 20px 0 16px;
+    background: linear-gradient(180deg, #fff 20%, #a0a8c0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .p-hero h1 .accent {
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .p-hero p.lede {
+    color: var(--text-dim); max-width: 52ch;
+    font-size: 16px; line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .p-hero .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 11px 18px; border-radius: 11px;
+    font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-bright);
+    background: rgba(255,255,255,.04);
+    color: var(--text);
+    transition: all .2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { background: rgba(255,255,255,.09); transform: translateY(-1px); }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--cyan), #0087ff);
+    color: #000; border-color: var(--cyan);
+    box-shadow: 0 0 28px rgba(0,229,255,.35), inset 0 1px 0 rgba(255,255,255,.5);
+  }
+
+  /* metric widgets */
+  .p-metric { padding: 20px 22px; }
+  .p-metric .label {
+    font-family: "Geist Mono", monospace;
+    font-size: 11px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: .08em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .p-metric .label .badge {
+    padding: 2px 8px; border-radius: 999px;
+    background: rgba(164,255,66,.12); color: var(--lime);
+    border: 1px solid rgba(164,255,66,.3); font-size: 10px;
+  }
+  .p-metric .value {
+    font-size: 44px; font-weight: 600; line-height: 1;
+    margin: 12px 0 6px; letter-spacing: -0.03em;
+    font-family: "Geist Mono", monospace;
+  }
+  .p-metric .value .unit { font-size: 18px; color: var(--text-dim); margin-left: 4px; }
+  .p-metric .change { font-size: 12px; color: var(--lime); font-family: "Geist Mono", monospace; }
+  .p-metric .change .neg { color: var(--magenta); }
+
+  /* sparkline */
+  .spark {
+    height: 44px; width: 100%; margin-top: 10px;
+  }
+  .spark path { fill: none; stroke-width: 2; }
+
+  /* ticker row */
+  .chips {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px;
+  }
+  .chip {
+    padding: 5px 11px; border-radius: 999px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    font-size: 11px; color: var(--text-dim);
+    font-family: "Geist Mono", monospace;
+  }
+  .chip.hot {
+    background: rgba(0,229,255,.1);
+    border-color: rgba(0,229,255,.35);
+    color: var(--cyan);
+  }
+
+  /* section title */
+  .sect-title {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 56px 0 20px;
+  }
+  .sect-title .num {
+    font-family: "Geist Mono", monospace; font-size: 12px;
+    color: var(--cyan); letter-spacing: .08em;
+  }
+  .sect-title h2 {
+    font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+  }
+  .sect-title .line { flex: 1; height: 1px; background: var(--border); }
+  .sect-title .sub {
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em;
+  }
+
+  /* project cards */
+  .projects {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .proj {
+    padding: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: transform .35s, border-color .35s;
+  }
+  .proj:hover { transform: translateY(-4px); border-color: rgba(0,229,255,.4); }
+  .proj::after {
+    content: ""; position: absolute; inset: -1px;
+    background: radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(0,229,255,.18), transparent 40%);
+    pointer-events: none; opacity: 0;
+    transition: opacity .35s;
+    border-radius: 16px;
+  }
+  .proj:hover::after { opacity: 1; }
+  .proj .tag {
+    font-family: "Geist Mono", monospace; font-size: 10px;
+    color: var(--cyan); text-transform: uppercase; letter-spacing: .1em;
+  }
+  .proj h3 {
+    font-size: 22px; font-weight: 600; line-height: 1.15;
+    letter-spacing: -0.015em; margin: 10px 0 10px;
+  }
+  .proj p {
+    color: var(--text-dim); font-size: 13px; line-height: 1.6; max-width: 48ch;
+  }
+  .proj .footer-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .proj .tools {
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    color: var(--text-faint);
+  }
+  .proj .arr {
+    width: 32px; height: 32px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    transition: all .25s;
+  }
+  .proj:hover .arr {
+    background: var(--cyan); color: #000; border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0,229,255,.4);
+  }
+
+  /* disciplines */
+  .disciplines {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  .disc {
+    padding: 22px;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .disc .icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0,229,255,.2), rgba(255,45,157,.15));
+    border: 1px solid rgba(0,229,255,.3);
+    display: grid; place-items: center;
+    font-size: 16px; margin-bottom: 14px;
+  }
+  .disc h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .disc p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .disc .level {
+    margin-top: 12px; height: 4px; background: rgba(255,255,255,.05);
+    border-radius: 999px; overflow: hidden;
+  }
+  .disc .level .bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    border-radius: 999px;
+  }
+
+  /* contact */
+  .contact-panel {
+    margin-top: 56px; padding: 48px;
+    text-align: center;
+    background:
+      radial-gradient(600px circle at 50% 0%, rgba(0,229,255,.12), transparent 70%),
+      var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+  }
+  .contact-panel h2 {
+    font-size: clamp(32px, 5vw, 52px); font-weight: 600;
+    letter-spacing: -0.025em; line-height: 1.05;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #fff 40%, #8a90a8 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .contact-panel p { color: var(--text-dim); margin-bottom: 24px; }
+  .contact-panel .btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+  .foot {
+    display: flex; justify-content: space-between;
+    padding: 32px 8px 0; margin-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-faint);
+    font-family: "Geist Mono", monospace;
+  }
+
+  @media (max-width: 900px) {
+    .hero-dash { grid-template-columns: 1fr; }
+    .p-hero { grid-column: 1; grid-row: auto; padding: 28px; }
+    .projects, .disciplines { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="topbar">
+      <div class="brand">
+        <span class="logo-dot"></span>
+        <span>hanley<small>.io</small></span>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="active">Overview</a>
+        <a href="#">Projects</a>
+        <a href="#">Stack</a>
+        <a href="#">Contact</a>
+        <a href="#">Changelog</a>
+      </div>
+      <a class="cta" href="#">Book intro →</a>
+    </nav>
+
+    <section class="hero-dash">
+      <div class="panel p-hero">
+        <span class="status"><span class="dot"></span> SYSTEMS OPERATIONAL · ACCEPTING WORK</span>
+        <h1>
+          Predictive models<br/>
+          for <span class="accent">messy, real<br/>world data.</span>
+        </h1>
+        <p class="lede">
+          Hey, I'm Colin — a Data Science and Mathematics student at Alabama. I build ML pipelines, CV systems, and analytics tools that make stubborn datasets useful. Healthcare, sports, anything with hard edges.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="#">View projects →</a>
+          <a class="btn" href="#">Résumé</a>
+          <a class="btn" href="#">GitHub ↗</a>
+        </div>
+        <div class="chips">
+          <span class="chip hot">● PyTorch</span>
+          <span class="chip">SQL</span>
+          <span class="chip">HuggingFace</span>
+          <span class="chip">Streamlit</span>
+          <span class="chip">YOLOv5</span>
+          <span class="chip">Dash</span>
+          <span class="chip">Pandas</span>
+        </div>
+      </div>
+
+      <div class="panel p-metric">
+        <div class="label">
+          Projects shipped
+          <span class="badge">LIVE</span>
+        </div>
+        <div class="value">04<span class="unit">total</span></div>
+        <div class="change">↑ 100% vs. last year</div>
+        <svg class="spark" viewBox="0 0 200 44" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#00e5ff" stop-opacity=".4"/>
+              <stop offset="1" stop-color="#00e5ff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 34 L25 30 L50 32 L75 22 L100 24 L125 14 L150 18 L175 8 L200 10 L200 44 L0 44 Z" fill="url(#g1)"/>
+          <path d="M0 34 L25 30 L50 32 L75 22 L100 24 L125 14 L150 18 L175 8 L200 10" stroke="#00e5ff"/>
+        </svg>
+      </div>
+
+      <div class="panel p-metric">
+        <div class="label">
+          Models trained
+          <span class="badge">24H</span>
+        </div>
+        <div class="value">127<span class="unit">runs</span></div>
+        <div class="change">best acc. 94.2%</div>
+        <svg class="spark" viewBox="0 0 200 44" preserveAspectRatio="none">
+          <path d="M0 30 L20 24 L40 28 L60 16 L80 22 L100 12 L120 18 L140 6 L160 14 L180 4 L200 10" stroke="#ff2d9d" fill="none"/>
+        </svg>
+      </div>
+    </section>
+
+    <div class="sect-title">
+      <span class="num mono">[03]</span>
+      <h2>Featured projects</h2>
+      <span class="line"></span>
+      <span class="sub">4 of 4 shipped</span>
+    </div>
+
+    <section class="projects">
+      <article class="proj">
+        <span class="tag">ML · DATA ENG</span>
+        <h3>HL7 Parser &amp; De-identification Tool</h3>
+        <p>Parsed HL7 medical messages and de-identified PHI with rules + regex. Shipped a point-and-click UI for analysts. 2nd place · UA Innovate.</p>
+        <div class="footer-row">
+          <span class="tools">python · streamlit · regex</span>
+          <span class="arr">→</span>
+        </div>
+      </article>
+      <article class="proj">
+        <span class="tag">SIMULATION</span>
+        <h3>Agent-Based COVID-19 Simulator</h3>
+        <p>Simulated outbreak dynamics with interventions — testing, lockdowns, vaccines — with clear visuals for policy decisions.</p>
+        <div class="footer-row">
+          <span class="tools">python · mesa · abm</span>
+          <span class="arr">→</span>
+        </div>
+      </article>
+      <article class="proj">
+        <span class="tag">COMPUTER VISION</span>
+        <h3>Poacher Detection in Infrared</h3>
+        <p>Fine-tuned YOLOv5 for UAV thermal imagery with a pseudo-label pipeline and real-time inference for conservation use.</p>
+        <div class="footer-row">
+          <span class="tools">pytorch · yolov5 · uav</span>
+          <span class="arr">→</span>
+        </div>
+      </article>
+      <article class="proj">
+        <span class="tag">OPTIMIZATION</span>
+        <h3>Genetic Fantasy Football Drafter</h3>
+        <p>A genetic algorithm to optimize draft strategy, wrapped in a Dash app I actually used on draft night.</p>
+        <div class="footer-row">
+          <span class="tools">python · ga · dash</span>
+          <span class="arr">→</span>
+        </div>
+      </article>
+    </section>
+
+    <div class="sect-title">
+      <span class="num mono">[04]</span>
+      <h2>Stack</h2>
+      <span class="line"></span>
+      <span class="sub">instruments</span>
+    </div>
+
+    <section class="disciplines">
+      <div class="disc">
+        <div class="icon">◆</div>
+        <h4>Machine Learning</h4>
+        <p>PyTorch · TensorFlow · HuggingFace · LLM fine-tuning</p>
+        <div class="level"><div class="bar" style="width:92%"></div></div>
+      </div>
+      <div class="disc">
+        <div class="icon">∑</div>
+        <h4>Mathematics</h4>
+        <p>Probability · Linear algebra · Optimization · MATLAB</p>
+        <div class="level"><div class="bar" style="width:88%"></div></div>
+      </div>
+      <div class="disc">
+        <div class="icon">▤</div>
+        <h4>Data Engineering</h4>
+        <p>SQL modeling · Pandas · NumPy · Pipelines</p>
+        <div class="level"><div class="bar" style="width:85%"></div></div>
+      </div>
+      <div class="disc">
+        <div class="icon">◉</div>
+        <h4>Visualization</h4>
+        <p>Streamlit · Dash · Tableau · Product sense</p>
+        <div class="level"><div class="bar" style="width:80%"></div></div>
+      </div>
+    </section>
+
+    <section class="contact-panel">
+      <h2>Let's build something<br/>useful together.</h2>
+      <p>Have a project, role, or weird dataset? I'd love to hear about it.</p>
+      <div class="btns">
+        <a class="btn primary" href="mailto:colinhanleydev@gmail.com">colinhanleydev@gmail.com →</a>
+        <a class="btn" href="#">LinkedIn ↗</a>
+        <a class="btn" href="#">GitHub ↗</a>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>© 2026 · hanley.io</span>
+      <span>v1.0.0 · build 4c9a2f</span>
+      <span>↑ back to top</span>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.proj').forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+  </script>
+</body>
+</html>

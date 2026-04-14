@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Colin Hanley — Portfolio 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:    #f3f1ea;
+    --paper-2:  #ebe8de;
+    --ink:      #0c0c0a;
+    --ink-2:    #24231f;
+    --muted:    #6a675e;
+    --line:     #0c0c0a;
+    --hair:     #cdc8b6;
+    --accent:   #c73d1c;    /* muted burnt red */
+
+    --sans:  "Inter Tight", "Helvetica Neue", Arial, sans-serif;
+    --mono:  "JetBrains Mono", ui-monospace, monospace;
+
+    /* 12-col base */
+    --col-gap: 28px;
+    --pad:     40px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* --------- UTILITY ---------- */
+  .mono {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .hair { background: var(--hair); height: 1px; width: 100%; }
+  .rule { background: var(--ink); height: 1px; width: 100%; }
+
+  /* --------- GRID ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--col-gap);
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left:  var(--pad);
+    padding-right: var(--pad);
+  }
+
+  /* --------- NAV ---------- */
+  .nav {
+    position: sticky;
+    top: 0; z-index: 50;
+    background: rgba(243, 241, 234, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ink);
+  }
+  .nav-row {
+    padding-top: 18px;
+    padding-bottom: 18px;
+    align-items: center;
+  }
+  .nav .brand {
+    grid-column: 1 / span 3;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .nav .brand .dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translateY(-1px);
+  }
+  .nav .brand .pipe {
+    color: var(--muted);
+    font-weight: 400;
+    margin: 0 4px;
+  }
+  .nav .brand em { font-style: normal; color: var(--muted); font-weight: 400; }
+  .nav ul {
+    grid-column: 5 / span 5;
+    list-style: none;
+    display: flex;
+    gap: 36px;
+    justify-content: flex-start;
+  }
+  .nav ul a {
+    font-size: 13px;
+    color: var(--ink-2);
+    font-weight: 400;
+    padding: 4px 0;
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .nav ul a b {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .nav ul a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .nav ul a:hover::after { transform: scaleX(1); }
+  .nav .right {
+    grid-column: 11 / span 2;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav .right .mono { font-size: 10px; }
+  .nav .right .pill {
+    display: inline-block;
+    font-size: 11px;
+    padding: 6px 12px;
+    border: 1px solid var(--ink);
+    font-weight: 500;
+    transition: background .25s, color .25s;
+  }
+  .nav .right .pill:hover { background: var(--ink); color: var(--paper); }
+
+  /* --------- HERO ---------- */
+  .hero {
+    padding-top: 120px;
+    padding-bottom: 60px;
+  }
+  .hero .kicker {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    padding-bottom: 18px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .hero .kicker .k-1 { grid-column: 1 / span 3; }
+  .hero .kicker .k-2 {
+    grid-column: 4 / span 6;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .hero .kicker .k-2 .sep { color: var(--accent); padding: 0 10px; }
+  .hero .kicker .k-3 { grid-column: 11 / span 2; justify-self: end; }
+
+  .hero h1 {
+    grid-column: 1 / span 12;
+    font-weight: 500;
+    font-size: clamp(84px, 13.5vw, 220px);
+    line-height: .82;
+    letter-spacing: -0.055em;
+    color: var(--ink);
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+  .hero h1 .light {
+    font-weight: 300;
+    color: var(--muted);
+  }
+
+  .hero .below {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ink);
+    gap: var(--col-gap);
+  }
+  .hero .lede {
+    grid-column: 1 / span 6;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    max-width: 46ch;
+  }
+  .hero .lede strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .hero .lede .accent { color: var(--accent); font-weight: 500; }
+
+  .hero .meta {
+    grid-column: 8 / span 5;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 24px;
+  }
+  .hero .meta .block {
+    padding-top: 8px;
+    border-top: 1px solid var(--hair);
+  }
+  .hero .meta .block .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .hero .meta .block .v {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .hero .meta .block .v b {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* --------- SECTION HEADER ---------- */
+  .sect {
+    padding-top: 140px;
+  }
+  .sect-head {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--col-gap);
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--ink);
+    align-items: baseline;
+  }
+  .sect-head .num {
+    grid-column: 1 / span 3;
+    font-size: clamp(60px, 9vw, 136px);
+    font-weight: 500;
+    line-height: .82;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .sect-head .num .slash {
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .sect-head .heading {
+    grid-column: 5 / span 6;
+    align-self: end;
+    padding-bottom: 10px;
+  }
+  .sect-head .heading .label {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .sect-head .heading h2 {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 28ch;
+  }
+  .sect-head .heading h2 em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .sect-head .aside {
+    grid-column: 11 / span 2;
+    align-self: end;
+    padding-bottom: 12px;
+    text-align: right;
+  }
+  .sect-head .aside .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+  }
+  .sect-head .aside .count b {
+    display: block;
+    font-family: var(--sans);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-transform: none;
+    margin-top: 4px;
+  }
+
+  /* --------- ABOUT ---------- */
+  .about {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--col-gap);
+    padding-top: 48px;
+    padding-bottom: 40px;
+  }
+  .about .tag { grid-column: 1 / span 3; padding-top: 10px; }
+  .about .prose {
+    grid-column: 5 / span 6;
+  }
+  .about .prose p {
+    font-size: 20px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+    max-width: 50ch;
+    letter-spacing: -0.005em;
+  }
+  .about .prose p:last-child { margin-bottom: 0; }
+  .about .prose strong { font-weight: 500; color: var(--ink); }
+  .about .prose em { font-style: normal; color: var(--accent); font-weight: 500; }
+
+  .about .facts {
+    grid-column: 11 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .about .facts .f {
+    padding-top: 10px;
+    border-top: 1px solid var(--hair);
+  }
+  .about .facts .f .k {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .about .facts .f .v {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .about .facts .f .v b { color: var(--accent); font-weight: 500; }
+
+  /* --------- WORK / PROJECTS ---------- */
+  .work {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: 0 var(--col-gap);
+    padding-top: 48px;
+  }
+  .work .project {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--col-gap);
+    padding: 36px 0 36px;
+    border-bottom: 1px solid var(--hair);
+    align-items: baseline;
+    transition: background .45s ease;
+  }
+  .work .project:last-child { border-bottom: 1px solid var(--ink); }
+  .work .project:hover {
+    background: rgba(199, 61, 28, 0.025);
+  }
+  .work .project:hover h3 { color: var(--accent); }
+  .work .project:hover .view { color: var(--accent); }
+  .work .project:hover .view .arr { transform: translateX(6px); }
+
+  .work .project .idx {
+    grid-column: 1 / span 3;
+    align-self: start;
+  }
+  .work .project .idx .n {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .work .project .idx .big {
+    font-size: 54px;
+    line-height: .9;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+  .work .project .idx .year {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .02em;
+  }
+
+  .work .project h3 {
+    grid-column: 4 / span 5;
+    font-size: 34px;
+    line-height: 1.02;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    max-width: 14ch;
+    transition: color .35s;
+  }
+  .work .project h3 em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .work .project .meta {
+    grid-column: 9 / span 3;
+    padding-top: 6px;
+  }
+  .work .project .meta .stack {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .work .project .meta .stack b { color: var(--ink); font-weight: 500; }
+  .work .project .meta p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 34ch;
+  }
+
+  .work .project .view {
+    grid-column: 12;
+    justify-self: end;
+    align-self: start;
+    padding-top: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    transition: color .3s;
+  }
+  .work .project .view .arr { transition: transform .3s; }
+
+  /* --------- DISCIPLINES ---------- */
+  .disciplines {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--col-gap);
+    padding-top: 48px;
+    padding-bottom: 40px;
+  }
+  .disciplines .intro { grid-column: 1 / span 3; }
+  .disciplines .intro p {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 28ch;
+  }
+  .disciplines .intro p em { font-style: normal; color: var(--accent); font-weight: 500; }
+
+  .disciplines .d-grid {
+    grid-column: 5 / span 8;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--hair);
+    border-top: 1px solid var(--ink);
+    border-left: 1px solid var(--ink);
+  }
+  .disciplines .d {
+    background: var(--paper);
+    padding: 28px 28px 32px;
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: background .35s;
+  }
+  .disciplines .d:hover { background: var(--paper-2); }
+
+  .disciplines .d .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .disciplines .d .tag .n {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .disciplines .d h4 {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .disciplines .d ul {
+    list-style: none;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.9;
+    font-family: var(--mono);
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+  .disciplines .d ul li {
+    padding-left: 16px;
+    position: relative;
+  }
+  .disciplines .d ul li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  /* --------- CONTACT ---------- */
+  .contact {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--col-gap);
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .contact .tag {
+    grid-column: 1 / span 3;
+    padding-top: 14px;
+  }
+  .contact h2 {
+    grid-column: 5 / span 8;
+    font-size: clamp(48px, 8vw, 128px);
+    font-weight: 500;
+    line-height: .9;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    max-width: 14ch;
+  }
+  .contact h2 .light {
+    font-weight: 300;
+    color: var(--muted);
+  }
+  .contact h2 .accent {
+    color: var(--accent);
+  }
+
+  .contact .actions {
+    grid-column: 5 / span 8;
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ink);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--col-gap);
+  }
+  .contact .actions a {
+    padding-top: 12px;
+    border-top: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color .3s;
+  }
+  .contact .actions a:hover { border-top-color: var(--accent); }
+  .contact .actions a:hover .v { color: var(--accent); }
+  .contact .actions .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+  }
+  .contact .actions .v {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    transition: color .3s;
+  }
+
+  /* --------- FOOTER ---------- */
+  .foot {
+    border-top: 1px solid var(--ink);
+    margin-top: 80px;
+  }
+  .foot-row {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    align-items: center;
+  }
+  .foot-row .a { grid-column: 1 / span 3; }
+  .foot-row .b { grid-column: 4 / span 3; }
+  .foot-row .c { grid-column: 7 / span 3; }
+  .foot-row .d { grid-column: 10 / span 3; justify-self: end; }
+  .foot-row span { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .02em; text-transform: uppercase; }
+  .foot-row b { color: var(--ink); font-weight: 500; }
+  .foot-row a:hover b { color: var(--accent); }
+
+  /* --------- RESPONSIVE ---------- */
+  @media (max-width: 1000px) {
+    :root { --pad: 24px; --col-gap: 20px; }
+    .grid { grid-template-columns: repeat(6, 1fr); }
+    .nav .brand { grid-column: 1 / span 4; }
+    .nav ul { display: none; }
+    .nav .right { grid-column: 5 / span 2; }
+    .hero .kicker .k-1, .hero .kicker .k-2, .hero .kicker .k-3 { grid-column: 1 / span 6; }
+    .hero .kicker .k-3 { justify-self: start; }
+    .hero h1 { grid-column: 1 / span 6; }
+    .hero .below { grid-column: 1 / span 6; }
+    .hero .lede, .hero .meta { grid-column: 1 / span 6; }
+    .sect-head .num, .sect-head .heading, .sect-head .aside { grid-column: 1 / span 6; }
+    .sect-head .aside { text-align: left; }
+    .about .tag, .about .prose, .about .facts { grid-column: 1 / span 6; }
+    .disciplines .intro, .disciplines .d-grid { grid-column: 1 / span 6; }
+    .disciplines .d-grid { grid-template-columns: 1fr; }
+    .work .project { grid-column: 1 / span 6; }
+    .work .project .idx, .work .project h3, .work .project .meta, .work .project .view {
+      grid-column: 1 / span 6;
+    }
+    .work .project .view { justify-self: start; margin-top: 12px; }
+    .contact .tag, .contact h2, .contact .actions { grid-column: 1 / span 6; }
+    .contact .actions { grid-template-columns: 1fr 1fr; }
+    .foot-row .a, .foot-row .b, .foot-row .c, .foot-row .d {
+      grid-column: 1 / span 6;
+      justify-self: start;
+      padding: 2px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- =============== NAV =============== -->
+  <nav class="nav">
+    <div class="grid nav-row">
+      <a class="brand" href="#top">
+        <span class="dot"></span>
+        Colin Hanley <span class="pipe">/</span> <em>Portfolio 2026</em>
+      </a>
+      <ul>
+        <li><a href="#about"><b>01</b> About</a></li>
+        <li><a href="#work"><b>02</b> Selected work</a></li>
+        <li><a href="#practice"><b>03</b> Practice</a></li>
+        <li><a href="#contact"><b>04</b> Contact</a></li>
+      </ul>
+      <div class="right">
+        <span class="mono">TUSC / AL</span>
+        <a class="pill" href="#">Résumé ↓</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =============== HERO =============== -->
+  <header class="grid hero" id="top">
+    <div class="kicker">
+      <span class="k-1 mono">Portfolio / Vol. I</span>
+      <span class="k-2">
+        Data Science
+        <span class="sep">/</span>
+        Applied Mathematics
+        <span class="sep">/</span>
+        Tuscaloosa, AL
+      </span>
+      <span class="k-3 mono">MMXXVI</span>
+    </div>
+
+    <h1>
+      Colin<br/>
+      Hanley<span class="light">,</span>
+    </h1>
+
+    <div class="below">
+      <p class="lede">
+        Data science &amp; mathematics student at the <strong>University of Alabama.</strong> I build <span class="accent">machine learning models, computer vision systems, and analytics tools</span> — with a focus on healthcare and sports.
+      </p>
+
+      <div class="meta">
+        <div class="block">
+          <span class="k">Practice</span>
+          <span class="v">ML · CV · <b>Analytics</b></span>
+        </div>
+        <div class="block">
+          <span class="k">Recognition</span>
+          <span class="v"><b>2nd</b> · UA Innovate</span>
+        </div>
+        <div class="block">
+          <span class="k">Status</span>
+          <span class="v"><b>Open</b> to work</span>
+        </div>
+        <div class="block">
+          <span class="k">Response time</span>
+          <span class="v">Under 24h</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =============== 01 — ABOUT =============== -->
+  <section class="grid sect" id="about">
+    <div class="sect-head">
+      <div class="num">01<span class="slash">/</span></div>
+      <div class="heading">
+        <span class="label mono">§ About</span>
+        <h2><em>About</em></h2>
+      </div>
+      <div class="aside">
+        <span class="count">§ 01.A<br/><b>Profile</b></span>
+      </div>
+    </div>
+
+    <div class="about">
+      <div class="tag mono">§ 01.A · Profile</div>
+      <div class="prose">
+        <p>I'm a Data Science and Mathematics student at the University of Alabama, focused on <em>applied machine learning</em> in healthcare informatics, computer vision, and sports analytics.</p>
+        <p>My work spans model training and evaluation, data engineering, and shipping the analytics tools that sit on top. Recent projects include clinical message parsing, thermal UAV detection, and agent-based simulation.</p>
+      </div>
+      <aside class="facts">
+        <div class="f">
+          <span class="k">Education</span>
+          <span class="v">B.S. Math &amp; <b>Data Science</b></span>
+        </div>
+        <div class="f">
+          <span class="k">Institution</span>
+          <span class="v">Univ. of Alabama</span>
+        </div>
+        <div class="f">
+          <span class="k">Based</span>
+          <span class="v">Tuscaloosa, AL</span>
+        </div>
+        <div class="f">
+          <span class="k">Interests</span>
+          <span class="v">Health · Sport · CV</span>
+        </div>
+        <div class="f">
+          <span class="k">Award</span>
+          <span class="v"><b>2nd</b> UA Innovate</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- =============== 02 — WORK =============== -->
+  <section class="grid sect" id="work">
+    <div class="sect-head">
+      <div class="num">02<span class="slash">/</span></div>
+      <div class="heading">
+        <span class="label mono">§ Selected work</span>
+        <h2><em>Selected work</em>, 2024 — 2026.</h2>
+      </div>
+      <div class="aside">
+        <span class="count">§ 02.A – 02.D<br/><b>4 shipped</b></span>
+      </div>
+    </div>
+
+    <div class="work">
+      <a class="project" href="#">
+        <div class="idx">
+          <span class="n mono">§ 02.A</span>
+          <span class="big">01</span>
+          <span class="year">MMXXVI</span>
+        </div>
+        <h3>HL7 Parser &amp; <em>PHI Redactor</em></h3>
+        <div class="meta">
+          <p class="stack"><b>Python · Streamlit · Regex</b></p>
+          <p>Parser and de-identification tool for HL7 medical messages, with a Streamlit interface for analyst review. 2nd place, UA Innovate.</p>
+        </div>
+        <span class="view">View project <span class="arr">→</span></span>
+      </a>
+
+      <a class="project" href="#">
+        <div class="idx">
+          <span class="n mono">§ 02.B</span>
+          <span class="big">02</span>
+          <span class="year">MMXXV</span>
+        </div>
+        <h3>Agent-based <em>COVID-19 Simulator</em></h3>
+        <div class="meta">
+          <p class="stack"><b>Python · Mesa · ABM</b></p>
+          <p>Agent-based model of outbreak dynamics under varied interventions (testing, lockdowns, vaccines), with visual output for comparison.</p>
+        </div>
+        <span class="view">View project <span class="arr">→</span></span>
+      </a>
+
+      <a class="project" href="#">
+        <div class="idx">
+          <span class="n mono">§ 02.C</span>
+          <span class="big">03</span>
+          <span class="year">MMXXV</span>
+        </div>
+        <h3>Poacher detection <em>in Infrared</em></h3>
+        <div class="meta">
+          <p class="stack"><b>PyTorch · YOLOv5 · UAV Thermal</b></p>
+          <p>Fine-tuned object detector for UAV thermal imagery, including a pseudo-labeling pipeline and real-time inference path.</p>
+        </div>
+        <span class="view">View paper <span class="arr">→</span></span>
+      </a>
+
+      <a class="project" href="#">
+        <div class="idx">
+          <span class="n mono">§ 02.D</span>
+          <span class="big">04</span>
+          <span class="year">MMXXIV</span>
+        </div>
+        <h3>Genetic <em>Fantasy Drafter</em></h3>
+        <div class="meta">
+          <p class="stack"><b>Python · Dash · Genetic Algorithms</b></p>
+          <p>Genetic algorithm for fantasy football draft optimization, packaged as a Dash application for live use during drafts.</p>
+        </div>
+        <span class="view">View project <span class="arr">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- =============== 03 — PRACTICE =============== -->
+  <section class="grid sect" id="practice">
+    <div class="sect-head">
+      <div class="num">03<span class="slash">/</span></div>
+      <div class="heading">
+        <span class="label mono">§ Practice</span>
+        <h2><em>Skills &amp; tools.</em></h2>
+      </div>
+      <div class="aside">
+        <span class="count">§ 03.A – 03.D</span>
+      </div>
+    </div>
+
+    <div class="disciplines">
+      <div class="intro">
+        <p>Grouped by area. <em>Primary</em> work in machine learning and data engineering, with mathematics as foundation and visualization for delivery.</p>
+      </div>
+      <div class="d-grid">
+        <div class="d">
+          <div class="tag"><span>§ 03.A · PRIMARY</span><span class="n">I</span></div>
+          <h4>Machine Learning</h4>
+          <ul>
+            <li>PyTorch / TensorFlow</li>
+            <li>HuggingFace fine-tuning</li>
+            <li>LLM evaluation</li>
+            <li>Training pipelines</li>
+          </ul>
+        </div>
+        <div class="d">
+          <div class="tag"><span>§ 03.B · FOUNDATION</span><span class="n">II</span></div>
+          <h4>Mathematics</h4>
+          <ul>
+            <li>Probability</li>
+            <li>Linear algebra</li>
+            <li>Optimization</li>
+            <li>MATLAB</li>
+          </ul>
+        </div>
+        <div class="d">
+          <div class="tag"><span>§ 03.C · DAILY</span><span class="n">III</span></div>
+          <h4>Data Engineering</h4>
+          <ul>
+            <li>SQL modeling</li>
+            <li>Pandas / NumPy</li>
+            <li>Clean pipelines</li>
+            <li>Performance</li>
+          </ul>
+        </div>
+        <div class="d">
+          <div class="tag"><span>§ 03.D · SHIPPING</span><span class="n">IV</span></div>
+          <h4>Visualization</h4>
+          <ul>
+            <li>Streamlit / Dash</li>
+            <li>Tableau</li>
+            <li>Product instincts</li>
+            <li>UI &amp; UX</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== 04 — CONTACT =============== -->
+  <section class="grid sect" id="contact">
+    <div class="sect-head">
+      <div class="num">04<span class="slash">/</span></div>
+      <div class="heading">
+        <span class="label mono">§ Contact</span>
+        <h2><em>Contact.</em></h2>
+      </div>
+      <div class="aside">
+        <span class="count">§ 04.A</span>
+      </div>
+    </div>
+
+    <div class="contact">
+      <div class="tag mono">§ 04.A · Direct</div>
+      <h2>
+        Available for <span class="accent">internships,</span><br/>
+        research, &amp; collaboration.
+      </h2>
+      <div class="actions">
+        <a href="mailto:colinhanleydev@gmail.com">
+          <span class="k">Email ↗</span>
+          <span class="v">colinhanleydev@gmail.com</span>
+        </a>
+        <a href="#">
+          <span class="k">LinkedIn ↗</span>
+          <span class="v">colin-hanley1836</span>
+        </a>
+        <a href="#">
+          <span class="k">GitHub ↗</span>
+          <span class="v">Colin-Hanley1</span>
+        </a>
+        <a href="#">
+          <span class="k">Résumé ↓</span>
+          <span class="v">Download PDF</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== FOOT =============== -->
+  <footer class="foot">
+    <div class="grid foot-row">
+      <span class="a">© MMXXVI · <b>Colin Hanley</b></span>
+      <span class="b">Tuscaloosa, Alabama</span>
+      <span class="c">Set in Inter Tight &amp; JB Mono</span>
+      <a class="d" href="#top"><span>↑ <b>Return to top</b></span></a>
+    </div>
+  </footer>
+
+</body>
+</html>

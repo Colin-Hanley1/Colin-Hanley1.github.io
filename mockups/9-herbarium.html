@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Herbarium Hanleyi — Mockup 09</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:      #ebe1c8;
+    --paper-2:    #ddd0b0;
+    --paper-dark: #c9b98e;
+    --ink:        #2a241a;
+    --ink-soft:   #4e4432;
+    --sepia:      #7a5a2e;
+    --leaf:       #4a6032;
+    --dried:      #8a5a2a;
+    --rust:       #a13b1a;
+    --stain:      rgba(138, 90, 42, 0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "EB Garamond", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+  /* aged paper */
+  body {
+    background-image:
+      radial-gradient(ellipse 600px 400px at 15% 20%, var(--stain), transparent 60%),
+      radial-gradient(ellipse 400px 300px at 85% 75%, var(--stain), transparent 60%),
+      radial-gradient(ellipse 300px 200px at 50% 50%, rgba(138,90,42,.05), transparent 70%);
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    opacity: .18; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  a { color: inherit; text-decoration: none; }
+  .handwritten { font-family: "Caveat", cursive; }
+  .smallcaps { font-variant: small-caps; letter-spacing: .08em; }
+
+  /* torn paper border */
+  .ledger-frame {
+    max-width: 1200px; margin: 40px auto;
+    background:
+      linear-gradient(var(--paper), var(--paper));
+    padding: 48px;
+    position: relative;
+    box-shadow:
+      0 4px 20px rgba(80, 50, 20, 0.15),
+      inset 0 0 60px rgba(138, 90, 42, 0.08);
+  }
+  .ledger-frame::before {
+    content: "";
+    position: absolute; inset: 10px;
+    border: 1px solid var(--sepia);
+    opacity: .45;
+    pointer-events: none;
+  }
+
+  /* header stamp block */
+  .museum-head {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 36px;
+  }
+  .museum-head .institution {
+    font-variant: small-caps;
+    letter-spacing: .25em;
+    font-size: 13px;
+    color: var(--sepia);
+  }
+  .museum-head h1.latin {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(42px, 7vw, 92px);
+    line-height: 1;
+    margin: 8px 0 6px;
+    color: var(--ink);
+  }
+  .museum-head h1 .sp { color: var(--rust); }
+  .museum-head .meta {
+    font-variant: small-caps;
+    font-size: 12px;
+    letter-spacing: .15em;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .museum-head .meta .dot { color: var(--rust); padding: 0 .5em; }
+
+  /* main specimen card */
+  .specimen {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    padding: 24px 0 40px;
+    border-bottom: 1px solid var(--sepia);
+    margin-bottom: 40px;
+  }
+
+  .plate {
+    position: relative;
+    padding: 24px;
+    background: var(--paper-2);
+    border: 1px solid var(--sepia);
+    min-height: 420px;
+  }
+  .plate::before {
+    content: "";
+    position: absolute; inset: 6px;
+    border: 1px dashed var(--sepia);
+    opacity: .5;
+  }
+  .plate .fig-label {
+    position: absolute; top: -10px; left: 24px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--sepia);
+  }
+
+  .plate h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 62px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin: 20px 0 6px;
+  }
+  .plate h2 em { color: var(--rust); font-style: italic; }
+  .plate .common {
+    font-variant: small-caps;
+    font-size: 13px;
+    letter-spacing: .15em;
+    color: var(--ink-soft);
+    padding-bottom: 16px; margin-bottom: 20px;
+    border-bottom: 1px solid var(--sepia);
+  }
+
+  .description {
+    font-size: 16px; line-height: 1.7;
+    color: var(--ink); max-width: 50ch;
+    margin-bottom: 16px;
+  }
+  .description::first-letter {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 3.8rem; float: left;
+    line-height: .85;
+    padding: .3rem .35rem 0 0;
+    color: var(--rust);
+  }
+
+  .annotations {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--sepia);
+  }
+  .annotations .scribble {
+    font-family: "Caveat", cursive;
+    font-size: 20px;
+    color: var(--sepia);
+    transform: rotate(-1.5deg);
+    display: inline-block;
+    line-height: 1.3;
+  }
+
+  /* label card */
+  .label-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 20px 22px;
+    position: relative;
+    transform: rotate(0.8deg);
+    box-shadow: 2px 4px 8px rgba(80,50,20,.15);
+  }
+  .label-card::before {
+    content: "";
+    position: absolute; inset: 4px;
+    border: 1px solid var(--sepia);
+  }
+  .label-card .inst {
+    font-variant: small-caps;
+    font-size: 11px; letter-spacing: .2em;
+    color: var(--sepia);
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--sepia);
+  }
+  .label-card dl {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    row-gap: 8px; column-gap: 12px;
+    font-size: 14px;
+  }
+  .label-card dt {
+    font-variant: small-caps;
+    letter-spacing: .1em;
+    color: var(--sepia);
+    font-size: 11px;
+    padding-top: 3px;
+  }
+  .label-card dd {
+    font-style: italic;
+    color: var(--ink);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 17px;
+    line-height: 1.3;
+  }
+  .label-card .hand {
+    font-family: "Caveat", cursive;
+    font-style: normal;
+    font-size: 20px;
+    color: var(--rust);
+  }
+
+  .accession-stamp {
+    position: absolute; top: 14px; right: 14px;
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 2px solid var(--rust);
+    color: var(--rust);
+    display: grid; place-items: center;
+    font-variant: small-caps;
+    font-size: 9px;
+    letter-spacing: .15em;
+    text-align: center;
+    transform: rotate(-8deg);
+    opacity: .78;
+  }
+  .accession-stamp b {
+    display: block; font-size: 13px; margin-top: 2px;
+  }
+
+  /* section divider */
+  .divider {
+    text-align: center;
+    margin: 40px 0;
+    padding: 12px 0;
+    display: flex; align-items: center; gap: 20px;
+    justify-content: center;
+  }
+  .divider .line {
+    flex: 1; max-width: 260px; height: 1px; background: var(--sepia);
+  }
+  .divider .ornament {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    color: var(--rust);
+    font-size: 24px;
+    letter-spacing: .2em;
+  }
+
+  /* folio — other specimens */
+  .folio-title {
+    text-align: center;
+    font-variant: small-caps;
+    font-size: 13px;
+    letter-spacing: .3em;
+    color: var(--sepia);
+    margin-bottom: 8px;
+  }
+  .folio-title-2 {
+    text-align: center;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 48px);
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .folio-title-2 em { color: var(--rust); }
+
+  .specimens {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+
+  .specimen-card {
+    border: 1px solid var(--sepia);
+    padding: 24px;
+    background: var(--paper-2);
+    position: relative;
+    transition: transform .4s ease;
+  }
+  .specimen-card:hover { transform: rotate(-0.5deg); }
+  .specimen-card .fig {
+    position: absolute; top: -11px; left: 20px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-style: italic;
+    color: var(--sepia);
+    font-size: 13px;
+  }
+  .specimen-card .accession {
+    position: absolute; top: 12px; right: 14px;
+    font-family: "Caveat", cursive;
+    color: var(--rust);
+    font-size: 18px;
+    transform: rotate(6deg);
+  }
+  .specimen-card h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1.1;
+    margin-top: 16px;
+    color: var(--ink);
+  }
+  .specimen-card h3 span { font-style: normal; color: var(--ink); }
+  .specimen-card .common-n {
+    font-variant: small-caps;
+    font-size: 11px; letter-spacing: .15em;
+    color: var(--sepia);
+    padding-bottom: 12px; margin-bottom: 12px;
+    border-bottom: 1px dashed var(--sepia);
+  }
+  .specimen-card p {
+    font-size: 15px; line-height: 1.6;
+    max-width: 48ch;
+    margin-bottom: 14px;
+  }
+  .specimen-card .field {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 6px;
+    font-size: 12px;
+    padding: 3px 0;
+    border-top: 1px solid rgba(122, 90, 46, .25);
+  }
+  .specimen-card .field .k {
+    font-variant: small-caps;
+    letter-spacing: .12em;
+    color: var(--sepia);
+  }
+  .specimen-card .field .v {
+    font-style: italic;
+    color: var(--ink);
+  }
+  .specimen-card a {
+    display: inline-block;
+    margin-top: 14px;
+    font-style: italic;
+    color: var(--rust);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+
+  /* disciplines — illustrated plates */
+  .plates {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    margin-top: 24px;
+  }
+  .disc-plate {
+    text-align: center;
+    padding: 20px 12px;
+    border-top: 1px solid var(--sepia);
+    border-bottom: 1px solid var(--sepia);
+  }
+  .disc-plate .numeral {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 44px;
+    color: var(--rust);
+    line-height: 1;
+  }
+  .disc-plate h4 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin: 8px 0;
+    font-style: italic;
+  }
+  .disc-plate p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .disc-plate .hand {
+    font-family: "Caveat", cursive;
+    font-size: 14px;
+    color: var(--sepia);
+    display: block;
+    margin-top: 8px;
+  }
+
+  /* correspondence */
+  .correspondence {
+    margin-top: 48px;
+    padding: 40px;
+    background: var(--paper-2);
+    border: 1px solid var(--sepia);
+    text-align: center;
+    position: relative;
+  }
+  .correspondence::before {
+    content: "";
+    position: absolute; inset: 6px;
+    border: 1px dashed var(--sepia);
+  }
+  .correspondence .ann {
+    font-family: "Caveat", cursive;
+    font-size: 24px;
+    color: var(--sepia);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  .correspondence h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(28px, 4.5vw, 48px);
+    line-height: 1.15;
+    max-width: 22ch;
+    margin: 10px auto 20px;
+  }
+  .correspondence h2 em { color: var(--rust); }
+  .correspondence a.mail {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--rust);
+    border-bottom: 1px solid var(--rust);
+    padding-bottom: 2px;
+  }
+  .correspondence a.mail:hover { color: var(--ink); border-color: var(--ink); }
+  .correspondence .other {
+    margin-top: 16px;
+    font-variant: small-caps;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--sepia);
+  }
+  .correspondence .other a { color: var(--ink); }
+
+  /* footer */
+  .foot {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--sepia);
+    display: flex; justify-content: space-between;
+    font-variant: small-caps;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--sepia);
+  }
+
+  @media (max-width: 900px) {
+    .specimen, .specimens, .plates { grid-template-columns: 1fr; }
+    .ledger-frame { padding: 24px; }
+    .museum-head h1.latin { font-size: 42px; }
+  }
+</style>
+</head>
+<body>
+  <div class="ledger-frame">
+
+    <header class="museum-head">
+      <p class="institution">— Cabinet of Curious Datasets &nbsp;·&nbsp; Fasc. I —</p>
+      <h1 class="latin">Hanley <span class="sp">colinus</span></h1>
+      <p class="meta">
+        Order: Data Sci. <span class="dot">◆</span>
+        Family: Applied Math. <span class="dot">◆</span>
+        Habitat: Tuscaloosa, AL <span class="dot">◆</span>
+        Collected MMXXVI
+      </p>
+    </header>
+
+    <section class="specimen">
+
+      <div class="plate">
+        <span class="fig-label">Fig. I — <em>habitus</em>, whole specimen</span>
+
+        <div class="accession-stamp">
+          ACC.<br/><b>N° 01</b><br/>—
+        </div>
+
+        <h2>The <em>Author,</em><br/>in full.</h2>
+        <p class="common">Colin J. Hanley &nbsp;·&nbsp; Data Scientist &amp; Mathematician</p>
+
+        <p class="description">
+          A student of mathematics and data science at the University of Alabama, first observed in the wild in MMXXVI, typically encountered in proximity to uncooperative datasets, healthcare records, and sports statistics. Known to produce ML models, clean visualizations, and occasionally a strong opinion about what to do next.
+        </p>
+
+        <div class="annotations">
+          <span class="scribble">
+            "makes messy data cooperate." — field journal, mar. 2026 ✶
+          </span>
+        </div>
+      </div>
+
+      <aside class="label-card">
+        <p class="inst">— Specimen Label —</p>
+        <dl>
+          <dt>Genus</dt><dd>Hanley</dd>
+          <dt>Species</dt><dd><em>colinus</em></dd>
+          <dt>Collector</dt><dd>self-collected</dd>
+          <dt>Location</dt><dd>Tuscaloosa, AL</dd>
+          <dt>Field</dt><dd>ML · Math · CV</dd>
+          <dt>Status</dt><dd class="hand">open to work ✓</dd>
+          <dt>Mail</dt><dd>colinhanleydev<br/>@gmail.com</dd>
+        </dl>
+      </aside>
+    </section>
+
+    <div class="divider">
+      <span class="line"></span>
+      <span class="ornament">❦ &nbsp; II &nbsp; ❦</span>
+      <span class="line"></span>
+    </div>
+
+    <p class="folio-title">— Folio the Second —</p>
+    <h2 class="folio-title-2">Other <em>specimens</em> collected in the field</h2>
+
+    <div class="specimens">
+      <article class="specimen-card">
+        <span class="fig">Fig. II — <em>specimen</em></span>
+        <span class="accession">no. 01 ✱</span>
+        <h3>HL7 <em>redactor</em> <span>sp.</span></h3>
+        <p class="common-n">Python · Streamlit · Regex · 2nd place, UA Innovate</p>
+        <p>Parses uncooperative HL7 medical messages and de-identifies PHI with rules and regex. Delivered as a point-and-click interface for analysts. An obliging specimen.</p>
+        <div class="field"><span class="k">Collected</span><span class="v">Spring 2026</span></div>
+        <div class="field"><span class="k">Habitat</span><span class="v">healthcare informatics</span></div>
+        <a href="#">See repository →</a>
+      </article>
+
+      <article class="specimen-card">
+        <span class="fig">Fig. III — <em>specimen</em></span>
+        <span class="accession">no. 02 ✱</span>
+        <h3>Outbreak <em>simulans</em></h3>
+        <p class="common-n">Python · Mesa · Agent-based modeling</p>
+        <p>An agent-based model that simulates outbreak dynamics under interventions — testing, lockdowns, vaccines — and produces visuals suitable for policy conversations.</p>
+        <div class="field"><span class="k">Collected</span><span class="v">2025</span></div>
+        <div class="field"><span class="k">Habitat</span><span class="v">epidemiology / sim.</span></div>
+        <a href="#">See repository →</a>
+      </article>
+
+      <article class="specimen-card">
+        <span class="fig">Fig. IV — <em>specimen</em></span>
+        <span class="accession">no. 03 ✱</span>
+        <h3>Poacher <em>venator</em></h3>
+        <p class="common-n">PyTorch · YOLOv5 · UAV Thermal Imagery</p>
+        <p>A fine-tuned detector operating on UAV thermal imagery; a pseudo-label pipeline and real-time inference path suited for conservation deployment.</p>
+        <div class="field"><span class="k">Collected</span><span class="v">2025</span></div>
+        <div class="field"><span class="k">Habitat</span><span class="v">computer vision</span></div>
+        <a href="#">See the paper →</a>
+      </article>
+
+      <article class="specimen-card">
+        <span class="fig">Fig. V — <em>specimen</em></span>
+        <span class="accession">no. 04 ✱</span>
+        <h3>Genetic <em>drafterum</em></h3>
+        <p class="common-n">Python · Dash · Genetic algorithms</p>
+        <p>A small genetic algorithm for fantasy draft strategy, wrapped in a Dash application. Specimen was observed performing admirably on draft night.</p>
+        <div class="field"><span class="k">Collected</span><span class="v">2024</span></div>
+        <div class="field"><span class="k">Habitat</span><span class="v">optimization</span></div>
+        <a href="#">See repository →</a>
+      </article>
+    </div>
+
+    <div class="divider">
+      <span class="line"></span>
+      <span class="ornament">❦ &nbsp; III &nbsp; ❦</span>
+      <span class="line"></span>
+    </div>
+
+    <p class="folio-title">— Folio the Third —</p>
+    <h2 class="folio-title-2">A brief <em>taxonomy</em> of skills</h2>
+
+    <div class="plates">
+      <div class="disc-plate">
+        <div class="numeral">i.</div>
+        <h4>Machinae <em>discentes</em></h4>
+        <p>PyTorch, TensorFlow, HuggingFace, fine-tuning LLMs.</p>
+        <span class="hand">— primary genus —</span>
+      </div>
+      <div class="disc-plate">
+        <div class="numeral">ii.</div>
+        <h4>Mathematica</h4>
+        <p>Probability, linear algebra, optimization, MATLAB.</p>
+        <span class="hand">— foundation stock —</span>
+      </div>
+      <div class="disc-plate">
+        <div class="numeral">iii.</div>
+        <h4>Data <em>engineeria</em></h4>
+        <p>SQL modeling, Pandas, NumPy, reliable pipelines.</p>
+        <span class="hand">— daily cultivar —</span>
+      </div>
+      <div class="disc-plate">
+        <div class="numeral">iv.</div>
+        <h4><em>Visualis</em></h4>
+        <p>Streamlit, Dash, Tableau, product instincts.</p>
+        <span class="hand">— for display —</span>
+      </div>
+    </div>
+
+    <section class="correspondence">
+      <span class="ann">— on correspondence —</span>
+      <h2>Should you encounter this specimen in the wild, please <em>do write.</em></h2>
+      <a class="mail" href="mailto:colinhanleydev@gmail.com">colinhanleydev@gmail.com</a>
+      <div class="other">
+        <a href="#">LinkedIn</a> &nbsp;·&nbsp; <a href="#">GitHub</a> &nbsp;·&nbsp; <a href="#">Résumé</a>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>— Plate composed MMXXVI —</span>
+      <span>C. Hanley, coll. &amp; author</span>
+      <span>— end of fascicle —</span>
+    </div>
+  </div>
+</body>
+</html>

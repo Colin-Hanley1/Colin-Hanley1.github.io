@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>colin@hanley:~$ — Mockup 01</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050807;
+    --bg-2: #0a100e;
+    --green: #33ff88;
+    --green-dim: #1a7a42;
+    --amber: #ffb53d;
+    --white: #d4e8db;
+    --muted: #4a6b58;
+    --red: #ff5c5c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* scanlines */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.25) 3px,
+      rgba(0,0,0,0) 4px
+    );
+  }
+  /* phosphor glow vignette */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 998;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.7) 100%);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid var(--green-dim);
+    padding: .5rem 1rem; margin-bottom: 1.2rem;
+    background: var(--bg-2);
+    text-shadow: 0 0 8px rgba(51,255,136,.55);
+  }
+  .topbar .dots { color: var(--amber); letter-spacing: .3em; }
+  .topbar .title { color: var(--white); }
+  .topbar .clock { color: var(--amber); }
+
+  .boot {
+    color: var(--muted); margin-bottom: 1.2rem;
+  }
+  .boot .ok { color: var(--green); }
+  .boot .warn { color: var(--amber); }
+
+  .hero {
+    border: 1px solid var(--green-dim); padding: 1.5rem 1.8rem;
+    background:
+      linear-gradient(180deg, rgba(51,255,136,.04), transparent),
+      var(--bg-2);
+    text-shadow: 0 0 6px rgba(51,255,136,.35);
+    position: relative;
+  }
+  .hero .label {
+    color: var(--amber); font-size: .72rem; letter-spacing: .2em;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 4.2rem);
+    font-weight: 700; line-height: 1;
+    letter-spacing: -0.02em;
+    margin: .6rem 0 1rem;
+    color: var(--green);
+    text-shadow: 0 0 14px rgba(51,255,136,.65), 0 0 30px rgba(51,255,136,.3);
+  }
+  .hero h1 .carrot { color: var(--amber); }
+  .hero .tag { color: var(--white); }
+  .prompt {
+    margin-top: 1.4rem; font-size: 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    color: var(--white);
+  }
+  .prompt .ps1 { color: var(--green); }
+  .prompt .cmd { color: var(--white); }
+  .blink { display: inline-block; width: 8px; height: 16px; background: var(--green);
+           animation: blink 1s steps(2) infinite; vertical-align: middle; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .section-head {
+    margin: 3rem 0 1rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-head h2 {
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--amber); letter-spacing: .15em; text-transform: uppercase;
+  }
+  .section-head .dashes { flex: 1; border-top: 1px dashed var(--green-dim); }
+
+  /* ls -la projects */
+  .ls {
+    border: 1px solid var(--green-dim); background: var(--bg-2);
+    padding: 1rem 1.2rem;
+  }
+  .ls .line {
+    display: grid;
+    grid-template-columns: 110px 60px 80px 80px 1fr auto;
+    gap: 1rem;
+    padding: .35rem 0;
+    border-bottom: 1px dashed rgba(51,255,136,.1);
+    align-items: baseline;
+  }
+  .ls .line:last-child { border-bottom: none; }
+  .ls .line.header { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; }
+  .ls .perm { color: var(--muted); }
+  .ls .size { color: var(--amber); }
+  .ls .date { color: var(--muted); }
+  .ls .name {
+    color: var(--green); font-weight: 500;
+  }
+  .ls .name:hover { color: var(--white); text-shadow: 0 0 10px rgba(51,255,136,.8); }
+  .ls .tag { color: var(--muted); font-size: .75rem; }
+
+  .skills-ascii {
+    font-size: .85rem; color: var(--green); white-space: pre;
+    background: var(--bg-2); border: 1px solid var(--green-dim);
+    padding: 1rem 1.2rem; overflow-x: auto;
+  }
+  .skills-ascii .hi { color: var(--amber); }
+  .skills-ascii .white { color: var(--white); }
+
+  .footer-prompt {
+    margin-top: 3rem; color: var(--muted); font-size: .8rem;
+    border-top: 1px dashed var(--green-dim); padding-top: 1rem;
+    display: flex; justify-content: space-between;
+  }
+  .footer-prompt span { color: var(--green); }
+
+  @media (max-width: 720px) {
+    .ls .line { grid-template-columns: 1fr; gap: .1rem; }
+    .ls .line.header { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <span class="dots">● ● ●</span>
+      <span class="title">colin@hanley:~ — tty0</span>
+      <span class="clock">26:04:13 · 14:22 UTC</span>
+    </div>
+
+    <pre class="boot">
+<span class="ok">[  OK  ]</span> Mounting /dev/brain ...
+<span class="ok">[  OK  ]</span> Loading kernel: data-science 6.1.0-arch
+<span class="ok">[  OK  ]</span> Starting service: math.target
+<span class="warn">[ WARN ]</span> Coffee level critical — initiating refill
+<span class="ok">[  OK  ]</span> Reached target: portfolio.ready
+    </pre>
+
+    <div class="hero">
+      <p class="label">&gt; IDENT -v</p>
+      <h1><span class="carrot">./</span>colin_hanley</h1>
+      <p class="tag">data scientist · applied math · builder of models that solve real problems</p>
+      <div class="prompt">
+        <span class="ps1">colin@hanley:~$</span>
+        <span class="cmd">cat about.md</span>
+        <span class="blink"></span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>[ 03 ] Projects</h2>
+      <span class="dashes"></span>
+      <span style="color: var(--muted);">ls -la ~/projects</span>
+    </div>
+
+    <div class="ls">
+      <div class="line header">
+        <span>perm</span><span>size</span><span>date</span><span>type</span><span>name</span><span>&nbsp;</span>
+      </div>
+      <div class="line">
+        <span class="perm">-rwxr-xr-x</span>
+        <span class="size">4.2M</span>
+        <span class="date">apr 13</span>
+        <span class="tag">[ml,de]</span>
+        <a class="name" href="#">hl7_parser.py</a>
+        <span class="tag">2nd · UA Innovate</span>
+      </div>
+      <div class="line">
+        <span class="perm">-rwxr-xr-x</span>
+        <span class="size">2.8M</span>
+        <span class="date">mar 02</span>
+        <span class="tag">[sim]</span>
+        <a class="name" href="#">covid_simulator/</a>
+        <span class="tag">agent-based · Mesa</span>
+      </div>
+      <div class="line">
+        <span class="perm">-rwxr-xr-x</span>
+        <span class="size">12.4M</span>
+        <span class="date">feb 18</span>
+        <span class="tag">[cv,ml]</span>
+        <a class="name" href="#">poacher_detect.pth</a>
+        <span class="tag">YOLOv5 · thermal UAV</span>
+      </div>
+      <div class="line">
+        <span class="perm">-rwxr-xr-x</span>
+        <span class="size">980K</span>
+        <span class="date">jan 09</span>
+        <span class="tag">[ml]</span>
+        <a class="name" href="#">fantasy_genetic.py</a>
+        <span class="tag">GA optimizer</span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>[ 02 ] Skills</h2>
+      <span class="dashes"></span>
+      <span style="color: var(--muted);">cat skills.txt</span>
+    </div>
+
+<pre class="skills-ascii">
+┌──────────────────────────┬──────────────────────────┐
+│ <span class="hi">MACHINE LEARNING</span>         │ <span class="hi">MATHEMATICS</span>              │
+│ <span class="white">PyTorch · TensorFlow</span>     │ <span class="white">Probability · Linalg</span>    │
+│ <span class="white">HuggingFace fine-tuning</span>  │ <span class="white">Optimization · MATLAB</span>   │
+├──────────────────────────┼──────────────────────────┤
+│ <span class="hi">DATA ENGINEERING</span>         │ <span class="hi">VISUALIZATION</span>            │
+│ <span class="white">SQL · Pandas · NumPy</span>     │ <span class="white">Streamlit · Dash</span>         │
+│ <span class="white">Pipelines</span>                │ <span class="white">Tableau</span>                  │
+└──────────────────────────┴──────────────────────────┘
+</pre>
+
+    <div class="footer-prompt">
+      <span>colin@hanley:~$ _</span>
+      <span>© 2026 · connection encrypted</span>
+    </div>
+  </div>
+</body>
+</html>

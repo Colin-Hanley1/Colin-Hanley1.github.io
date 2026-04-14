@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Hanley Almanac — Mockup 02</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;500;700&family=Roboto+Condensed:wght@300;400;700&family=Playfair+Display:ital,wght@1,800;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f3ec;
+    --ink: #0f0f10;
+    --crimson: #9e1b2f;
+    --crimson-dk: #6a0f1f;
+    --gold: #b5934c;
+    --rule: #1a1a1c;
+    --muted: #5a5149;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Roboto Condensed", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  /* halftone paper */
+  body {
+    background-image:
+      radial-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
+      radial-gradient(rgba(158,27,47,.025) 1px, transparent 1px);
+    background-size: 4px 4px, 7px 7px;
+    background-position: 0 0, 2px 2px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
+
+  .masthead {
+    text-align: center; border-bottom: 6px double var(--ink);
+    padding-bottom: .8rem; margin-bottom: 1rem;
+  }
+  .masthead .tag {
+    font-family: "Oswald", sans-serif; font-weight: 300;
+    letter-spacing: .4em; font-size: .75rem; color: var(--crimson);
+    text-transform: uppercase;
+  }
+  .masthead h1 {
+    font-family: "Anton", sans-serif; font-weight: 400;
+    font-size: clamp(3rem, 10vw, 7.5rem); line-height: .85;
+    letter-spacing: -0.02em; text-transform: uppercase;
+    margin: .3rem 0 .2rem;
+  }
+  .masthead h1 .amp {
+    font-family: "Playfair Display", serif; font-style: italic;
+    color: var(--crimson); font-weight: 900;
+  }
+  .masthead .subtag {
+    font-family: "Oswald", sans-serif; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--muted); font-size: .78rem;
+  }
+  .masthead .subtag b { color: var(--ink); }
+  .masthead .subtag .dot { color: var(--crimson); padding: 0 .5rem; }
+
+  .edition-bar {
+    display: flex; justify-content: space-between;
+    font-family: "Oswald", sans-serif; font-size: .7rem;
+    letter-spacing: .15em; text-transform: uppercase;
+    padding: .5rem 0; border-bottom: 2px solid var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  /* hero box-score style */
+  .hero {
+    display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.5rem;
+    border-bottom: 2px solid var(--ink); padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+  .lead-story .kicker {
+    display: inline-block;
+    font-family: "Oswald", sans-serif; font-weight: 700;
+    background: var(--crimson); color: var(--paper);
+    padding: .25rem .7rem; font-size: .75rem; letter-spacing: .12em;
+    text-transform: uppercase; margin-bottom: .7rem;
+  }
+  .lead-story h2 {
+    font-family: "Anton", sans-serif; font-weight: 400;
+    font-size: clamp(2.4rem, 6vw, 5rem); line-height: .88;
+    text-transform: uppercase; letter-spacing: -0.015em;
+    margin-bottom: .8rem;
+  }
+  .lead-story h2 .italic {
+    font-family: "Playfair Display", serif; font-style: italic;
+    font-weight: 900; text-transform: none; color: var(--crimson);
+  }
+  .lead-story .byline {
+    font-family: "Oswald", sans-serif; letter-spacing: .12em;
+    text-transform: uppercase; font-size: .75rem; color: var(--muted);
+    border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+    padding: .4rem 0; margin: .7rem 0 1rem;
+    display: flex; justify-content: space-between;
+  }
+  .lead-story p {
+    column-count: 2; column-gap: 1.5rem;
+    font-size: 1rem; line-height: 1.55;
+    text-align: justify;
+  }
+  .lead-story p::first-letter {
+    font-family: "Playfair Display", serif; font-style: italic;
+    font-size: 3.6rem; float: left; line-height: .85;
+    padding: .35rem .3rem 0 0; color: var(--crimson); font-weight: 900;
+  }
+
+  /* stat box */
+  .stat-box {
+    border: 2px solid var(--ink); background: var(--paper);
+    padding: 1rem 1.1rem; position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .stat-box::before {
+    content: "STAT LINE"; position: absolute;
+    top: -10px; left: 14px; background: var(--crimson); color: var(--paper);
+    padding: .15rem .6rem; font-family: "Oswald", sans-serif;
+    font-size: .7rem; letter-spacing: .15em; font-weight: 700;
+  }
+  .stat-box h3 {
+    font-family: "Anton", sans-serif; font-size: 1.3rem;
+    text-transform: uppercase; letter-spacing: .02em;
+    margin: .4rem 0 .6rem;
+  }
+  .stat-box table { width: 100%; border-collapse: collapse; font-family: "Oswald", sans-serif; }
+  .stat-box th, .stat-box td {
+    text-align: left; padding: .4rem .3rem; border-bottom: 1px dashed var(--ink);
+    font-size: .85rem;
+  }
+  .stat-box th { color: var(--muted); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; font-size: .7rem; }
+  .stat-box .big { font-family: "Anton", sans-serif; font-size: 1.6rem; color: var(--crimson); }
+
+  /* section titles */
+  .section-title {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 2.5rem 0 1.2rem;
+  }
+  .section-title h2 {
+    font-family: "Anton", sans-serif; font-size: 2.4rem;
+    text-transform: uppercase; letter-spacing: -0.01em;
+  }
+  .section-title h2 .red { color: var(--crimson); }
+  .section-title .line {
+    flex: 1; border-top: 3px double var(--ink);
+  }
+  .section-title .badge {
+    font-family: "Oswald", sans-serif; font-size: .7rem;
+    padding: .3rem .6rem; background: var(--ink); color: var(--paper);
+    letter-spacing: .15em; text-transform: uppercase;
+  }
+
+  /* standings-style table */
+  .standings {
+    width: 100%; border-collapse: collapse;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .standings thead {
+    background: var(--ink); color: var(--paper);
+    font-family: "Oswald", sans-serif; font-size: .72rem;
+    letter-spacing: .15em; text-transform: uppercase;
+  }
+  .standings thead th { padding: .6rem .7rem; text-align: left; font-weight: 500; }
+  .standings tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,.15);
+    transition: background .2s;
+  }
+  .standings tbody tr:hover { background: rgba(158,27,47,.08); }
+  .standings tbody tr:nth-child(even) { background: rgba(0,0,0,.025); }
+  .standings tbody tr:nth-child(even):hover { background: rgba(158,27,47,.1); }
+  .standings td { padding: .7rem; vertical-align: middle; }
+  .standings .rank { font-family: "Anton", sans-serif; font-size: 1.6rem; color: var(--crimson); width: 50px; }
+  .standings .team { font-family: "Oswald", sans-serif; font-weight: 700; font-size: 1.05rem; text-transform: uppercase; }
+  .standings .team small { display: block; font-weight: 400; color: var(--muted); font-size: .7rem; letter-spacing: .1em; margin-top: .15rem; }
+  .standings .wl { font-family: "Anton", sans-serif; font-size: 1.3rem; }
+  .standings .notes { color: var(--muted); font-size: .9rem; font-style: italic; max-width: 380px; }
+  .standings .cta {
+    font-family: "Oswald", sans-serif; font-size: .7rem; text-transform: uppercase;
+    letter-spacing: .12em; padding: .4rem .7rem; border: 2px solid var(--ink);
+    background: var(--paper); color: var(--ink);
+  }
+  .standings .cta:hover { background: var(--crimson); border-color: var(--crimson); color: var(--paper); }
+
+  /* skills as pitcher cards */
+  .roster { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .player {
+    border: 2px solid var(--ink); padding: 1rem;
+    background: var(--paper); position: relative;
+    box-shadow: 4px 4px 0 var(--crimson);
+  }
+  .player .num {
+    font-family: "Anton", sans-serif; font-size: 4rem;
+    color: var(--crimson); line-height: .85;
+    letter-spacing: -0.02em;
+  }
+  .player h4 {
+    font-family: "Oswald", sans-serif; font-weight: 700;
+    font-size: 1.05rem; text-transform: uppercase;
+    margin-top: .2rem;
+  }
+  .player .pos {
+    font-family: "Oswald", sans-serif; font-size: .7rem;
+    letter-spacing: .15em; color: var(--muted); text-transform: uppercase;
+    padding-bottom: .5rem; border-bottom: 1px solid var(--ink); margin-bottom: .5rem;
+  }
+  .player ul { list-style: none; font-size: .85rem; }
+  .player ul li { padding: .15rem 0; border-bottom: 1px dashed rgba(0,0,0,.15); }
+
+  .footer-bar {
+    margin-top: 3rem; padding-top: 1rem;
+    border-top: 6px double var(--ink);
+    font-family: "Oswald", sans-serif; font-size: .75rem;
+    text-transform: uppercase; letter-spacing: .15em;
+    display: flex; justify-content: space-between; color: var(--muted);
+  }
+  .footer-bar b { color: var(--crimson); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .roster { grid-template-columns: repeat(2, 1fr); }
+    .lead-story p { column-count: 1; }
+  }
+  @media (max-width: 600px) {
+    .roster { grid-template-columns: 1fr; }
+    .standings .notes { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="masthead">
+      <p class="tag">Vol. I · No. 01 · Est. MMXXVI</p>
+      <h1>The Hanley <span class="amp">Almanac</span></h1>
+      <p class="subtag"><b>Data Science</b><span class="dot">◆</span>Applied Mathematics<span class="dot">◆</span>Sports Analytics<span class="dot">◆</span><b>Since Tuscaloosa</b></p>
+    </div>
+
+    <div class="edition-bar">
+      <span>Monday Edition · April 13, 2026</span>
+      <span>Fair &amp; 72° · Pressed Fresh</span>
+      <span>Price: One (1) Interview</span>
+    </div>
+
+    <section class="hero">
+      <div class="lead-story">
+        <span class="kicker">Front Page · Exclusive</span>
+        <h2>Local student turns <span class="italic">messy data</span> into honest-to-god answers</h2>
+        <div class="byline">
+          <span>By Colin Hanley</span>
+          <span>Filed · Tuscaloosa, AL</span>
+        </div>
+        <p>Colin Hanley, a Data Science and Mathematics student at the University of Alabama, has a simple bet: if you throw a difficult question and an uncooperative dataset at him, he comes back with a model, a visualization, and a strong opinion about what to do next. His work spans healthcare informatics, sports analytics, computer vision on thermal drone footage, and a genetic algorithm that drafts fantasy teams better than his friends do.</p>
+      </div>
+
+      <aside class="stat-box">
+        <h3>Season at a glance</h3>
+        <table>
+          <tr><th>Position</th><td>DS / ML Eng</td></tr>
+          <tr><th>School</th><td>Univ. of Alabama</td></tr>
+          <tr><th>Major</th><td>Math &amp; DS</td></tr>
+          <tr><th>Projects shipped</th><td><span class="big">04</span></td></tr>
+          <tr><th>Trophies</th><td><span class="big">01</span> 2nd · UA Innovate</td></tr>
+          <tr><th>Status</th><td>Open to offers</td></tr>
+        </table>
+      </aside>
+    </section>
+
+    <div class="section-title">
+      <h2>League <span class="red">Standings</span></h2>
+      <span class="line"></span>
+      <span class="badge">Featured Projects</span>
+    </div>
+
+    <table class="standings">
+      <thead>
+        <tr><th>Rk</th><th>Project</th><th>Record</th><th>Notes</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rank">01</td>
+          <td class="team">HL7 Parser &amp; PHI Tool<small>Python · Streamlit · Regex</small></td>
+          <td class="wl">2W–0L</td>
+          <td class="notes">Took second place at UA Innovate. Parses HL7 medical messages; de-identifies PHI with rules + regex.</td>
+          <td><a class="cta" href="#">Repo ↗</a></td>
+        </tr>
+        <tr>
+          <td class="rank">02</td>
+          <td class="team">COVID-19 Simulator<small>Python · Mesa · Agent-Based</small></td>
+          <td class="wl">1W–0L</td>
+          <td class="notes">Outbreak dynamics with interventions. Clear visuals for policy tradeoffs.</td>
+          <td><a class="cta" href="#">Repo ↗</a></td>
+        </tr>
+        <tr>
+          <td class="rank">03</td>
+          <td class="team">Poacher Detection, IR<small>PyTorch · YOLOv5 · UAV</small></td>
+          <td class="wl">1W–0L</td>
+          <td class="notes">Fine-tuned thermal detector; pseudo-label pipeline, real-time inference.</td>
+          <td><a class="cta" href="#">Paper ↗</a></td>
+        </tr>
+        <tr>
+          <td class="rank">04</td>
+          <td class="team">Fantasy GA Drafter<small>Python · Dash · Optimization</small></td>
+          <td class="wl">1W–0L</td>
+          <td class="notes">Genetic algorithm for draft strategy. Used it live on draft night.</td>
+          <td><a class="cta" href="#">Repo ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">
+      <h2>Starting <span class="red">Lineup</span></h2>
+      <span class="line"></span>
+      <span class="badge">Disciplines</span>
+    </div>
+
+    <div class="roster">
+      <div class="player">
+        <div class="num">07</div>
+        <h4>Machine Learning</h4>
+        <p class="pos">Starting Pitcher</p>
+        <ul>
+          <li>PyTorch / TensorFlow</li>
+          <li>HuggingFace LLMs</li>
+          <li>Evaluation pipelines</li>
+        </ul>
+      </div>
+      <div class="player">
+        <div class="num">12</div>
+        <h4>Mathematics</h4>
+        <p class="pos">Infield</p>
+        <ul>
+          <li>Probability / Linalg</li>
+          <li>Optimization</li>
+          <li>MATLAB</li>
+        </ul>
+      </div>
+      <div class="player">
+        <div class="num">23</div>
+        <h4>Data Eng</h4>
+        <p class="pos">Catcher</p>
+        <ul>
+          <li>SQL modeling</li>
+          <li>Pandas / NumPy</li>
+          <li>Pipelines</li>
+        </ul>
+      </div>
+      <div class="player">
+        <div class="num">35</div>
+        <h4>Viz &amp; Product</h4>
+        <p class="pos">Outfield</p>
+        <ul>
+          <li>Streamlit / Dash</li>
+          <li>Tableau</li>
+          <li>Shipping UX</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>© 2026 · <b>THE HANLEY ALMANAC</b></span>
+      <span>Printed in Tuscaloosa · All results verified</span>
+      <span>Back to top ↑</span>
+    </div>
+  </div>
+</body>
+</html>

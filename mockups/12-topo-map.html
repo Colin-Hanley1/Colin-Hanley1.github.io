@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley Quadrangle — USGS 1:24,000</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:     #f1ead3;
+    --paper-2:   #e6dcb8;
+    --contour:   #7a6335;
+    --contour-2: #5e4a22;
+    --water:     #8db0a8;
+    --water-dk:  #5a7e78;
+    --forest:    #a8b884;
+    --ink:       #1f1c14;
+    --ink-2:     #3a3223;
+    --red:       #a33418;
+    --red-dk:    #7a230f;
+    --bench:     #2a4a6a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 16px; line-height: 1.6;
+    min-height: 100vh;
+    font-feature-settings: "liga", "dlig";
+  }
+  /* topographic contour map background */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    opacity: .28;
+    background-image:
+      radial-gradient(ellipse 400px 200px at 20% 30%, transparent 40%, var(--contour) 41%, var(--contour) 42%, transparent 43%),
+      radial-gradient(ellipse 340px 170px at 20% 30%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 280px 140px at 20% 30%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 220px 110px at 20% 30%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 160px 80px  at 20% 30%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 500px 250px at 80% 75%, transparent 40%, var(--contour) 41%, var(--contour) 42%, transparent 43%),
+      radial-gradient(ellipse 420px 210px at 80% 75%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 340px 170px at 80% 75%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 260px 130px at 80% 75%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 180px 90px  at 80% 75%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%),
+      radial-gradient(ellipse 380px 190px at 60% 15%, transparent 50%, var(--contour) 51%, var(--contour) 52%, transparent 53%),
+      radial-gradient(ellipse 300px 150px at 60% 15%, transparent 55%, var(--contour) 56%, var(--contour) 57%, transparent 58%);
+  }
+  /* fine grid + noise */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image:
+      linear-gradient(rgba(122,99,53,.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(122,99,53,.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: .35;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .06em; }
+
+  .sheet {
+    position: relative; z-index: 10;
+    max-width: 1240px; margin: 32px auto;
+    padding: 0;
+    background: transparent;
+    border: 2px solid var(--ink);
+    box-shadow: 0 8px 40px rgba(0,0,0,.12);
+  }
+  .sheet-inner {
+    padding: 32px;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(241,234,211,.3) 0%, rgba(241,234,211,.85) 100%);
+  }
+
+  /* tick marks on the border */
+  .sheet::before, .sheet::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 12px;
+    background-image:
+      linear-gradient(90deg, var(--ink) 1px, transparent 1px);
+    background-size: 40px 12px;
+  }
+  .sheet::before { top: -1px; border-bottom: 1px solid var(--ink); }
+  .sheet::after  { bottom: -1px; border-top: 1px solid var(--ink); }
+
+  /* USGS-style corner */
+  .quad-corner {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ink-2);
+    text-align: right;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .quad-corner b { color: var(--red); }
+
+  /* TITLE BAR */
+  .title-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    padding: 8px 0 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 40px;
+    align-items: center;
+  }
+  .title-bar .l {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ink-2);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .title-bar .l b { color: var(--ink); }
+  .title-bar .l.right { text-align: right; }
+  .title-bar .center {
+    text-align: center;
+    font-family: "Fraunces", serif;
+    font-variant: small-caps;
+    font-size: 12px;
+    letter-spacing: .3em;
+    color: var(--ink-2);
+    padding: 6px 20px;
+    border: 1px solid var(--ink);
+  }
+
+  /* HERO — main "map" */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    padding: 16px 0 40px;
+    position: relative;
+  }
+
+  /* name label on the map */
+  .place-label {
+    text-align: center;
+    padding-top: 20px;
+  }
+  .place-label .peak-mark {
+    font-family: "Fraunces", serif;
+    font-size: 36px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .place-label .elev {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: .15em;
+    margin-top: 2px;
+    margin-bottom: 18px;
+  }
+  .place-label h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(54px, 9vw, 128px);
+    line-height: .88;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    text-transform: none;
+    margin-bottom: 4px;
+  }
+  .place-label h1 em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 400;
+  }
+  .place-label .subtitle {
+    font-family: "Fraunces", serif;
+    font-variant: small-caps;
+    font-size: 14px;
+    letter-spacing: .4em;
+    color: var(--ink-2);
+    padding-top: 14px;
+    margin-top: 14px;
+    border-top: 1px solid var(--ink);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+  .place-label .tagline {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink);
+    max-width: 44ch;
+    margin: 16px auto 0;
+    line-height: 1.5;
+  }
+  .place-label .tagline em { color: var(--red); }
+
+  /* coordinate box */
+  .coord-panel {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 24px;
+    align-self: start;
+    position: relative;
+  }
+  .coord-panel::before {
+    content: "LEGEND ≡";
+    position: absolute; top: -12px; left: 20px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--red);
+  }
+  .coord-panel h2 {
+    font-family: "Fraunces", serif;
+    font-variant: small-caps;
+    font-size: 13px;
+    letter-spacing: .2em;
+    color: var(--ink-2);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .coord-panel dl {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 10px 14px;
+    font-size: 14px;
+  }
+  .coord-panel dt {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .coord-panel dd {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .coord-panel dd b {
+    font-style: normal;
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  /* legend symbols */
+  .legend-row {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--contour);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .legend-row .item {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .legend-row .sym {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px;
+    color: var(--red); font-size: 14px;
+  }
+
+  /* SECTION BAR — like a map label bar */
+  .map-bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px; align-items: center;
+    margin: 64px 0 28px;
+    padding: 14px 18px;
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .map-bar .quad {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 6px 10px;
+    border: 1px solid var(--red);
+  }
+  .map-bar h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .map-bar h2 em {
+    font-style: italic;
+    color: var(--red);
+    font-weight: 300;
+  }
+  .map-bar .bearing {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+  }
+
+  /* PROJECT = SUMMIT / BENCHMARK */
+  .summits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 40px;
+  }
+  .summit {
+    position: relative;
+    padding: 0 0 0 88px;
+    min-height: 180px;
+  }
+  .summit::before {
+    content: "";
+    position: absolute;
+    left: 30px; top: 12px; bottom: 12px;
+    width: 1px;
+    border-left: 1px dashed var(--ink-2);
+  }
+  .summit .marker {
+    position: absolute;
+    left: 10px; top: 4px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--red);
+    display: grid; place-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .summit .marker::before {
+    content: "";
+    position: absolute; inset: 3px;
+    border: 1px solid var(--red);
+    border-radius: 50%;
+  }
+  .summit .marker b { font-size: 13px; }
+  .summit .bench {
+    position: absolute;
+    left: 20px; bottom: -4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    color: var(--bench);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .summit h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .summit h3 em { font-style: italic; color: var(--red); }
+  .summit .elev {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--contour);
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .summit .elev b { color: var(--red); }
+  .summit p {
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 48ch;
+    color: var(--ink);
+  }
+  .summit .coord-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--red);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--red);
+    padding-bottom: 2px;
+  }
+
+  /* disciplines as contour stack */
+  .contours {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 16px 0;
+  }
+  .contour-card {
+    padding: 20px 18px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .contour-card::before {
+    content: "";
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    border: 8px double var(--contour);
+    opacity: .35;
+  }
+  .contour-card::after {
+    content: "";
+    position: absolute;
+    top: -30%; right: -10%;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--contour);
+    opacity: .25;
+  }
+  .contour-card .el {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--red);
+    text-transform: uppercase;
+    position: relative; z-index: 2;
+  }
+  .contour-card h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.1;
+    margin: 6px 0 10px;
+    position: relative; z-index: 2;
+  }
+  .contour-card h4 em {
+    font-style: italic;
+    color: var(--red);
+    display: block;
+    font-size: 16px;
+  }
+  .contour-card p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink);
+    position: relative; z-index: 2;
+  }
+
+  /* CONTACT block — geodetic marker */
+  .geodetic {
+    margin-top: 72px;
+    padding: 56px 40px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at center, var(--paper) 0%, var(--paper-2) 100%);
+    border: 2px solid var(--ink);
+    position: relative;
+  }
+  .geodetic::before, .geodetic::after {
+    content: "";
+    position: absolute;
+    border: 1px solid var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: .4;
+  }
+  .geodetic::before {
+    width: 240px; height: 240px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .geodetic::after {
+    width: 160px; height: 160px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .geodetic .marker {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--red);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .geodetic h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    max-width: 20ch;
+    margin: 0 auto 14px;
+  }
+  .geodetic h2 em { font-style: italic; color: var(--red); font-weight: 400; }
+  .geodetic .coords {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-2);
+    letter-spacing: .12em;
+    margin-bottom: 24px;
+  }
+  .geodetic .actions {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  }
+  .geodetic a.btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    transition: all .2s;
+  }
+  .geodetic a.btn:hover { background: var(--ink); color: var(--paper); }
+  .geodetic a.btn.primary { background: var(--red); color: var(--paper); border-color: var(--red); }
+  .geodetic a.btn.primary:hover { background: var(--red-dk); }
+
+  /* FOOTER — scale bar */
+  .scale-foot {
+    margin-top: 32px;
+    padding: 20px 0;
+    border-top: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .scale-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    height: 10px;
+    border: 1px solid var(--ink);
+    min-width: 280px;
+  }
+  .scale-bar div { border-right: 1px solid var(--ink); }
+  .scale-bar div:last-child { border-right: none; }
+  .scale-bar div:nth-child(odd) { background: var(--ink); }
+  .scale-foot .right { text-align: right; }
+
+  @media (max-width: 900px) {
+    .hero, .summits, .contours { grid-template-columns: 1fr; }
+    .coord-panel { margin-top: 24px; }
+    .title-bar { grid-template-columns: 1fr; }
+    .title-bar .l.right { text-align: left; }
+    .scale-foot { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="sheet-inner">
+
+      <div class="quad-corner">
+        QUADRANGLE LOCATION<br/>
+        <b>TUSCALOOSA, AL</b><br/>
+        34° 12' N · 87° 34' W<br/>
+        SHEET 1 OF 1
+      </div>
+
+      <div class="title-bar">
+        <div class="l">USGS / HANLEY SURVEY<br/><b>SCALE 1 : 24,000</b></div>
+        <div class="center">— The Hanley Quadrangle · MMXXVI —</div>
+        <div class="l right">CONTOUR INT. 40 FT<br/><b>DATUM: NAD83</b></div>
+      </div>
+
+      <section class="hero">
+        <div class="place-label">
+          <div class="peak-mark">▲</div>
+          <div class="elev">ELEV. XX6 · 240FT · PRIMARY BENCHMARK</div>
+          <h1>Colin<br/><em>Hanley.</em></h1>
+          <p class="subtitle">— a data science &amp; applied math portfolio —</p>
+          <p class="tagline">A student of mathematics and data science at the <em>University of Alabama</em>. Surveyed, mapped, and marked for the design and deployment of predictive models.</p>
+        </div>
+
+        <aside class="coord-panel">
+          <h2>Station Description</h2>
+          <dl>
+            <dt>Designation</dt><dd>Colin J. Hanley</dd>
+            <dt>Class</dt><dd>DS · ML Engineer</dd>
+            <dt>Datum</dt><dd>Univ. of Alabama</dd>
+            <dt>Position</dt><dd><b>34.20° N / 87.57° W</b></dd>
+            <dt>Elevation</dt><dd><b>Open to work</b></dd>
+            <dt>Monumented</dt><dd>Apr. 2026</dd>
+            <dt>Contact</dt><dd>colinhanleydev<br/>@gmail.com</dd>
+          </dl>
+          <div class="legend-row">
+            <div class="item"><span class="sym">▲</span> BM, summit</div>
+            <div class="item"><span class="sym">◯</span> project site</div>
+            <div class="item"><span class="sym">∿</span> pipeline</div>
+            <div class="item"><span class="sym">✦</span> landmark</div>
+          </div>
+        </aside>
+      </section>
+
+      <div class="map-bar">
+        <span class="quad">QUAD 02</span>
+        <h2>Benchmarks &amp; <em>selected summits</em></h2>
+        <span class="bearing">BEARING N 72° E · 4 FEATURES</span>
+      </div>
+
+      <section class="summits">
+        <article class="summit">
+          <div class="marker"><b>BM<br/>01</b></div>
+          <span class="bench">ref. pt.</span>
+          <h3>HL7 Parser<br/>&amp; <em>PHI Redactor</em></h3>
+          <p class="elev">
+            <span>EL · <b>240ft</b></span>
+            <span>STACK · Python/Streamlit</span>
+            <span>⊕ 2nd · UA Innovate</span>
+          </p>
+          <p>Parses HL7 medical messages and de-identifies PHI with rules and regex. Ships a point-and-click UI for analysts — the first benchmark on the sheet.</p>
+          <a class="coord-link" href="#">Bearing to repo →</a>
+        </article>
+
+        <article class="summit">
+          <div class="marker"><b>BM<br/>02</b></div>
+          <span class="bench">ref. pt.</span>
+          <h3>Outbreak<br/><em>Simulator</em></h3>
+          <p class="elev">
+            <span>EL · <b>190ft</b></span>
+            <span>STACK · Python/Mesa</span>
+            <span>⊕ agent-based</span>
+          </p>
+          <p>An agent-based simulation of COVID-19 outbreak dynamics with interventions — testing, lockdowns, vaccines — and policy-facing visuals.</p>
+          <a class="coord-link" href="#">Bearing to repo →</a>
+        </article>
+
+        <article class="summit">
+          <div class="marker"><b>BM<br/>03</b></div>
+          <span class="bench">ref. pt.</span>
+          <h3>Infrared<br/><em>Poacher Detection</em></h3>
+          <p class="elev">
+            <span>EL · <b>215ft</b></span>
+            <span>STACK · PyTorch/YOLOv5</span>
+            <span>⊕ UAV thermal</span>
+          </p>
+          <p>Fine-tuned detector for UAV thermal imagery with a pseudo-labeling pipeline and real-time inference for conservation use.</p>
+          <a class="coord-link" href="#">Bearing to paper →</a>
+        </article>
+
+        <article class="summit">
+          <div class="marker"><b>BM<br/>04</b></div>
+          <span class="bench">ref. pt.</span>
+          <h3>Genetic<br/><em>Fantasy Drafter</em></h3>
+          <p class="elev">
+            <span>EL · <b>175ft</b></span>
+            <span>STACK · Python/Dash</span>
+            <span>⊕ optimization</span>
+          </p>
+          <p>A genetic algorithm for fantasy football draft strategy wrapped in a Dash app. Field-tested on draft night, mapped and marked.</p>
+          <a class="coord-link" href="#">Bearing to repo →</a>
+        </article>
+      </section>
+
+      <div class="map-bar">
+        <span class="quad">QUAD 03</span>
+        <h2>Topography / <em>disciplines</em></h2>
+        <span class="bearing">CONTOUR INTERVAL — METHODS</span>
+      </div>
+
+      <section class="contours">
+        <div class="contour-card">
+          <span class="el">▲ EL. 2400 · PRIMARY</span>
+          <h4>Machine<br/><em>Learning</em></h4>
+          <p>PyTorch, TensorFlow, HuggingFace, fine-tuning LLMs.</p>
+        </div>
+        <div class="contour-card">
+          <span class="el">▲ EL. 1900 · FOUNDATION</span>
+          <h4>Mathematics</h4>
+          <p>Probability, linear algebra, optimization, MATLAB.</p>
+        </div>
+        <div class="contour-card">
+          <span class="el">▲ EL. 1750 · DAILY</span>
+          <h4>Data<br/><em>Engineering</em></h4>
+          <p>SQL modeling, Pandas, NumPy, reliable pipelines.</p>
+        </div>
+        <div class="contour-card">
+          <span class="el">▲ EL. 1500 · SHIPPING</span>
+          <h4>Visualization</h4>
+          <p>Streamlit, Dash, Tableau, product instincts.</p>
+        </div>
+      </section>
+
+      <section class="geodetic">
+        <span class="marker">⊕ GEODETIC CONTROL ⊕</span>
+        <h2>Set a <em>bearing</em> &amp; correspond.</h2>
+        <p class="coords">N 34° 12' 00" · W 87° 34' 00" · ELEV. UNRECORDED</p>
+        <div class="actions">
+          <a class="btn primary" href="mailto:colinhanleydev@gmail.com">✉ colinhanleydev@gmail.com</a>
+          <a class="btn" href="#">LINKEDIN ↗</a>
+          <a class="btn" href="#">GITHUB ↗</a>
+          <a class="btn" href="#">RÉSUMÉ PDF ↓</a>
+        </div>
+      </section>
+
+      <div class="scale-foot">
+        <span>© MMXXVI · HANLEY QUADRANGLE</span>
+        <div>
+          <div class="scale-bar"><div></div><div></div><div></div><div></div><div></div></div>
+          <div style="text-align:center; margin-top:4px;">0 — 1 — 2 — 3 — 4 MILES</div>
+        </div>
+        <span class="right">PRINTED 04 · 13 · 26</span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

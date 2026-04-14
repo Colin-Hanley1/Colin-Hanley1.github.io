@@ -3,30 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Colin Hanley — Data Scientist & ML Engineer</title>
+  <title>Colin Hanley — Data Science &amp; Applied Math</title>
 
-  <meta name="description" content="Portfolio of Colin Hanley, Data Scientist & ML Engineer. Projects in ML, MLOps, computer vision, data engineering, and analytics." />
-  <meta name="keywords" content="Data Science, Machine Learning, MLOps, Python, PyTorch, SQL, Portfolio" />
-  <link rel="canonical" href="https://your-domain.example/" />
-
-  <meta property="og:title" content="Colin Hanley — Data Scientist & ML Engineer" />
-  <meta property="og:description" content="Featured projects, skills, and contact." />
+  <meta name="description" content="Colin Hanley — Data Science &amp; Mathematics student at the University of Alabama. Machine learning, computer vision, and analytics for healthcare and sports." />
+  <meta name="keywords" content="Data Science, Machine Learning, Computer Vision, Python, PyTorch, SQL, Portfolio, Colin Hanley" />
+  <meta property="og:title" content="Colin Hanley — Data Science &amp; Applied Math" />
+  <meta property="og:description" content="Portfolio · Vol. I · 2026 — ML, CV, analytics." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="images/og-preview.jpg" />
-  <meta property="og:url" content="https://your-domain.example/" />
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
-
   <link rel="icon" href="images/favicon.ico">
 
   <script>
-    (function() {
+    (function () {
       const saved = localStorage.getItem('theme');
       if (saved === 'dark') document.documentElement.classList.add('theme-dark');
       document.documentElement.classList.remove('no-js');
@@ -36,226 +31,411 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <nav class="navbar" aria-label="Primary">
-    <div class="container nav-inner">
-      <a class="brand" href="#top" aria-label="Homepage">
-        <span class="brand-mark">CH</span>
-        <span class="brand-text">Colin Hanley</span>
+  <!-- scroll progress -->
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <!-- =============== NAV =============== -->
+  <nav class="nav" aria-label="Primary">
+    <div class="grid nav-row">
+      <a class="brand" href="#top" aria-label="Colin Hanley — Home">
+        <span class="dot" aria-hidden="true"></span>
+        Colin Hanley <span class="pipe">/</span> <em>Portfolio 2026</em>
       </a>
 
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
-        <i class="fa-solid fa-bars"></i>
+        <span class="bar"></span><span class="bar"></span>
       </button>
 
       <ul id="nav-menu" class="nav-links" role="menubar">
-        <li role="none"><a role="menuitem" href="#about">About</a></li>
-        <li role="none"><a role="menuitem" href="#skills">Skills</a></li>
-        <li role="none"><a role="menuitem" href="#projects">Projects</a></li>
-        <li role="none"><a role="menuitem" href="#music">My Music</a></li>
-        <li role="none"><a role="menuitem" href="#contact">Contact</a></li>
+        <li role="none"><a role="menuitem" href="#about"><b>01</b> About</a></li>
+        <li role="none"><a role="menuitem" href="#work"><b>02</b> Selected work</a></li>
+        <li role="none"><a role="menuitem" href="#practice"><b>03</b> Practice</a></li>
+        <li role="none"><a role="menuitem" href="#listening"><b>04</b> Listening</a></li>
+        <li role="none"><a role="menuitem" href="#contact"><b>05</b> Contact</a></li>
       </ul>
 
-      <div class="nav-ctas">
+      <div class="nav-right">
+        <span class="mono time-pill"><span id="liveClock">TUSC / AL</span></span>
         <button id="themeToggle" class="icon-btn" aria-pressed="false" aria-label="Toggle dark mode">
-          <i class="fa-solid fa-moon"></i>
+          <span class="theme-icon">◐</span>
         </button>
-        <a class="btn btn-small" href="pdfs/ColinHanleyResume.pdf" target="_blank" rel="noopener">Resume</a>
+        <a class="pill" href="pdfs/ColinHanleyResume.pdf" target="_blank" rel="noopener">Résumé <span class="arr">↓</span></a>
       </div>
     </div>
   </nav>
 
-  <header id="top" class="hero">
-    <div class="container hero-inner">
-      <p class="eyebrow">Data Science • Applied Math</p>
-      <h1>
-        Hi, I’m Colin.<br />
-        <span class="typewrite" aria-label="Animated titles">
-          <span class="typewrite-text" data-rotate='[
-            "I build ML models that solve problems",
-            "I turn messy data into visualizations",
-            "I use analytics to produce solutions"
-          ]'></span>
-        </span>
-      </h1>
-      <p class="lead">
-        I design and deploy predictive models, aiming to derive actionable insights from raw data
-      </p>
-      <div class="hero-ctas">
-        <a href="#projects" class="btn">See Projects</a>
-        <a href="mailto:colinhanleydev@gmail.com" class="btn btn-outline">Email Me</a>
-        <a href="https://github.com/Colin-Hanley1" class="icon-link" target="_blank" rel="noopener" aria-label="GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
-        <a href="https://www.linkedin.com/in/colin-hanley1836" class="icon-link" target="_blank" rel="noopener" aria-label="LinkedIn">
-          <i class="fa-brands fa-linkedin"></i>
-        </a>
-      </div>
-
-      
-    </div>
-  </header>
-
   <main id="main">
-    <section id="about" class="section">
-      <div class="container">
-        <h2 class="section-title">About</h2>
-        <div class="split">
-          <div>
-            <p>
-              Hi! I'm Colin Hanley, a Data Science and Mathematics student at the University of Alabama. I am passionate about academic and professional experiences that allow me to leverage ML and data analytics to solve real-world problems. I love using my technical skills to solve real problems, particularly in the healthcare and sports analytics fields
-            </p>
-            <div class="badges">
-              <span class="badge">Python</span>
-              <span class="badge">PyTorch</span>
-              <span class="badge">SQL</span>
-              <span class="badge">Pandas</span>
-              <span class="badge">Scikit-learn</span>
-              <span class="badge">Streamlit</span>
-              <span class="badge">Tableau</span>
-            </div>
+
+    <!-- =============== HERO =============== -->
+    <header class="grid hero" id="top">
+      <div class="kicker reveal">
+        <span class="k-1 mono">Portfolio</span>
+        <span class="k-2">
+          Data Science
+          <span class="sep">/</span>
+          Applied Mathematics
+          <span class="sep">/</span>
+          Tuscaloosa, AL
+        </span>
+        <span class="k-3 mono">MMV</span>
+      </div>
+
+      <h1 class="reveal stagger">
+        <span class="word">Colin</span><br/>
+        <span class="word">Hanley<span class="light"></span></span>
+      </h1>
+
+      <div class="below reveal">
+        <p class="lede">
+          Mathematics &amp; Data Science student at the <strong>University of Alabama</strong> and an undergraduate research assistant in the Mathematics department. I build <span class="accent">machine learning models, computer vision systems, and sports analytics tools.</span>
+        </p>
+
+        <div class="meta">
+          <div class="block">
+            <span class="k">Practice</span>
+            <span class="v">ML · CV · <b>Sports Analytics</b></span>
           </div>
-          <aside class="about-card" aria-label="Quick facts">
-            <h3>Quick Facts</h3>
+          <div class="block">
+            <span class="k">Research</span>
+            <span class="v"><b>Math Dept</b> · Alabama</span>
+          </div>
+          <div class="block">
+            <span class="k">GPA</span>
+            <span class="v"><b>3.97</b> / 4.00</span>
+          </div>
+          <div class="block">
+            <span class="k">Status</span>
+            <span class="v"><b>Open</b> to work</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-socials reveal">
+        <a href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" class="social">
+          <span class="mono">GitHub</span><span class="arr">↗</span>
+        </a>
+        <a href="https://www.linkedin.com/in/colin-hanley1836" target="_blank" rel="noopener" class="social">
+          <span class="mono">LinkedIn</span><span class="arr">↗</span>
+        </a>
+        <a href="mailto:colinhanleydev@gmail.com" class="social">
+          <span class="mono">Email</span><span class="arr">↗</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- =============== MARQUEE =============== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Python</span><span>·</span>
+        <span>PyTorch</span><span>·</span>
+        <span>TensorFlow</span><span>·</span>
+        <span>Scikit-learn</span><span>·</span>
+        <span>YOLOv5</span><span>·</span>
+        <span>SQL</span><span>·</span>
+        <span>Pandas</span><span>·</span>
+        <span>NumPy</span><span>·</span>
+        <span>MATLAB</span><span>·</span>
+        <span>R</span><span>·</span>
+        <span>C++</span><span>·</span>
+        <span>Mesa</span><span>·</span>
+        <span>Markov Chains</span><span>·</span>
+        <span>Monte Carlo</span><span>·</span>
+        <span>Transformers</span><span>·</span>
+        <span>GitHub Actions</span><span>·</span>
+        <span>Python</span><span>·</span>
+        <span>PyTorch</span><span>·</span>
+        <span>TensorFlow</span><span>·</span>
+        <span>Scikit-learn</span><span>·</span>
+        <span>YOLOv5</span><span>·</span>
+        <span>SQL</span><span>·</span>
+        <span>Pandas</span><span>·</span>
+        <span>NumPy</span><span>·</span>
+        <span>MATLAB</span><span>·</span>
+        <span>R</span><span>·</span>
+        <span>C++</span><span>·</span>
+        <span>Mesa</span><span>·</span>
+        <span>Markov Chains</span><span>·</span>
+        <span>Monte Carlo</span><span>·</span>
+        <span>Transformers</span><span>·</span>
+        <span>GitHub Actions</span><span>·</span>
+      </div>
+    </div>
+
+    <!-- =============== 01 — ABOUT =============== -->
+    <section class="grid sect" id="about">
+      <div class="sect-head reveal">
+        <div class="num">01<span class="slash">/</span></div>
+        <div class="heading">
+          <span class="label mono">§ About</span>
+          <h2><em>About</em></h2>
+        </div>
+        <div class="aside">
+          <span class="count">§ 01.A</span>
+        </div>
+      </div>
+
+      <div class="about">
+        <div class="tag mono reveal">§ 01.A · Profile</div>
+        <div class="prose reveal">
+          <p>I'm a Mathematics and Data Science student at the University of Alabama (<em>3.97 GPA</em>) and an undergraduate research assistant in the Mathematics department, currently building a Transformer-based groundwater modeling system with Multiresolution Hash Encoding under Dr. Jia Zhao.</p>
+          <p>My personal work sits at the intersection of <em>applied machine learning</em> and sports analytics — opponent-adjusted college basketball metrics, a Markov-chain first-inning baseball model, agent-based simulation, and computer vision on thermal UAV imagery.</p>
+        </div>
+        <aside class="facts reveal">
+          <div class="f">
+            <span class="k">Education</span>
+            <span class="v">B.S. Math &amp; <b>Data Science</b></span>
+          </div>
+          <div class="f">
+            <span class="k">GPA</span>
+            <span class="v"><b>3.97</b> / 4.00</span>
+          </div>
+          <div class="f">
+            <span class="k">Graduating</span>
+            <span class="v">May 2027</span>
+          </div>
+          <div class="f">
+            <span class="k">Research</span>
+            <span class="v"><b>Math Dept</b> · Alabama</span>
+          </div>
+          <div class="f">
+            <span class="k">Grant</span>
+            <span class="v"><b>ASSURE</b> awardee</span>
+          </div>
+          <div class="f">
+            <span class="k">Based</span>
+            <span class="v">Tuscaloosa, AL</span>
+          </div>
+          <div class="f">
+            <span class="k">Clubs</span>
+            <span class="v">DS Club · AI Club</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- =============== 02 — WORK =============== -->
+    <section class="grid sect" id="work">
+      <div class="sect-head reveal">
+        <div class="num">02<span class="slash">/</span></div>
+        <div class="heading">
+          <span class="label mono">§ Selected work</span>
+          <h2><em>Selected work</em>.</h2>
+        </div>
+        <div class="aside">
+          <span class="count">§ 02.A – 02.D</span>
+        </div>
+      </div>
+
+      <div class="filters reveal" role="tablist" aria-label="Project filters">
+        <span class="filter-label mono">Filter ↘</span>
+        <button class="chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="chip" data-filter="ml" role="tab">ML</button>
+        <button class="chip" data-filter="sports" role="tab">Sports</button>
+        <button class="chip" data-filter="cv" role="tab">Computer Vision</button>
+        <button class="chip" data-filter="sim" role="tab">Simulation</button>
+      </div>
+
+      <div class="work">
+        <a class="project reveal" href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" data-tags="ml,de,sports">
+          <div class="idx">
+            <span class="n mono">§ 02.A</span>
+            <span class="big">01</span>
+            <span class="year">MMXXVI</span>
+          </div>
+          <h3>College Basketball <em>Predictive Model</em></h3>
+          <div class="meta">
+            <p class="stack"><b>Python · Scikit-learn · Pipelines</b></p>
+            <p>Analytics platform for <b>5,000+ D1 players</b> across <b>360+ teams</b> with custom opponent-adjusted metrics (BPM, VORP, composite ratings). Automated scraping pipelines with fuzzy entity resolution; interactive site with rankings, transfer portal tracking, percentile filters, and a matchup simulator.</p>
+          </div>
+          <span class="view">View project <span class="arr">→</span></span>
+        </a>
+
+        <a class="project reveal" href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" data-tags="ml,sim,sports">
+          <div class="idx">
+            <span class="n mono">§ 02.B</span>
+            <span class="big">02</span>
+            <span class="year">MMXXVI</span>
+          </div>
+          <h3>Markovian <em>Inning Model</em></h3>
+          <div class="meta">
+            <p class="stack"><b>Python · Markov Chains · Monte Carlo</b></p>
+            <p>First-inning run scoring as a <b>24-state absorbing Markov chain</b>, computing NRFI probabilities via fundamental matrix inversion and <b>50K Monte Carlo</b> simulations. 1,100+ player profiles blended with log-odds matchup methods; automated daily MLB API pipeline via GitHub Actions.</p>
+          </div>
+          <span class="view">View project <span class="arr">→</span></span>
+        </a>
+
+        <a class="project reveal" href="https://github.com/Colin-Hanley1/covid-simulator" target="_blank" rel="noopener" data-tags="sim,ml">
+          <div class="idx">
+            <span class="n mono">§ 02.C</span>
+            <span class="big">03</span>
+            <span class="year">MMXXV</span>
+          </div>
+          <h3>Agent-based <em>COVID-19 Simulator</em></h3>
+          <div class="meta">
+            <p class="stack"><b>Python · Mesa · ABM</b></p>
+            <p>Agent-based simulation of COVID-19 spread with scenario testing for vaccine strategies, masking policy, and lockdown thresholds. Features household/workplace contact structures, age-based risk profiles, and dynamic lockdown triggers.</p>
+          </div>
+          <span class="view">View repo <span class="arr">→</span></span>
+        </a>
+
+        <a class="project reveal" href="pdfs/UAVCV_Project.pdf" target="_blank" rel="noopener" data-tags="cv,ml">
+          <div class="idx">
+            <span class="n mono">§ 02.D</span>
+            <span class="big">04</span>
+            <span class="year">MMXXV</span>
+          </div>
+          <h3>Poacher Detection <em>in Infrared</em></h3>
+          <div class="meta">
+            <p class="stack"><b>PyTorch · YOLOv5 · LWIR UAV</b></p>
+            <p>Fine-tuned custom YOLOv5 for real-time detection of human presence in LWIR UAV imagery, achieving <b>76% recall</b> on the targeted class. Wrote a script to pseudo-label synthetic data; published an academic paper on the results.</p>
+          </div>
+          <span class="view">View paper <span class="arr">→</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- =============== 03 — PRACTICE =============== -->
+    <section class="grid sect" id="practice">
+      <div class="sect-head reveal">
+        <div class="num">03<span class="slash">/</span></div>
+        <div class="heading">
+          <span class="label mono">§ Practice</span>
+          <h2><em>Skills &amp; tools.</em></h2>
+        </div>
+        <div class="aside">
+          <span class="count">§ 03.A – 03.D</span>
+        </div>
+      </div>
+
+      <div class="disciplines">
+        <div class="intro reveal">
+          <p>Grouped by area. <em>Primary</em> work in machine learning, with mathematics as foundation and data engineering for delivery.</p>
+        </div>
+        <div class="d-grid reveal">
+          <div class="d">
+            <div class="tag"><span>§ 03.A · PRIMARY</span><span class="n">I</span></div>
+            <h4>Machine Learning</h4>
             <ul>
-              <li><i class="fa-solid fa-graduation-cap"></i> B.S. Mathematics & Data Science</li>
-              <li><i class="fa-solid fa-location-dot"></i> Tuscaloosa, AL</li>
-              <li><i class="fa-solid fa-envelope"></i> colinhanleydev@gmail.com</li>
+              <li>PyTorch / TensorFlow</li>
+              <li>Scikit-learn</li>
+              <li>YOLOv5 · Transformers</li>
+              <li>Training pipelines</li>
             </ul>
-          </aside>
+          </div>
+          <div class="d">
+            <div class="tag"><span>§ 03.B · FOUNDATION</span><span class="n">II</span></div>
+            <h4>Mathematics</h4>
+            <ul>
+              <li>Probability</li>
+              <li>Linear algebra</li>
+              <li>Markov chains</li>
+              <li>Monte Carlo</li>
+            </ul>
+          </div>
+          <div class="d">
+            <div class="tag"><span>§ 03.C · DAILY</span><span class="n">III</span></div>
+            <h4>Data Engineering</h4>
+            <ul>
+              <li>SQL · Pandas · NumPy</li>
+              <li>Scraping pipelines</li>
+              <li>Entity resolution</li>
+              <li>GitHub Actions</li>
+            </ul>
+          </div>
+          <div class="d">
+            <div class="tag"><span>§ 03.D · LANGUAGES</span><span class="n">IV</span></div>
+            <h4>Languages</h4>
+            <ul>
+              <li>Python</li>
+              <li>R · MATLAB</li>
+              <li>C++</li>
+              <li>SQL</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="skills" class="section section-alt">
-      <div class="container">
-        <h2 class="section-title">Skills</h2>
-        <div class="skills-grid">
-          <div class="skill-card">
-            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Machine Learning</h3>
-            <ul>
-              <li>Pytorch/TensorFlow</li>
-              <li>Fine-tuning LLMs with HuggingFace</li>
-            </ul>
+    <!-- =============== 04 — LISTENING =============== -->
+    <section class="grid sect" id="listening">
+      <div class="sect-head reveal">
+        <div class="num">04<span class="slash">/</span></div>
+        <div class="heading">
+          <span class="label mono">§ Listening</span>
+          <h2><em>On rotation</em> while working.</h2>
+        </div>
+        <div class="aside">
+          <span class="count">§ 04.A</span>
+        </div>
+      </div>
+
+      <div class="listening">
+        <div class="intro reveal">
+          <p>What's on rotation while I'm writing code. An informal index of good records — mostly jazz, classic rock, and whatever else is on.</p>
+        </div>
+        <div class="music reveal">
+          <div class="spotify">
+            <iframe data-testid="embed-iframe" src="https://open.spotify.com/embed/playlist/435y0EAZnncKFo4jyzpUhB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
           </div>
-          <div class="skill-card">
-            <h3><i class="fa-solid fa-calculator"></i> Mathematics</h3>
-            <ul>
-              <li>Probability and Matrix Calculations</li>
-              <li>MATLAB</li>
-            </ul>
-          </div>
-          <div class="skill-card">
-            <h3><i class="fa-solid fa-database"></i> Data</h3>
-            <ul>
-              <li>SQL (modeling, performance)</li>
-              <li>Pandas, Numpy</li>
-            </ul>
-          </div>
-          <div class="skill-card">
-            <h3><i class="fa-solid fa-chart-line"></i> Viz & Product</h3>
-            <ul>
-              <li>Streamlit/Dash</li>
-              <li>Tableau</li>
-            </ul>
-          </div>
+          <div id="albumGrid" class="album-grid" aria-live="polite"></div>
         </div>
       </div>
     </section>
 
-    <section id="projects" class="section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Featured Projects</h2>
-          <div class="filters" role="tablist" aria-label="Project filters">
-            <button class="chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>
-            <button class="chip" data-filter="ml" role="tab">ML</button>
-            <button class="chip" data-filter="cv" role="tab">Computer Vision</button>
-            <button class="chip" data-filter="de" role="tab">Data Eng</button>
-            <button class="chip" data-filter="sim" role="tab">Simulation</button>
-          </div>
+    <!-- =============== 05 — CONTACT =============== -->
+    <section class="grid sect" id="contact">
+      <div class="sect-head reveal">
+        <div class="num">05<span class="slash">/</span></div>
+        <div class="heading">
+          <span class="label mono">§ Contact</span>
+          <h2><em>Contact.</em></h2>
         </div>
-
-        <div class="project-grid">
-          <article class="project-card" data-tags="ml,de">
-            <div class="project-body">
-              <h3>HL7 Parser & De-identification Tool(2nd Place UA Innovate)</h3>
-              <p class="meta">Python · Streamlit · PHI Redaction</p>
-              <p>Parsed HL7 medical messages and de-identified PHI with rules & regex, shipping a point-and-click UI for analysts.</p>
-              <div class="project-actions">
-                <a href="https://github.com/Colin-Hanley1/hl7app" target="_blank" rel="noopener" class="btn btn-small">Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card" data-tags="sim,ml">
-            <div class="project-body">
-              <h3>Agent-Based COVID-19 Simulator</h3>
-              <p class="meta">Python · Mesa</p>
-              <p>Simulated outbreak dynamics with interventions (testing, lockdowns, vaccines) and clear plots for policy decisions.</p>
-              <div class="project-actions">
-                <a href="https://github.com/Colin-Hanley1/covid-simulator" target="_blank" rel="noopener" class="btn btn-small">Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card" data-tags="cv,ml">
-            <div class="project-body">
-              <h3>Poacher Detection in Infrared</h3>
-              <p class="meta">PyTorch · YOLOv5 · Computer Vision</p>
-              <p>Fine-tuned detector for UAV thermal imagery; data pipeline with pseudo-labels and real-time inference.</p>
-              <div class="project-actions">
-                <a href="pdfs/UAVCV_Project.pdf" target="_blank" rel="noopener" class="btn btn-small">Paper</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-card" data-tags="ml,de">
-            <div class="project-body">
-              <h3>Genetic Fantasy Football Drafter</h3>
-              <p class="meta">Python · Genetic Algorithms · Dash</p>
-              <p>Utilized a genetic algorithm to optimize fantasy football drafting strategy and built an app to be used as a draft companion</p>
-              <div class="project-actions">
-                <a href="https://github.com/Colin-Hanley1/FantasyFootball-Genetics" class="btn btn-small">Repo</a>
-              </div>
-            </div>
-          </article>
-
+        <div class="aside">
+          <span class="count">§ 05.A</span>
         </div>
       </div>
 
-
-    <section id="music" class="section section-alt">
-      <div class="container">
-        <h2 class="section-title">My Music</h2>
-        <p class="section-sub">What I listen to while I'm coding.</p>
-
-        <!-- Optional Spotify embed (replace playlist URL) -->
-        <div class="spotify-wrap" aria-label="Spotify playlist">
-            <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/435y0EAZnncKFo4jyzpUhB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <div class="contact">
+        <div class="tag mono reveal">§ 05.A · Direct</div>
+        <h2 class="reveal">
+          Available for <span class="accent">internships,</span><br/>
+          research, &amp; collaboration.
+        </h2>
+        <div class="actions reveal">
+          <a href="mailto:colinhanleydev@gmail.com">
+            <span class="k">Email ↗</span>
+            <span class="v">colinhanleydev@gmail.com</span>
+          </a>
+          <a href="https://www.linkedin.com/in/colin-hanley1836" target="_blank" rel="noopener">
+            <span class="k">LinkedIn ↗</span>
+            <span class="v">colin-hanley1836</span>
+          </a>
+          <a href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener">
+            <span class="k">GitHub ↗</span>
+            <span class="v">Colin-Hanley1</span>
+          </a>
+          <a href="pdfs/ColinHanleyResume.pdf" target="_blank" rel="noopener">
+            <span class="k">Résumé ↓</span>
+            <span class="v">Download PDF</span>
+          </a>
         </div>
-
-        <div id="albumGrid" class="music-grid" aria-live="polite">
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section">
-      <div class="container">
-        <h2 class="section-title">Get in Touch</h2>
-        <p class="lead">Want to discuss a project, role, or idea? I’m always open to interesting problems.</p>
-        <div class="contact-ctas">
-          <a href="mailto:colinhanleydev@gmail.com" class="btn">Email Me</a>
-          <button id="copyEmail" class="btn btn-outline" data-email="colinhanleydev@gmail.com">Copy Email</button>
-          <a class="btn btn-outline" href="https://www.linkedin.com/in/colin-hanley1836" target="_blank" rel="noopener">LinkedIn</a>
+        <div class="copy-row reveal">
+          <button id="copyEmail" class="copy-btn" data-email="colinhanleydev@gmail.com">
+            <span class="mono">Copy email</span>
+            <span class="arr">⧉</span>
+          </button>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <p>© <span id="year"></span> Colin Hanley • All rights reserved</p>
-      <a href="#top" class="to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+  <!-- =============== FOOT =============== -->
+  <footer class="foot">
+    <div class="grid foot-row">
+      <span class="a">© <span id="year"></span> · <b>Colin Hanley</b></span>
+      <span class="b">Tuscaloosa, Alabama</span>
+      <span class="c">Set in Inter Tight &amp; JB Mono</span>
+      <a class="d" href="#top"><span>↑ <b>Return to top</b></span></a>
     </div>
   </footer>
 
@@ -266,10 +446,10 @@
     "name":"Colin Hanley",
     "jobTitle":"Data Scientist",
     "email":"mailto:colinhanleydev@gmail.com",
-    "url":"https://your-domain.example/",
+    "alumniOf":"University of Alabama",
     "sameAs":[
-      "https://github.com/yourusername",
-      "https://www.linkedin.com/in/yourusername"
+      "https://github.com/Colin-Hanley1",
+      "https://www.linkedin.com/in/colin-hanley1836"
     ]
   }
   </script>
