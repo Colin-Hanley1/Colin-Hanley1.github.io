@@ -228,32 +228,44 @@
 
       <div class="filters reveal" role="tablist" aria-label="Project filters">
         <span class="filter-label mono">Filter ↘</span>
-        <button class="chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="chip is-active" data-filter="all" role="tab" aria-selected="true">Featured</button>
         <button class="chip" data-filter="ml" role="tab">ML</button>
         <button class="chip" data-filter="sports" role="tab">Sports</button>
-        <button class="chip" data-filter="cv" role="tab">Computer Vision</button>
-        <button class="chip" data-filter="sim" role="tab">Simulation</button>
+        <button class="chip" data-filter="research" role="tab">Research</button>
       </div>
 
       <div class="work">
-        <a class="project reveal" href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" data-tags="ml,de,sports">
+        <!-- ============ FEATURED (shown on "Featured") ============ -->
+        <a class="project reveal" href="https://colin-hanley1.github.io/cbb-analytics/index.html" target="_blank" rel="noopener" data-featured="true" data-tags="ml,sports">
           <div class="idx">
             <span class="n mono">§ 02.A</span>
             <span class="big">01</span>
             <span class="year">MMXXVI</span>
           </div>
-          <h3>College Basketball <em>Predictive Model</em></h3>
+          <h3>College Basketball <em>Analytics Platform</em></h3>
           <div class="meta">
-            <p class="stack"><b>Python · Scikit-learn · Pipelines</b></p>
+            <p class="stack"><b>Python · Javascript · Scikit-Learn</b></p>
             <p>Analytics platform for <b>5,000+ D1 players</b> across <b>360+ teams</b> with custom opponent-adjusted metrics (BPM, VORP, composite ratings). Automated scraping pipelines with fuzzy entity resolution; interactive site with rankings, transfer portal tracking, percentile filters, and a matchup simulator.</p>
           </div>
-          <span class="view">View project <span class="arr">→</span></span>
+          <span class="view">View website<span class="arr">→</span></span>
         </a>
-
-        <a class="project reveal" href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" data-tags="ml,sim,sports">
+        <a class="project reveal" href="pdfs/mrhe_poster.pdf" target="_blank" rel="noopener" data-featured="true" data-tags="ml,research">
           <div class="idx">
             <span class="n mono">§ 02.B</span>
             <span class="big">02</span>
+            <span class="year">MMXXV</span>
+          </div>
+          <h3>Groundwater <em>Modeling Research</em></h3>
+          <div class="meta">
+            <p class="stack"><b>PyTorch · Transformers · Hash Encoding</b></p>
+            <p>Research with Dr. Jia Zhao in the UA Math Department — a <b>Transformer-based</b> modeling system using Multiresolution Hash Encoding, trained on two decades of cleaned US groundwater data. ASSURE grant awardee.</p>
+          </div>
+          <span class="view">View research <span class="arr">→</span></span>
+        </a>
+        <a class="project reveal" href="https://github.com/Colin-Hanley1" target="_blank" rel="noopener" data-featured="true" data-tags="sports">
+          <div class="idx">
+            <span class="n mono">§ 02.C</span>
+            <span class="big">03</span>
             <span class="year">MMXXVI</span>
           </div>
           <h3>Markovian <em>Inning Model</em></h3>
@@ -264,10 +276,10 @@
           <span class="view">View project <span class="arr">→</span></span>
         </a>
 
-        <a class="project reveal" href="https://github.com/Colin-Hanley1/covid-simulator" target="_blank" rel="noopener" data-tags="sim,ml">
+        <a class="project reveal" href="https://github.com/Colin-Hanley1/covid-simulator" target="_blank" rel="noopener" data-featured="true" data-tags="research">
           <div class="idx">
-            <span class="n mono">§ 02.C</span>
-            <span class="big">03</span>
+            <span class="n mono">§ 02.D</span>
+            <span class="big">04</span>
             <span class="year">MMXXV</span>
           </div>
           <h3>Agent-based <em>COVID-19 Simulator</em></h3>
@@ -278,10 +290,10 @@
           <span class="view">View repo <span class="arr">→</span></span>
         </a>
 
-        <a class="project reveal" href="pdfs/UAVCV_Project.pdf" target="_blank" rel="noopener" data-tags="cv,ml">
+        <a class="project reveal" href="pdfs/UAVCV_Project.pdf" target="_blank" rel="noopener" data-featured="true" data-tags="ml">
           <div class="idx">
-            <span class="n mono">§ 02.D</span>
-            <span class="big">04</span>
+            <span class="n mono">§ 02.E</span>
+            <span class="big">05</span>
             <span class="year">MMXXV</span>
           </div>
           <h3>Poacher Detection <em>in Infrared</em></h3>
@@ -290,6 +302,37 @@
             <p>Fine-tuned custom YOLOv5 for real-time detection of human presence in LWIR UAV imagery, achieving <b>76% recall</b> on the targeted class. Wrote a script to pseudo-label synthetic data; published an academic paper on the results.</p>
           </div>
           <span class="view">View paper <span class="arr">→</span></span>
+        </a>
+
+        <!-- ============ EXTRAS (shown when matching filter is active) ============ -->
+
+
+        <a class="project reveal" href="https://github.com/Colin-Hanley1/hl7app" target="_blank" rel="noopener" data-tags="ml">
+          <div class="idx">
+            <span class="n mono">§ 02.F</span>
+            <span class="big">06</span>
+            <span class="year">MMXXV</span>
+          </div>
+          <h3>HL7 Parser &amp; <em>PHI Redactor</em></h3>
+          <div class="meta">
+            <p class="stack"><b>Python · Streamlit · Regex</b></p>
+            <p>Parser and de-identification tool for HL7 medical messages, with a Streamlit interface for analyst review. Took 2nd place at UA Innovate.</p>
+          </div>
+          <span class="view">View repo <span class="arr">→</span></span>
+        </a>
+
+        <a class="project reveal" href="https://github.com/Colin-Hanley1/FantasyFootball-Genetics" target="_blank" rel="noopener" data-tags="ml,sports">
+          <div class="idx">
+            <span class="n mono">§ 02.G</span>
+            <span class="big">07</span>
+            <span class="year">MMXXIV</span>
+          </div>
+          <h3>Genetic <em>Fantasy Drafter</em></h3>
+          <div class="meta">
+            <p class="stack"><b>Python · Dash · Genetic Algorithms</b></p>
+            <p>A genetic algorithm for fantasy football draft optimization, packaged as a Dash application for live use on draft night.</p>
+          </div>
+          <span class="view">View repo <span class="arr">→</span></span>
         </a>
       </div>
     </section>

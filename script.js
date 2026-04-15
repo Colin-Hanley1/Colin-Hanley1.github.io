@@ -110,9 +110,29 @@ if ("IntersectionObserver" in window && !prefersReducedMotion) {
   revealTargets.forEach(el => el.classList.add("is-in"));
 }
 
-/* ============ PROJECT FILTER ============ */
-const chips   = $$(".chip");
+/* ============ PROJECT FILTER ============
+   - "Featured" (all): show only data-featured="true" projects
+   - Specific tag:     show projects matching that tag, capped at 4
+*/
+const MAX_VISIBLE = 4;
+const chips    = $$(".chip");
 const projects = $$(".work .project");
+
+function applyFilter(tag) {
+  let shownCount = 0;
+  projects.forEach(p => {
+    let match;
+    if (tag === "all") {
+      match = p.dataset.featured === "true";
+    } else {
+      match = (p.dataset.tags || "").split(",").map(t => t.trim()).includes(tag);
+    }
+    const show = match && shownCount < MAX_VISIBLE;
+    p.classList.toggle("is-hidden", !show);
+    if (show) shownCount++;
+  });
+}
+
 chips.forEach(chip => chip.addEventListener("click", () => {
   chips.forEach(c => {
     c.classList.remove("is-active");
@@ -120,12 +140,11 @@ chips.forEach(chip => chip.addEventListener("click", () => {
   });
   chip.classList.add("is-active");
   chip.setAttribute("aria-selected", "true");
-  const tag = chip.dataset.filter;
-  projects.forEach(p => {
-    const show = tag === "all" || (p.dataset.tags || "").includes(tag);
-    p.classList.toggle("is-hidden", !show);
-  });
+  applyFilter(chip.dataset.filter);
 }));
+
+// Initial pass so extras are hidden on first load
+applyFilter("all");
 
 /* ============ COPY EMAIL ============ */
 const copyBtn = $("#copyEmail");
