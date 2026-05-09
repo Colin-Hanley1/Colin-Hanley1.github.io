@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hanley — A Computational Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:      #f4eedc;
+    --paper-2:    #ece3c9;
+    --paper-3:    #dfd3b1;
+    --ink:        #0f0e0a;
+    --ink-soft:   #3a362b;
+    --muted:      #7a7262;
+    --rule:       #0f0e0a;
+    --hair:       #c5bda3;
+    --accent:     #b03a2e;         /* vermilion */
+    --accent-2:   #d94f3c;
+    --blue:       #1c5b88;         /* plot blue */
+    --teal:       #208a80;
+    --gold:       #b78c2c;
+    --lilac:      #6c4a8b;
+    --mag:        #c0358b;
+    --grid:       rgba(15,14,10,0.08);
+
+    --serif:  "Crimson Pro", "STIX Two Text", Georgia, serif;
+    --sans:   "Inter", -apple-system, sans-serif;
+    --mono:   "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.55;
+    font-feature-settings: "kern", "liga", "onum";
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 800px 600px at 10% 0%, rgba(176,58,46,.05), transparent 70%),
+      radial-gradient(ellipse 600px 500px at 95% 100%, rgba(28,91,136,.06), transparent 70%);
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999;
+    opacity: .09; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .25s; }
+  a:hover { border-bottom-color: var(--accent); }
+  em, i { font-style: italic; }
+  .mono { font-family: var(--mono); font-size: .78em; }
+  .sc { font-variant: small-caps; letter-spacing: .1em; }
+  .fr { font-variant-numeric: tabular-nums; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  /* ========== ARXIV-STYLE HEADER BAR ========== */
+  .topbar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--ink);
+  }
+  .topbar .row {
+    max-width: 1180px; margin: 0 auto; padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .topbar .brand { display: flex; align-items: center; gap: 10px; }
+  .topbar .brand b { color: var(--accent-2); }
+  .topbar nav { display: flex; gap: 20px; }
+  .topbar nav a {
+    color: var(--paper);
+    opacity: .7;
+    border: none;
+    transition: opacity .2s, color .2s;
+  }
+  .topbar nav a:hover, .topbar nav a.active { opacity: 1; color: var(--accent-2); }
+  .topbar nav a b { margin-right: 4px; opacity: .55; }
+  .topbar .live { display: flex; align-items: center; gap: 8px; }
+  .topbar .live .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #7adf7a; box-shadow: 0 0 8px #7adf7a;
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink { 50% { opacity: .3; } }
+
+  /* ========== PAPER HEAD ========== */
+  .paper-head {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .paper-head::after {
+    content: ""; position: absolute;
+    left: 40px; right: 40px; bottom: -6px;
+    height: 1px; background: var(--ink);
+  }
+  .paper-head .ident {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 28px;
+  }
+  .paper-head .ident span b { color: var(--ink); }
+  .paper-head .ident .sep { color: var(--accent); }
+
+  .paper-head h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(52px, 7.6vw, 112px);
+    line-height: .98;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 20px;
+    max-width: 22ch;
+  }
+  .paper-head h1 em { color: var(--accent); font-style: italic; }
+  .paper-head h1 .supsc {
+    font-size: .4em;
+    vertical-align: super;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-left: 4px;
+    font-style: normal;
+  }
+
+  .paper-head .byline {
+    display: flex; flex-wrap: wrap; gap: 4px 14px;
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+    align-items: baseline;
+  }
+  .paper-head .byline .author {
+    font-style: italic;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .paper-head .byline .author::after { content: " †"; color: var(--accent); vertical-align: super; font-size: .8em; }
+  .paper-head .byline .aff {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .abstract {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 40px;
+    padding: 24px 0;
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+  }
+  .abstract .lbl {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 5px;
+  }
+  .abstract p {
+    font-size: 19px;
+    line-height: 1.55;
+    max-width: 72ch;
+  }
+  .abstract p em { color: var(--accent); font-style: italic; }
+
+  .keywords {
+    padding: 20px 0 4px;
+    display: flex; gap: 10px; flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+  .keywords .lbl { color: var(--ink); letter-spacing: .12em; }
+  .keywords .tag {
+    padding: 2px 8px;
+    border: 1px solid var(--hair);
+    color: var(--ink-soft);
+  }
+
+  /* ========== HERO CANVAS ========== */
+  .hero-lab {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--hair);
+    position: relative;
+  }
+  .hero-lab .fig-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+  .hero-lab .fig-head b { color: var(--accent); }
+  .hero-canvas {
+    width: 100%;
+    height: 400px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+      var(--paper-2);
+    border: 1px solid var(--ink);
+    display: block;
+    cursor: crosshair;
+  }
+  .hero-lab .caption {
+    margin-top: 10px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .hero-lab .caption b {
+    font-family: var(--mono);
+    font-style: normal;
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+  .hero-lab .hud {
+    position: absolute;
+    right: 52px; top: 92px;
+    font-family: var(--mono);
+    font-size: 11px;
+    background: rgba(15,14,10,.88);
+    color: var(--paper);
+    padding: 10px 12px;
+    letter-spacing: .04em;
+    line-height: 1.7;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+  .hero-lab .hud b { color: var(--accent-2); font-weight: 500; }
+  .hero-lab .hud .val { color: #7adf7a; }
+
+  /* ========== SECTIONS ========== */
+  .sec {
+    padding: 80px 0 40px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .sec-head {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 40px;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 40px;
+  }
+  .sec-head .num {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 42px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .sec-head h2 em { color: var(--accent); font-style: italic; }
+  .sec-head .note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* ========== TWO-COLUMN LAYOUT ========== */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 2.2fr;
+    gap: 48px;
+  }
+  .two-col .margin {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .two-col .margin .mn {
+    display: block;
+    padding-top: 14px;
+    border-top: 1px solid var(--hair);
+    margin-top: 20px;
+  }
+  .two-col .margin .mn:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .two-col .margin .mn .n {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .two-col .margin .mn b {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .two-col .body p {
+    font-size: 19px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    max-width: 64ch;
+  }
+  .two-col .body p em { color: var(--accent); font-style: italic; }
+  .two-col .body p strong {
+    font-weight: 500;
+  }
+  .two-col .body p .tip {
+    border-bottom: 1px dashed var(--accent);
+    cursor: help;
+    color: var(--accent);
+  }
+
+  /* ========== INLINE DRAGGABLE NUMBER ========== */
+  .knob {
+    display: inline-block;
+    padding: 0 6px;
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(176,58,46,.08);
+    border-bottom: 2px dashed var(--accent);
+    cursor: ew-resize;
+    user-select: none;
+    transition: background .2s;
+  }
+  .knob:hover, .knob.active {
+    background: rgba(176,58,46,.18);
+  }
+  .knob::before {
+    content: "↔ ";
+    font-size: .8em;
+    opacity: .5;
+  }
+
+  /* ========== EQUATION BLOCK ========== */
+  .eqn-block {
+    margin: 32px 0;
+    padding: 24px 28px;
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    position: relative;
+  }
+  .eqn-block::before {
+    content: "EQ.";
+    position: absolute;
+    top: -10px; left: 18px;
+    background: var(--paper);
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .15em;
+  }
+  .eqn-block .eqn {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1.3;
+    font-style: italic;
+    color: var(--ink);
+    text-align: center;
+    padding: 8px 0 18px;
+  }
+  .eqn-block .eqn .op { color: var(--muted); }
+  .eqn-block .eqn .beta { color: var(--accent); }
+  .eqn-block .eqn .sub {
+    font-size: .6em;
+    vertical-align: sub;
+  }
+  .eqn-block .sliders {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--hair);
+  }
+  .slider-row .lab {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .slider-row .lab b { color: var(--accent); font-weight: 500; }
+  .slider-row .lab .val { color: var(--ink); font-family: var(--mono); }
+  .slider-row input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: var(--hair);
+    outline: none;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 0 0 3px var(--paper-2);
+  }
+  .slider-row input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: grab;
+    border: none;
+    box-shadow: 0 0 0 3px var(--paper-2);
+  }
+
+  /* ========== CODE CELL ========== */
+  .cell {
+    margin: 32px 0;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .cell .prompt {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    padding: 6px 16px;
+    background: rgba(15,14,10,.04);
+    border-bottom: 1px dashed var(--hair);
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .cell .prompt b { color: var(--ink); }
+  .cell .code {
+    padding: 14px 18px;
+    white-space: pre;
+    color: var(--ink);
+    overflow-x: auto;
+  }
+  .cell .code .kw  { color: var(--lilac); font-weight: 500; }
+  .cell .code .str { color: var(--teal); }
+  .cell .code .fn  { color: var(--accent); }
+  .cell .code .num { color: var(--blue); }
+  .cell .code .cm  { color: var(--muted); font-style: italic; }
+  .cell .out {
+    padding: 12px 18px;
+    background: rgba(15,14,10,.025);
+    border-top: 1px dashed var(--hair);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .cell .out b { color: var(--accent); }
+
+  /* ========== FIGURE CANVAS ========== */
+  .figure {
+    margin: 40px 0 24px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 18px;
+  }
+  .figure .fig-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .figure .fig-top b { color: var(--ink); }
+  .figure .fig-top .acc { color: var(--accent); }
+  .figure canvas {
+    width: 100%;
+    height: 460px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+      var(--paper-2);
+    display: block;
+    cursor: crosshair;
+  }
+  .figure .caption {
+    padding-top: 12px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .figure .caption b {
+    font-family: var(--mono);
+    font-style: normal;
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  /* axis controls */
+  .axis-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 0 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .axis-picker .lbl { color: var(--muted); padding-top: 4px; }
+  .axis-picker button {
+    padding: 4px 10px;
+    border: 1px solid var(--hair);
+    background: transparent;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    transition: all .2s;
+  }
+  .axis-picker button:hover { border-color: var(--ink); color: var(--ink); }
+  .axis-picker button.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  .project-panel {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--accent);
+    font-family: var(--serif);
+    min-height: 100px;
+    transition: background .25s;
+  }
+  .project-panel .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .project-panel h4 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .project-panel h4 em { color: var(--accent); font-style: italic; }
+  .project-panel p { font-size: 15px; line-height: 1.5; color: var(--ink-soft); max-width: 64ch; }
+  .project-panel .stack {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--muted); margin-top: 8px;
+  }
+
+  /* ========== MONTE CARLO BLOCK ========== */
+  .mc-panel {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .mc-panel .mc-controls {
+    padding: 16px;
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .mc-panel .mc-controls h5 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .mc-panel .mc-controls .row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--hair);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .mc-panel .mc-controls .row b { color: var(--ink); }
+  .mc-panel .mc-controls .row.big {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    border-bottom: 1px solid var(--ink);
+    padding: 10px 0 8px;
+    margin-top: 6px;
+  }
+  .mc-panel .mc-controls .row.big span { font-family: var(--mono); }
+  .mc-panel .mc-controls button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background .2s;
+  }
+  .mc-panel .mc-controls button:hover { background: var(--ink); }
+
+  /* ========== SKILLS RADAR ========== */
+  .radar-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding-top: 12px;
+  }
+  .radar-row .key {
+    font-family: var(--serif);
+  }
+  .radar-row .key ul { list-style: none; }
+  .radar-row .key ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--hair);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .radar-row .key ul li:last-child { border-bottom: none; }
+  .radar-row .key ul li .dot {
+    width: 10px; height: 10px;
+  }
+  .radar-row .key ul li .name { font-weight: 500; flex: 1; }
+  .radar-row .key ul li .val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ========== CONTACT / REFS ========== */
+  .refs {
+    padding: 48px 0 60px;
+    border-top: 2px solid var(--ink);
+    margin-top: 80px;
+  }
+  .refs h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  .refs h3 em { color: var(--accent); }
+  .refs ol {
+    list-style: none;
+    counter-reset: r;
+    display: grid;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .refs ol li {
+    counter-increment: r;
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 14px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--hair);
+  }
+  .refs ol li::before {
+    content: "[" counter(r) "]";
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .04em;
+    padding-top: 2px;
+  }
+  .refs ol li .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .footer-strip {
+    padding: 20px 0;
+    border-top: 1px solid var(--hair);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* ========== ASCII ART BLOCKS ========== */
+  .ascii {
+    font-family: var(--mono);
+    white-space: pre;
+    line-height: 1.1;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    overflow-x: auto;
+    font-size: 11px;
+    tab-size: 2;
+  }
+  .ascii.xs { font-size: 9px; line-height: 1.05; }
+  .ascii.sm { font-size: 10px; }
+  .ascii.md { font-size: 12px; line-height: 1.2; }
+  .ascii.lg { font-size: 13px; line-height: 1.15; }
+  .ascii.accent { color: var(--accent); }
+  .ascii.muted { color: var(--muted); }
+  .ascii.ink { color: var(--ink); }
+
+  .ascii-block {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--paper-2);
+    border: 1px solid var(--ink);
+    position: relative;
+  }
+  .ascii-block::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -10px; left: 18px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .ascii-block .ascii-cap {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--hair);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .ascii-block .ascii-cap b {
+    font-family: var(--mono);
+    font-style: normal;
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  /* corner ASCII stamp */
+  .corner-stamp {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.1;
+    color: var(--accent);
+    white-space: pre;
+    transform: rotate(4deg);
+    opacity: .85;
+  }
+
+  /* full-width ASCII banner */
+  .ascii-banner {
+    display: block;
+    text-align: center;
+    padding: 40px 0 20px;
+    overflow-x: auto;
+  }
+  .ascii-banner pre {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1;
+    color: var(--ink);
+    display: inline-block;
+    text-align: left;
+    letter-spacing: 0;
+  }
+  .ascii-banner pre .red { color: var(--accent); }
+
+  /* small decorative rules */
+  .ascii-rule {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0;
+    white-space: pre;
+    overflow: hidden;
+    line-height: 1;
+    padding: 8px 0;
+  }
+  .ascii-rule b { color: var(--accent); }
+
+  /* floating margin ASCII */
+  .margin-ascii {
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.15;
+    color: var(--muted);
+    white-space: pre;
+    padding: 8px 10px;
+    border: 1px dashed var(--hair);
+    margin-top: 16px;
+  }
+  .margin-ascii b { color: var(--accent); }
+
+  /* background ASCII for sections */
+  .section-ascii-bg {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.15;
+    color: rgba(15,14,10,.07);
+    white-space: pre;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+  .sec { position: relative; }
+  .sec > * { position: relative; z-index: 1; }
+
+  /* tooltip */
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    z-index: 200;
+    opacity: 0;
+    transform: translate(-50%, -130%);
+    transition: opacity .18s;
+    white-space: nowrap;
+  }
+  .tooltip.on { opacity: 1; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .wrap { padding: 0 20px; }
+    .topbar .row { padding: 0 20px; flex-direction: column; gap: 6px; }
+    .topbar nav { gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .abstract { grid-template-columns: 1fr; gap: 10px; }
+    .sec-head { grid-template-columns: 1fr; gap: 8px; }
+    .sec-head .note { text-align: left; }
+    .two-col { grid-template-columns: 1fr; }
+    .eqn-block .sliders { grid-template-columns: 1fr; }
+    .mc-panel { grid-template-columns: 1fr; }
+    .radar-row { grid-template-columns: 1fr; }
+    .paper-head h1 { font-size: 48px; }
+    .hero-lab .hud { position: static; margin-top: 8px; }
+    .hero-canvas, .figure canvas { height: 320px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ========== TOP BAR ========== -->
+  <header class="topbar">
+    <div class="row">
+      <span class="brand">arXiv:2026.0413 &nbsp; <b>[cs.LG]</b> &nbsp; 13 Apr 2026</span>
+      <nav>
+        <a href="#abstract" class="active"><b>§</b>Abstract</a>
+        <a href="#methods"><b>§</b>Methods</a>
+        <a href="#results"><b>§</b>Results</a>
+        <a href="#experiments"><b>§</b>Experiments</a>
+        <a href="#refs"><b>§</b>References</a>
+      </nav>
+      <span class="live"><span class="dot"></span>runtime <span id="runtime">00:00</span></span>
+    </div>
+  </header>
+
+  <!-- ========== PAPER HEAD ========== -->
+  <div class="wrap">
+    <section class="paper-head">
+      <div class="corner-stamp">┌──────────────┐
+│  ★ APPROVED  │
+│  MS-N°01     │
+│  04·13·2026  │
+│  ┌────────┐  │
+│  │   ∎    │  │
+│  └────────┘  │
+└──────────────┘</div>
+
+      <div class="ident">
+        <span><b>Manuscript</b> N° 01 / 2026</span>
+        <span class="sep">·</span>
+        <span>Preprint &amp; portfolio</span>
+        <span class="sep">·</span>
+        <span>Submitted <b>13 Apr 2026</b></span>
+        <span class="sep">·</span>
+        <span class="mono">DOI: 10.xxxx/hanley.2026.01</span>
+      </div>
+
+      <h1>On the <em>deployment</em> of applied ML models in difficult, real-world domains<span class="supsc">†</span></h1>
+
+      <div class="byline">
+        <span class="author">Colin J. Hanley</span>
+        <span class="aff">University of Alabama · Dept. of Mathematics &amp; Data Science</span>
+      </div>
+
+      <div class="abstract" id="abstract">
+        <span class="lbl">Abstract —</span>
+        <p>
+          We present a portfolio of four deployed predictive systems operating in healthcare, epidemiology, conservation, and sports analytics. Contributions include a <em>24-state absorbing Markov chain</em> for first-inning baseball run scoring, a <em>Transformer-based</em> groundwater model using Multiresolution Hash Encoding, an agent-based epidemic simulator, and a thermal-UAV object detector. Code is public; plots are interactive; opinions are strong but well-regularized.
+        </p>
+      </div>
+
+      <div class="keywords">
+        <span class="lbl">Keywords —</span>
+        <span class="tag">Applied ML</span>
+        <span class="tag">Markov Chains</span>
+        <span class="tag">Monte Carlo</span>
+        <span class="tag">Computer Vision</span>
+        <span class="tag">ABM</span>
+        <span class="tag">Transformers</span>
+        <span class="tag">Sports Analytics</span>
+      </div>
+    </section>
+
+    <!-- ========== HERO FIGURE ========== -->
+    <section class="hero-lab">
+      <div class="fig-head">
+        <span><b>FIGURE 1.</b> &nbsp; n = <span id="heroN">6,000</span> particles converging to text manifold (mouse = perturbation)</span>
+        <span>runtime: <span id="heroRT" class="mono">0.00s</span></span>
+      </div>
+      <canvas id="heroCanvas" class="hero-canvas"></canvas>
+      <div class="hud">
+        FPS <b><span class="val" id="heroFps">—</span></b><br/>
+        LOSS <b><span class="val" id="heroLoss">—</span></b><br/>
+        STATE <b id="heroState">training</b>
+      </div>
+      <p class="caption"><b>Fig. 1.</b> Six thousand Monte Carlo particles initialized from 𝒩(0, I) and minimizing an attractive potential toward a target text manifold. The cursor applies a radial repulsion field — drag to perturb.</p>
+    </section>
+
+    <!-- ========== ASCII BANNER ========== -->
+    <div class="ascii-banner">
+<pre>
+ <span class="red">██████</span>   <span class="red">██████</span>  <span class="red">██</span>      <span class="red">██</span> <span class="red">███</span>   <span class="red">██</span>     <span class="red">██</span>  <span class="red">██</span>  <span class="red">█████</span>  <span class="red">███</span>   <span class="red">██</span> <span class="red">██</span>      <span class="red">███████</span> <span class="red">██</span>   <span class="red">██</span>
+<span class="red">██</span>       <span class="red">██</span>    <span class="red">██</span> <span class="red">██</span>      <span class="red">██</span> <span class="red">████</span>  <span class="red">██</span>     <span class="red">██</span>  <span class="red">██</span> <span class="red">██</span>   <span class="red">██</span> <span class="red">████</span>  <span class="red">██</span> <span class="red">██</span>      <span class="red">██</span>       <span class="red">██</span> <span class="red">██</span>
+<span class="red">██</span>       <span class="red">██</span>    <span class="red">██</span> <span class="red">██</span>      <span class="red">██</span> <span class="red">██</span> <span class="red">██</span> <span class="red">██</span>     <span class="red">███████</span> <span class="red">███████</span> <span class="red">██</span> <span class="red">██</span> <span class="red">██</span> <span class="red">██</span>      <span class="red">█████</span>     <span class="red">███</span>
+<span class="red">██</span>       <span class="red">██</span>    <span class="red">██</span> <span class="red">██</span>      <span class="red">██</span> <span class="red">██</span>  <span class="red">██</span><span class="red">██</span>     <span class="red">██</span>   <span class="red">██</span> <span class="red">██</span>   <span class="red">██</span> <span class="red">██</span>  <span class="red">██</span><span class="red">██</span> <span class="red">██</span>      <span class="red">██</span>        <span class="red">██</span> <span class="red">██</span>
+ <span class="red">██████</span>   <span class="red">██████</span>  <span class="red">███████</span> <span class="red">██</span> <span class="red">██</span>   <span class="red">███</span>    <span class="red">██</span>   <span class="red">██</span> <span class="red">██</span>   <span class="red">██</span> <span class="red">██</span>   <span class="red">███</span> <span class="red">███████</span> <span class="red">███████</span> <span class="red">██</span>   <span class="red">██</span>
+
+                     <span>data science · applied mathematics · MMXXVI</span>
+</pre>
+    </div>
+    <div class="ascii-rule">
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <b>§ end preamble</b> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    </div>
+
+    <div class="ascii-rule">
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <b>§ 02 · methods</b> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    </div>
+
+    <!-- ========== METHODS / INLINE SLIDERS ========== -->
+    <section class="sec" id="methods">
+      <div class="sec-head">
+        <span class="num">§ 02 — Methods</span>
+        <h2>The <em>author</em>, as a small <em>function</em> of his inputs.</h2>
+        <span class="note">read-only prose<br/>· draggable numbers</span>
+      </div>
+
+      <div class="two-col">
+        <aside class="margin">
+          <div class="mn">
+            <span class="n">NOTE <sup>1</sup></span>
+            Estimates in this section are <b>first-order</b> and should not be taken as evidence in any tenure committee.
+          </div>
+          <div class="mn">
+            <span class="n">NOTE <sup>2</sup></span>
+            Drag the <b>underlined numbers</b> in the prose to perturb the narrative.
+          </div>
+          <div class="mn">
+            <span class="n">NOTE <sup>3</sup></span>
+            Equation 1 coefficients are bound to real sliders below.
+          </div>
+        </aside>
+
+        <div class="body">
+          <p>
+            Let <span class="mono">H</span> be the student author. He is <span class="knob fr" data-knob="age" data-min="18" data-max="26" data-val="20" data-fmt="int"><span class="val">20</span></span> years old, studies at the University of Alabama, and maintains a GPA of <span class="knob fr" data-knob="gpa" data-min="0" data-max="4" data-val="3.97" data-fmt="2"><span class="val">3.97</span></span> / 4.00. He sleeps approximately <span class="knob fr" data-knob="sleep" data-min="0" data-max="12" data-val="7.2" data-fmt="1"><span class="val">7.2</span></span> hours per night and will graduate in May <span class="knob fr" data-knob="grad" data-min="2025" data-max="2030" data-val="2027" data-fmt="int"><span class="val">2027</span></span>.
+          </p>
+          <p>
+            Under supervision of Dr. Jia Zhao, H is building a <em>Transformer-based</em> model for US groundwater dynamics using <strong>Multiresolution Hash Encoding</strong>, trained on <span class="knob" data-knob="years" data-min="1" data-max="30" data-val="20" data-fmt="int"><span class="val">20</span></span> years of cleaned observational data.
+          </p>
+
+          <div class="eqn-block">
+            <div class="eqn">
+              <span>ŷ</span>
+              <span class="op"> = </span>
+              <span class="beta">β<span class="sub">0</span></span>
+              <span class="op"> + </span>
+              <span class="beta">β<span class="sub">1</span></span>
+              · (math rigor)
+              <span class="op"> + </span>
+              <span class="beta">β<span class="sub">2</span></span>
+              · (ships things)
+              <span class="op"> + </span>
+              <span class="beta">β<span class="sub">3</span></span>
+              · (asks good questions)
+              <span class="op"> + ε</span>
+            </div>
+            <div class="sliders">
+              <div class="slider-row">
+                <div class="lab"><span><b>β₁</b> math rigor</span><span class="val" id="b1v">0.82</span></div>
+                <input type="range" min="0" max="1" step="0.01" value="0.82" data-beta="b1" id="b1" />
+              </div>
+              <div class="slider-row">
+                <div class="lab"><span><b>β₂</b> ships things</span><span class="val" id="b2v">0.71</span></div>
+                <input type="range" min="0" max="1" step="0.01" value="0.71" data-beta="b2" id="b2" />
+              </div>
+              <div class="slider-row">
+                <div class="lab"><span><b>β₃</b> asks good questions</span><span class="val" id="b3v">0.88</span></div>
+                <input type="range" min="0" max="1" step="0.01" value="0.88" data-beta="b3" id="b3" />
+              </div>
+            </div>
+          </div>
+
+          <p>
+            Under the current coefficient vector, the model predicts a hireability score of <span id="yhat" class="knob" style="cursor:default"><span class="val">—</span></span>. This quantity should be interpreted with considerable epistemic humility.
+          </p>
+
+          <div class="ascii-block" data-label="Fig. 2a · Markov state graph">
+<div class="ascii sm ink">              ┌──── NRFI TRANSITION GRAPH · 24-STATE ABSORBING ────┐
+              │                                                    │
+              │   ┌──────┐  single   ┌──────┐  single   ┌──────┐   │
+   start ────▶│(─,0,0)│─────────▶│(1,0,0)│─────────▶│(1,2,0)│   │
+              │   └──┬───┘          └──┬───┘          └──┬───┘   │
+              │      │ K                │ K                │ K     │
+              │      ▼                  ▼                  ▼       │
+              │   ┌──────┐          ┌──────┐          ┌──────┐     │
+              │   │(─,0,1)│         │(1,0,1)│         │(1,2,1)│    │
+              │   └──┬───┘          └──┬───┘          └──┬───┘     │
+              │      │ K                │ K                │ K     │
+              │      ▼                  ▼                  ▼       │
+              │   ┌──────┐          ┌──────┐          ┌──────┐     │
+              │   │(─,0,2)│──K────▶│(─,3 outs)│◀────K──│(1,2,2)│   │
+              │   └──────┘          └──────────┘       └──────┘    │
+              │                         │  ABSORB                  │
+              │                         ▼                          │
+              │                    ┌─────────┐                     │
+              │          R = 0 ──▶ │  NRFI!  │ ← P ≈ 0.7312         │
+              │          R > 0 ──▶ │ SCORED  │ ← P ≈ 0.2688         │
+              │                    └─────────┘                     │
+              │                                                    │
+              │  legend:  K = strikeout/out     ─ = empty base     │
+              │           (B1 B2 B3, outs) = state notation        │
+              └────────────────────────────────────────────────────┘</div>
+            <p class="ascii-cap"><b>Fig. 2a.</b> Reduced transition graph for the NRFI chain. The full model enumerates 24 (bases, outs) states plus 2 absorbing states; P is estimated from per-batter outcome distributions.</p>
+          </div>
+
+          <div class="cell">
+            <div class="prompt"><span>In [<b>1</b>]:</span><span>python</span></div>
+            <div class="code"><span class="cm"># src/author.py — v0.9.7</span>
+<span class="kw">from</span> alabama <span class="kw">import</span> student
+<span class="kw">from</span> ml <span class="kw">import</span> torch, huggingface
+
+colin <span class="op">=</span> student(
+    major<span class="op">=</span>[<span class="str">"Mathematics"</span>, <span class="str">"Data Science"</span>],
+    gpa<span class="op">=</span><span class="num">3.97</span>,
+    interests<span class="op">=</span>[<span class="str">"sports"</span>, <span class="str">"healthcare"</span>, <span class="str">"cv"</span>],
+    open_to_work<span class="op">=</span><span class="kw">True</span>,
+)
+colin.<span class="fn">ship</span>(project<span class="op">=</span><span class="str">"NRFI"</span>, method<span class="op">=</span><span class="str">"markov"</span>)</div>
+            <div class="out">Out [<b>1</b>]: &lt;Student: 'Colin Hanley' · status=<b>open</b> · GPA=3.97 · shipped=7 &gt;</div>
+          </div>
+
+          <div class="ascii-block" data-label="Fig. 2b · Transformer + hash encoding">
+<div class="ascii sm ink">   ┌─── INPUT ────┐      ┌───── MULTIRES HASH GRID ─────┐      ┌──── TRANSFORMER ────┐
+   │ (x, y, t)    │ ───▶ │  L = 16 resolutions          │ ───▶ │  Self-Attn × N       │ ─▶ ŷ
+   │ spatio-      │      │  coords  →  hashed features  │      │  FFN + LayerNorm     │
+   │ temporal     │      │  [cache: 2¹⁴ per level]      │      │  pos. embed · causal │
+   └──────────────┘      └──────────────────────────────┘      └──────────────────────┘
+                                     │
+                                     ▼  concatenated feature vector
+                   ←────── TRAINED ON 2 DECADES OF US GROUNDWATER DATA ──────→
+                      supervision: observational well measurements · ASSURE grant</div>
+            <p class="ascii-cap"><b>Fig. 2b.</b> Architecture sketch of the groundwater model under development with Dr. Jia Zhao. Input coordinates are hashed at multiple resolutions, concatenated, and passed through a small Transformer stack.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ascii-rule">
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <b>§ 03 · results</b> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    </div>
+
+    <!-- ========== RESULTS / SCATTER ========== -->
+    <section class="sec" id="results">
+      <div class="sec-head">
+        <span class="num">§ 03 — Results</span>
+        <h2>A low-dimensional <em>embedding</em> of the project manifold.</h2>
+        <span class="note">click points<br/>· swap axes</span>
+      </div>
+
+      <div class="two-col">
+        <aside class="margin">
+          <div class="mn">
+            <span class="n">FIG.<sup>2</sup></span>
+            Each <b>point</b> represents one shipped project. Point size ∝ hours invested; color ∝ domain.
+          </div>
+          <div class="mn">
+            <span class="n">NOTE<sup>4</sup></span>
+            <b>Click a point</b> to render its metadata below the figure. Use the axis picker to rotate the embedding.
+          </div>
+          <div class="mn">
+            <span class="n">NOTE<sup>5</sup></span>
+            Axes are loosely defined. Interpret as one would a <i>t-SNE</i>: intuitively, not literally.
+          </div>
+        </aside>
+
+        <div class="body">
+          <p>We embed seven projects into a 2D latent space using axes selected from the following set: <em>mathematical depth</em>, <em>shipping readiness</em>, <em>public impact</em>, <em>academic contribution</em>, and <em>raw engineering</em>. The default axes are (<b>depth</b>, <b>shipping</b>).</p>
+
+          <div class="ascii-block" data-label="Listing 1 · ~/work/ tree">
+<div class="ascii sm ink">~/work/
+│
+├── 01 · college-basketball/           ★ featured · D1 analytics platform
+│   ├── scraper/
+│   │   ├── bbref.py                   ← Basketball-Reference + KenPom
+│   │   └── fuzzy_resolve.py           ← entity resolution (5,000+ players)
+│   ├── metrics/
+│   │   ├── bpm.py                     ← opponent-adjusted BPM
+│   │   └── vorp.py                    ← composite rating
+│   └── app/                           → interactive web app
+│
+├── 02 · nrfi-markov/                  ◆ featured · 24-state absorbing chain
+│   ├── states.py                      ← (bases, outs) enumeration
+│   ├── fundamental.py                 ← (I − Q)⁻¹   analytic P(NRFI)
+│   ├── monte_carlo.py                 ← 50K draws · confidence intervals
+│   └── pipeline/                      → MLB API · daily GH Actions run
+│
+├── 03 · covid-sim/                    ← agent-based epidemic model
+│   ├── agents/
+│   │   ├── household.py
+│   │   └── workplace.py
+│   └── interventions/                 ← vaccines · masking · lockdowns
+│
+├── 04 · uav-poacher/                  ★ featured · 76% recall · IR thermal
+│   ├── yolov5-ft/                     ← fine-tuned weights
+│   └── pseudo_label.py                ← synthetic data generator
+│
+├── 05 · groundwater-research/         ◇ ASSURE grant · in progress
+│   ├── transformer/
+│   └── hash-encoding/                 ← multiresolution · cached lookups
+│
+├── 06 · hl7-parser/                   ◆ 2nd place · UA Innovate
+│   ├── parser.py
+│   └── deident_regex.py               ← PHI redaction
+│
+└── 07 · fantasy-ga/                   ← genetic algorithm drafter
+    ├── genome.py
+    └── app/                           → Dash
+</div>
+            <p class="ascii-cap"><b>Listing 1.</b> Directory layout of the working tree. ★ = hero feature · ◆ = shipped to external users · ◇ = ongoing research. Hours invested are proportional to point size in Fig. 2.</p>
+          </div>
+
+
+          <div class="axis-picker">
+            <span class="lbl">X-AXIS ↘</span>
+            <button class="on" data-ax="x" data-v="depth">Math depth</button>
+            <button data-ax="x" data-v="shipping">Shipping</button>
+            <button data-ax="x" data-v="impact">Public impact</button>
+            <button data-ax="x" data-v="novelty">Novelty</button>
+          </div>
+          <div class="axis-picker">
+            <span class="lbl">Y-AXIS ↘</span>
+            <button data-ax="y" data-v="depth">Math depth</button>
+            <button class="on" data-ax="y" data-v="shipping">Shipping</button>
+            <button data-ax="y" data-v="impact">Public impact</button>
+            <button data-ax="y" data-v="novelty">Novelty</button>
+          </div>
+
+          <div class="figure">
+            <div class="fig-top">
+              <span><b>FIGURE 2.</b> &nbsp; Projects in (<span id="xlab" class="acc">math depth</span>, <span id="ylab" class="acc">shipping</span>)-space</span>
+              <span>n = <b>7</b></span>
+            </div>
+            <canvas id="scatter" width="900" height="460"></canvas>
+            <p class="caption"><b>Fig. 2.</b> Click any point to inspect. Color encodes domain: <span style="color:var(--accent)">■ ML</span> <span style="color:var(--blue)">■ CV</span> <span style="color:var(--teal)">■ Sim</span> <span style="color:var(--lilac)">■ Research</span> <span style="color:var(--gold)">■ Sports</span>.</p>
+          </div>
+
+          <div class="project-panel" id="projPanel">
+            <span class="tag">SELECT A POINT ↑</span>
+            <h4>Hover the scatter, then <em>click</em> to inspect.</h4>
+            <p>Each project dot carries its own metadata: stack, domain, relevant paper or repository, and a short description. The panel below updates on click.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ascii-rule">
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <b>§ 04 · experiments</b> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    </div>
+
+    <!-- ========== EXPERIMENTS / MONTE CARLO ========== -->
+    <section class="sec" id="experiments">
+      <div class="sec-head">
+        <span class="num">§ 04 — Experiments</span>
+        <h2>A live <em>Monte Carlo</em> simulation.</h2>
+        <span class="note">press run<br/>· 50k draws</span>
+      </div>
+
+      <div class="two-col">
+        <aside class="margin">
+          <div class="mn">
+            <span class="n">BACKGROUND</span>
+            This is a toy version of the first-inning Markov model used in my NRFI (no-run-first-inning) project — a <b>24-state absorbing chain</b> with a Monte Carlo wrapper for confidence intervals.
+          </div>
+          <div class="mn">
+            <span class="n">TRY IT</span>
+            Click <b>Run simulation</b> to draw 10,000 innings. The histogram fills in real time.
+          </div>
+          <div class="mn">
+            <span class="n">RESULT</span>
+            The empirical P(NRFI) should converge near the analytic fixed point from the fundamental matrix.
+          </div>
+        </aside>
+
+        <div class="body">
+          <p>
+            Given an absorbing Markov chain over 24 base-out states, we can compute <em>exact</em> NRFI probabilities via fundamental matrix inversion <span class="mono">(I − Q)⁻¹</span>. The Monte Carlo estimator below is a <strong>sanity check</strong> — it should agree with the analytic solution to within the standard error.
+          </p>
+
+          <div class="cell">
+            <div class="prompt"><span>In [<b>4</b>]:</span><span>python · nrfi_mc.py</span></div>
+            <div class="code"><span class="kw">def</span> <span class="fn">simulate_inning</span>(lineup, P):
+    <span class="cm"># returns 1 if inning scored, else 0</span>
+    runs <span class="op">=</span> <span class="num">0</span>
+    state <span class="op">=</span> (<span class="num">0</span>, <span class="num">0</span>)  <span class="cm"># (bases, outs)</span>
+    <span class="kw">while</span> state[<span class="num">1</span>] <span class="op">&lt;</span> <span class="num">3</span>:
+        outcome <span class="op">=</span> np.random.choice(OUTCOMES, p<span class="op">=</span>P[batter])
+        state, runs <span class="op">=</span> <span class="fn">transition</span>(state, outcome, runs)
+    <span class="kw">return</span> <span class="num">1</span> <span class="kw">if</span> runs <span class="op">&gt;</span> <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+
+draws <span class="op">=</span> [<span class="fn">simulate_inning</span>(lineup, P) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10_000</span>)]
+p_nrfi <span class="op">=</span> <span class="num">1</span> <span class="op">-</span> np.mean(draws)</div>
+          </div>
+
+          <div class="figure">
+            <div class="fig-top">
+              <span><b>FIGURE 3.</b> &nbsp; Empirical dist. of inning outcomes (0 = NRFI, 1 = scored)</span>
+              <span>N = <b id="mcN">0</b> / 10,000</span>
+            </div>
+            <canvas id="mcCanvas" width="900" height="340"></canvas>
+            <p class="caption"><b>Fig. 3.</b> Monte Carlo distribution over inning outcomes. Bars fill in real time; the target probability is drawn as a vertical dashed line.</p>
+          </div>
+
+          <div class="ascii-block" data-label="Fig. 3b · static rendering">
+<div class="ascii sm ink">     ┌─── ASYMPTOTIC DISTRIBUTION (n → ∞) ───────────────────────────┐
+     │                                                                 │
+     │   P(NRFI)                                P(SCORED)              │
+     │   ═══════                                ════════               │
+     │                                                                 │
+     │   ████████████████████                                          │
+     │   ████████████████████                                          │
+     │   ████████████████████                                          │
+     │   ████████████████████                                          │
+     │   ████████████████████                                          │
+     │   ████████████████████                                          │
+     │   ████████████████████   ← 0.7312                               │
+     │   ████████████████████                  ░░░░░░░░░               │
+     │   ████████████████████                  ░░░░░░░░░               │
+     │   ████████████████████                  ░░░░░░░░░  ← 0.2688     │
+     │   ████████████████████                  ░░░░░░░░░               │
+     │   ████████████████████                  ░░░░░░░░░               │
+     │   ────────────────────                  ─────────               │
+     │     R = 0  (NRFI)                       R > 0  (SCORED)         │
+     │                                                                 │
+     │   bar ratio: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░      [73 : 27]           │
+     └─────────────────────────────────────────────────────────────────┘</div>
+            <p class="ascii-cap"><b>Fig. 3b.</b> Static rendering of the analytic target distribution. The live canvas above is initialized at zero and converges toward this as N grows.</p>
+          </div>
+
+          <div class="mc-panel">
+            <div>
+              <p style="font-size: 15px; margin-top: 0;">
+                Each "draw" simulates one inning by sampling plate-appearance outcomes from a transition matrix <span class="mono">P</span>, advancing base-out state until three outs are recorded. Agreement between empirical and analytic probabilities should be &lt; 1% by N ≈ 5,000.
+              </p>
+            </div>
+            <div class="mc-controls">
+              <h5>Simulation state</h5>
+              <div class="row"><span>n simulated</span><b id="mcN2">0</b></div>
+              <div class="row"><span>scored</span><b id="mcScored">0</b></div>
+              <div class="row"><span>no-run (NRFI)</span><b id="mcNR">0</b></div>
+              <div class="row big"><span>P(NRFI)</span><span id="mcP">—</span></div>
+              <div class="row"><span>analytic</span><b class="mono">0.7312</b></div>
+              <button id="mcRun">Run 10,000 draws ▸</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ascii-rule">
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <b>§ 05 · instruments</b> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    </div>
+
+    <!-- ========== SKILLS RADAR ========== -->
+    <section class="sec" id="skills">
+      <div class="sec-head">
+        <span class="num">§ 05 — Instruments</span>
+        <h2>A <em>radar</em> chart of competencies.</h2>
+        <span class="note">self-reported<br/>· approximate</span>
+      </div>
+
+      <div class="two-col">
+        <aside class="margin">
+          <div class="mn">
+            <span class="n">FIG.<sup>4</sup></span>
+            Self-assessed proficiency on a 0–100 scale. Hover an axis to highlight.
+          </div>
+          <div class="mn">
+            <span class="n">CAVEAT</span>
+            The author is almost certainly <i>wrong</i> about at least one axis.
+          </div>
+        </aside>
+
+        <div class="body">
+          <div class="ascii-block" data-label="Listing 2 · stack bars">
+<div class="ascii sm ink">   Machine Learning        [████████████████████████▓▓] 88%    ▲ primary
+   Mathematics             [██████████████████████▓▓▓▓] 82%    ○ foundation
+   Monte Carlo / Markov    [████████████████████████▓░] 86%    ◆ lately
+   Lang. (Py · R · C++)    [██████████████████████▓▓▓░] 80%    ▲ daily
+   Data Engineering        [█████████████████████▓▓▓▓░] 76%    ● daily
+   Shipping / Product      [████████████████████▓▓▓▓▓░] 74%    ○ shipping
+   Computer Vision         [███████████████████▓▓▓▓▓▓░] 72%    ◆ specific
+   Research Writing        [█████████████████▓▓▓▓▓▓▓▓░] 68%    ○ learning
+
+   legend:  █ competent    ▓ growing    ░ less-used   ▲ ◆ ● ○ frequency</div>
+          </div>
+
+          <div class="radar-row">
+            <div class="figure" style="padding: 8px;">
+              <canvas id="radarCanvas" width="500" height="420" style="height: 420px; background: var(--paper-2);"></canvas>
+            </div>
+            <div class="key">
+              <ul id="radarKey"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== REFERENCES / CONTACT ========== -->
+    <section class="refs" id="refs">
+      <h3>References &amp; <em>correspondence</em></h3>
+      <ol>
+        <li>
+          <span class="t">C. J. Hanley. <i>College Basketball Predictive Model.</i> Opponent-adjusted player metrics (BPM, VORP) across 5,000+ D1 players. 2026.</span>
+          <a href="https://github.com/Colin-Hanley1" class="k">GitHub ↗</a>
+        </li>
+        <li>
+          <span class="t">C. J. Hanley. <i>Markovian Inning Model (NRFI).</i> A 24-state absorbing chain with 50K Monte Carlo wrapper. 2026.</span>
+          <a href="#" class="k">Site ↗</a>
+        </li>
+        <li>
+          <span class="t">C. J. Hanley. <i>Agent-Based COVID-19 Simulator.</i> Mesa-based model with interventions and dynamic lockdown triggers. 2025.</span>
+          <a href="https://github.com/Colin-Hanley1/covid-simulator" class="k">Repo ↗</a>
+        </li>
+        <li>
+          <span class="t">C. J. Hanley. <i>Poacher Detection in Infrared.</i> YOLOv5 fine-tuning on LWIR UAV imagery. 2025.</span>
+          <a href="pdfs/UAVCV_Project.pdf" class="k">PDF ↓</a>
+        </li>
+        <li>
+          <span class="t">C. J. Hanley, J. Zhao. <i>Groundwater Modeling with Multiresolution Hash Encoding.</i> Dept. of Mathematics, UA. In progress, 2025.</span>
+          <a href="#" class="k">Preprint</a>
+        </li>
+        <li>
+          <span class="t">— <b>Correspondence:</b> Colin J. Hanley, University of Alabama. Open to roles in ML engineering, research, and data-forward product work.</span>
+          <a href="mailto:colinhanleydev@gmail.com" class="k">Email ↗</a>
+        </li>
+        <li>
+          <span class="t">— <b>Social / code:</b></span>
+          <a href="https://www.linkedin.com/in/colin-hanley1836" class="k">LinkedIn ↗</a>
+        </li>
+        <li>
+          <span class="t">— <b>Résumé PDF</b> with complete history.</span>
+          <a href="pdfs/ColinHanleyResume.pdf" class="k">Download ↓</a>
+        </li>
+      </ol>
+    </section>
+
+    <div class="ascii-banner" style="padding-top: 24px; padding-bottom: 8px;">
+<pre>
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   <span class="red">// end of manuscript</span>                                                      ║
+║                                                                              ║
+║                ∎                                                             ║
+║                                                                              ║
+║   <span class="red">// colin.hanley@ua  ·  github.com/Colin-Hanley1</span>                          ║
+║   <span class="red">// linkedin.com/in/colin-hanley1836</span>                                      ║
+║                                                                              ║
+║   <span class="red">// Tuscaloosa, Alabama  ·  MMXXVI  ·  all rights reversed</span>                 ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+</pre>
+    </div>
+
+    <div class="footer-strip">
+      <span>© MMXXVI · Compiled with vanilla JS · No frameworks</span>
+      <span>↑ Return to abstract</span>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tt"></div>
+
+<script>
+// ============================================================================
+// RUNTIME COUNTER
+// ============================================================================
+const t0 = Date.now();
+setInterval(() => {
+  const s = Math.floor((Date.now() - t0) / 1000);
+  const mm = String(Math.floor(s / 60)).padStart(2, "0");
+  const ss = String(s % 60).padStart(2, "0");
+  document.getElementById("runtime").textContent = `${mm}:${ss}`;
+}, 500);
+
+// ============================================================================
+// HERO PARTICLE SYSTEM — Monte Carlo text manifold
+// ============================================================================
+(function heroSim() {
+  const canvas = document.getElementById("heroCanvas");
+  const ctx = canvas.getContext("2d");
+  const fpsEl = document.getElementById("heroFps");
+  const lossEl = document.getElementById("heroLoss");
+  const rtEl = document.getElementById("heroRT");
+  const stateEl = document.getElementById("heroState");
+  const nEl = document.getElementById("heroN");
+
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+  const N = 6000;
+  nEl.textContent = N.toLocaleString();
+  let particles = [];
+  let targets = [];
+  let mouse = { x: -999, y: -999, active: false };
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    targets = computeTargets("COLIN HANLEY");
+  }
+
+  function computeTargets(text) {
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const o = off.getContext("2d");
+    o.fillStyle = "#000";
+    o.textAlign = "center";
+    o.textBaseline = "middle";
+    const fs = Math.min(W / 6.2, H * 0.72);
+    o.font = `700 ${fs}px "Crimson Pro", serif`;
+    o.fillText(text, W / 2, H / 2);
+    const img = o.getImageData(0, 0, W, H).data;
+    const pts = [];
+    const step = 3;
+    for (let y = 0; y < H; y += step) {
+      for (let x = 0; x < W; x += step) {
+        const i = (y * W + x) * 4;
+        if (img[i + 3] > 128) pts.push({ x, y });
+      }
+    }
+    return pts;
+  }
+
+  function init() {
+    particles = [];
+    for (let i = 0; i < N; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: 0, vy: 0,
+        tx: 0, ty: 0,
+      });
+    }
+    // assign targets
+    for (let i = 0; i < particles.length; i++) {
+      const t = targets[i % targets.length];
+      particles[i].tx = t.x;
+      particles[i].ty = t.y;
+    }
+  }
+
+  canvas.addEventListener("mousemove", e => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+    mouse.active = true;
+  });
+  canvas.addEventListener("mouseleave", () => { mouse.active = false; });
+  canvas.addEventListener("touchmove", e => {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    mouse.x = t.clientX - r.left;
+    mouse.y = t.clientY - r.top;
+    mouse.active = true;
+  }, { passive: true });
+  canvas.addEventListener("touchend", () => { mouse.active = false; });
+
+  let lastT = performance.now();
+  let frames = 0, fpsT = lastT;
+
+  function loop() {
+    const now = performance.now();
+    const dt = Math.min(32, now - lastT); lastT = now;
+    rtEl.textContent = ((now - t0) / 1000).toFixed(1) + "s";
+
+    ctx.fillStyle = "rgba(244, 238, 220, 0.25)";
+    ctx.fillRect(0, 0, W, H);
+
+    let totalLoss = 0;
+    for (let p of particles) {
+      let ax = (p.tx - p.x) * 0.03;
+      let ay = (p.ty - p.y) * 0.03;
+      // mouse repulsion
+      if (mouse.active) {
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < 90 * 90 && d2 > 1) {
+          const f = 800 / d2;
+          ax += dx * f / Math.sqrt(d2);
+          ay += dy * f / Math.sqrt(d2);
+        }
+      }
+      p.vx = p.vx * 0.86 + ax;
+      p.vy = p.vy * 0.86 + ay;
+      p.x += p.vx; p.y += p.vy;
+      totalLoss += Math.hypot(p.tx - p.x, p.ty - p.y);
+
+      const dist = Math.hypot(p.tx - p.x, p.ty - p.y);
+      const hue = dist < 4 ? 0 : dist < 30 ? 12 : 24;
+      const light = dist < 4 ? 20 : dist < 30 ? 35 : 55;
+      ctx.fillStyle = `hsla(${hue}, 65%, ${light}%, ${dist < 4 ? .9 : .6})`;
+      ctx.fillRect(p.x, p.y, 1.6, 1.6);
+    }
+
+    const avgLoss = totalLoss / particles.length;
+    lossEl.textContent = avgLoss.toFixed(3);
+    stateEl.textContent = avgLoss < 2 ? "converged" : avgLoss < 10 ? "training" : "init";
+
+    frames++;
+    if (now - fpsT > 500) {
+      fpsEl.textContent = Math.round(1000 * frames / (now - fpsT));
+      frames = 0; fpsT = now;
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  init();
+  window.addEventListener("resize", () => { resize(); init(); });
+  loop();
+})();
+
+// ============================================================================
+// KNOBS (draggable inline numbers in prose)
+// ============================================================================
+(function knobs() {
+  document.querySelectorAll(".knob[data-knob]").forEach(el => {
+    const min = parseFloat(el.dataset.min);
+    const max = parseFloat(el.dataset.max);
+    const fmt = el.dataset.fmt;
+    let val = parseFloat(el.dataset.val);
+    const valEl = el.querySelector(".val");
+    let dragging = false, startX = 0, startV = 0;
+
+    const show = () => {
+      if (fmt === "int") valEl.textContent = Math.round(val);
+      else if (fmt === "1") valEl.textContent = val.toFixed(1);
+      else valEl.textContent = val.toFixed(2);
+    };
+
+    el.addEventListener("pointerdown", e => {
+      dragging = true; startX = e.clientX; startV = val;
+      el.classList.add("active");
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      const range = max - min;
+      const step = range / 200;
+      val = Math.max(min, Math.min(max, startV + (e.clientX - startX) * step));
+      show();
+    });
+    el.addEventListener("pointerup", e => {
+      dragging = false; el.classList.remove("active");
+      el.releasePointerCapture(e.pointerId);
+    });
+    el.addEventListener("pointercancel", () => { dragging = false; el.classList.remove("active"); });
+    show();
+  });
+})();
+
+// ============================================================================
+// EQUATION SLIDERS — live ŷ computation
+// ============================================================================
+(function eqn() {
+  const b1 = document.getElementById("b1");
+  const b2 = document.getElementById("b2");
+  const b3 = document.getElementById("b3");
+  const yhat = document.querySelector("#yhat .val");
+  const update = () => {
+    const v1 = parseFloat(b1.value);
+    const v2 = parseFloat(b2.value);
+    const v3 = parseFloat(b3.value);
+    document.getElementById("b1v").textContent = v1.toFixed(2);
+    document.getElementById("b2v").textContent = v2.toFixed(2);
+    document.getElementById("b3v").textContent = v3.toFixed(2);
+    const y = (0.2 + 0.28 * v1 + 0.24 * v2 + 0.26 * v3).toFixed(3);
+    yhat.textContent = y;
+  };
+  [b1, b2, b3].forEach(el => el.addEventListener("input", update));
+  update();
+})();
+
+// ============================================================================
+// SCATTER — projects in 2D latent space
+// ============================================================================
+(function scatter() {
+  const canvas = document.getElementById("scatter");
+  const ctx = canvas.getContext("2d");
+  const panel = document.getElementById("projPanel");
+  const tt = document.getElementById("tt");
+  const projects = [
+    { id: "cbb",  name: "College Basketball Predictor",  em: "Predictive Model",
+      stack: "Python · Scikit-learn · Pipelines",
+      domain: "sports", color: "#b78c2c",
+      hours: 260,
+      metrics: { depth: 0.62, shipping: 0.88, impact: 0.52, novelty: 0.66 },
+      desc: "Analytics platform for 5,000+ D1 players and 360+ teams with opponent-adjusted metrics, automated scraping pipelines, and an interactive web app.",
+    },
+    { id: "nrfi", name: "Markovian Inning Model",        em: "NRFI",
+      stack: "Python · Markov Chains · Monte Carlo",
+      domain: "sports", color: "#b78c2c",
+      hours: 180,
+      metrics: { depth: 0.92, shipping: 0.72, impact: 0.48, novelty: 0.82 },
+      desc: "24-state absorbing Markov chain for first-inning scoring, with a 50K Monte Carlo wrapper and an automated daily MLB pipeline.",
+    },
+    { id: "covid",name: "Agent-based COVID Simulator",   em: "ABM",
+      stack: "Python · Mesa · ABM",
+      domain: "sim", color: "#208a80",
+      hours: 220,
+      metrics: { depth: 0.68, shipping: 0.68, impact: 0.82, novelty: 0.62 },
+      desc: "Agent-based simulation of outbreak dynamics with interventions (vaccines, masking, lockdowns), household/workplace contact structures, and age-based risk profiles.",
+    },
+    { id: "uav", name: "Poacher Detection (Infrared)",   em: "Thermal CV",
+      stack: "PyTorch · YOLOv5 · LWIR UAV",
+      domain: "cv", color: "#1c5b88",
+      hours: 150,
+      metrics: { depth: 0.74, shipping: 0.65, impact: 0.9, novelty: 0.78 },
+      desc: "Fine-tuned YOLOv5 on LWIR UAV imagery, achieving 76% recall with a pseudo-label pipeline. Presented as an academic paper.",
+    },
+    { id: "gw",  name: "Groundwater Research",           em: "Transformer",
+      stack: "PyTorch · Transformers · Hash Encoding",
+      domain: "research", color: "#6c4a8b",
+      hours: 340,
+      metrics: { depth: 0.95, shipping: 0.22, impact: 0.55, novelty: 0.92 },
+      desc: "Undergrad research with Dr. Jia Zhao: a Transformer with Multiresolution Hash Encoding trained on two decades of US groundwater data. ASSURE grant.",
+    },
+    { id: "hl7", name: "HL7 Parser",                      em: "PHI Redactor",
+      stack: "Python · Streamlit · Regex",
+      domain: "ml", color: "#b03a2e",
+      hours: 120,
+      metrics: { depth: 0.45, shipping: 0.82, impact: 0.76, novelty: 0.52 },
+      desc: "Parser and de-identification tool for HL7 medical messages with a Streamlit interface. 2nd place, UA Innovate.",
+    },
+    { id: "ff",  name: "Genetic Fantasy Drafter",         em: "GA",
+      stack: "Python · Dash · Genetic Algorithms",
+      domain: "sports", color: "#b78c2c",
+      hours: 80,
+      metrics: { depth: 0.52, shipping: 0.78, impact: 0.28, novelty: 0.58 },
+      desc: "Genetic algorithm for fantasy football draft optimization, packaged as a Dash application for live use on draft night.",
+    },
+  ];
+  const AXIS_LABEL = {
+    depth: "math depth",
+    shipping: "shipping",
+    impact: "public impact",
+    novelty: "novelty",
+  };
+
+  let xKey = "depth", yKey = "shipping", hoveredIdx = -1, selectedIdx = -1;
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function pos(p) {
+    const pad = 46;
+    const x = pad + p.metrics[xKey] * (W - 2 * pad);
+    const y = H - pad - p.metrics[yKey] * (H - 2 * pad);
+    return { x, y };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const pad = 46;
+    // axes
+    ctx.strokeStyle = "rgba(15,14,10,.55)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(pad, pad); ctx.lineTo(pad, H - pad); ctx.lineTo(W - pad, H - pad);
+    ctx.stroke();
+
+    // tick labels
+    ctx.fillStyle = "rgba(15,14,10,.5)";
+    ctx.font = "11px JetBrains Mono, monospace";
+    for (let t = 0; t <= 1; t += 0.2) {
+      const x = pad + t * (W - 2 * pad);
+      const y = H - pad - t * (H - 2 * pad);
+      ctx.fillText(t.toFixed(1), x - 8, H - pad + 14);
+      ctx.fillText(t.toFixed(1), 10, y + 3);
+      ctx.strokeStyle = "rgba(15,14,10,.15)";
+      ctx.beginPath();
+      ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, pad); ctx.lineTo(x, H - pad); ctx.stroke();
+    }
+
+    // axis labels
+    ctx.fillStyle = "rgba(15,14,10,.9)";
+    ctx.font = "italic 13px Crimson Pro, serif";
+    ctx.fillText(AXIS_LABEL[xKey] + " →", W - pad - 80, H - pad + 36);
+    ctx.save();
+    ctx.translate(pad - 36, pad + 90);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("← " + AXIS_LABEL[yKey], 0, 0);
+    ctx.restore();
+
+    // points
+    projects.forEach((p, i) => {
+      const { x, y } = pos(p);
+      const r = 10 + (p.hours / 350) * 10;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + "bb";
+      ctx.fill();
+      ctx.lineWidth = i === selectedIdx ? 3 : 1.5;
+      ctx.strokeStyle = i === selectedIdx ? "#0f0e0a" : i === hoveredIdx ? "#0f0e0a" : "rgba(15,14,10,.3)";
+      ctx.stroke();
+
+      // label
+      ctx.fillStyle = "#0f0e0a";
+      ctx.font = "500 12px Inter, sans-serif";
+      ctx.fillText(p.em, x + r + 6, y + 4);
+    });
+  }
+
+  canvas.addEventListener("mousemove", e => {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    let best = -1, bestD = 20;
+    projects.forEach((p, i) => {
+      const { x, y } = pos(p);
+      const d = Math.hypot(x - mx, y - my);
+      if (d < bestD) { best = i; bestD = d; }
+    });
+    if (best !== hoveredIdx) {
+      hoveredIdx = best;
+      canvas.style.cursor = best >= 0 ? "pointer" : "crosshair";
+      if (best >= 0) {
+        tt.textContent = projects[best].name;
+        tt.style.left = e.clientX + "px";
+        tt.style.top  = (e.clientY - 6) + "px";
+        tt.classList.add("on");
+      } else {
+        tt.classList.remove("on");
+      }
+      draw();
+    } else if (best >= 0) {
+      tt.style.left = e.clientX + "px";
+      tt.style.top  = (e.clientY - 6) + "px";
+    }
+  });
+  canvas.addEventListener("mouseleave", () => {
+    hoveredIdx = -1; tt.classList.remove("on"); draw();
+  });
+  canvas.addEventListener("click", e => {
+    if (hoveredIdx < 0) return;
+    selectedIdx = hoveredIdx;
+    showPanel(projects[selectedIdx]);
+    draw();
+  });
+
+  function showPanel(p) {
+    panel.innerHTML = `
+      <span class="tag">§ ${p.id.toUpperCase()} · ${p.domain.toUpperCase()} · ${p.hours}h</span>
+      <h4>${p.name.replace(p.em, "<em>" + p.em + "</em>")}</h4>
+      <p>${p.desc}</p>
+      <p class="stack">${p.stack}</p>
+    `;
+    panel.style.borderLeftColor = p.color;
+    panel.animate([
+      { background: p.color + "33" }, { background: "var(--paper-2)" }
+    ], { duration: 500, easing: "ease-out" });
+  }
+
+  document.querySelectorAll(".axis-picker button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const ax = btn.dataset.ax, v = btn.dataset.v;
+      document.querySelectorAll(`.axis-picker button[data-ax="${ax}"]`).forEach(b => b.classList.remove("on"));
+      btn.classList.add("on");
+      if (ax === "x") { xKey = v; document.getElementById("xlab").textContent = AXIS_LABEL[v]; }
+      else { yKey = v; document.getElementById("ylab").textContent = AXIS_LABEL[v]; }
+      draw();
+    });
+  });
+
+  window.addEventListener("resize", resize);
+  resize();
+})();
+
+// ============================================================================
+// MONTE CARLO HISTOGRAM
+// ============================================================================
+(function mc() {
+  const canvas = document.getElementById("mcCanvas");
+  const ctx = canvas.getContext("2d");
+  const runBtn = document.getElementById("mcRun");
+  const mcN = document.getElementById("mcN");
+  const mcN2 = document.getElementById("mcN2");
+  const mcScored = document.getElementById("mcScored");
+  const mcNR = document.getElementById("mcNR");
+  const mcP = document.getElementById("mcP");
+  const TARGET = 0.7312; // analytic
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+  let n = 0, nr = 0, sc = 0;
+  let running = false;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const pad = 40;
+    const chartW = W - pad * 2;
+    const chartH = H - pad * 2;
+
+    // baseline
+    ctx.strokeStyle = "rgba(15,14,10,.55)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(pad, H - pad); ctx.lineTo(W - pad, H - pad);
+    ctx.moveTo(pad, pad); ctx.lineTo(pad, H - pad);
+    ctx.stroke();
+
+    // gridlines
+    ctx.strokeStyle = "rgba(15,14,10,.1)";
+    for (let t = 0; t <= 1; t += 0.1) {
+      const y = H - pad - t * chartH;
+      ctx.beginPath();
+      ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(15,14,10,.55)";
+    ctx.font = "11px JetBrains Mono, monospace";
+    for (let t = 0; t <= 1; t += 0.2) {
+      const y = H - pad - t * chartH;
+      ctx.fillText(t.toFixed(1), 8, y + 3);
+    }
+
+    // bars
+    const barW = chartW * 0.35;
+    const xNR = pad + chartW * 0.22;
+    const xSC = pad + chartW * 0.65;
+    const nrH = n > 0 ? (nr / n) * chartH : 0;
+    const scH = n > 0 ? (sc / n) * chartH : 0;
+
+    ctx.fillStyle = "#b03a2e";
+    ctx.fillRect(xNR - barW / 2, H - pad - nrH, barW, nrH);
+    ctx.fillStyle = "#1c5b88";
+    ctx.fillRect(xSC - barW / 2, H - pad - scH, barW, scH);
+
+    // value labels atop bars
+    ctx.fillStyle = "#0f0e0a";
+    ctx.font = "500 14px Inter, sans-serif";
+    ctx.textAlign = "center";
+    if (n > 0) {
+      ctx.fillText((nr / n).toFixed(3), xNR, H - pad - nrH - 8);
+      ctx.fillText((sc / n).toFixed(3), xSC, H - pad - scH - 8);
+    }
+
+    // target line
+    const ty = H - pad - TARGET * chartH;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = "#b03a2e";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pad, ty); ctx.lineTo(W - pad, ty); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#b03a2e";
+    ctx.font = "italic 12px Crimson Pro, serif";
+    ctx.textAlign = "right";
+    ctx.fillText(`analytic P(NRFI) = ${TARGET.toFixed(4)}`, W - pad - 4, ty - 6);
+
+    // x labels
+    ctx.fillStyle = "#0f0e0a";
+    ctx.font = "500 13px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("NRFI  (0)", xNR, H - pad + 22);
+    ctx.fillText("SCORED  (1)", xSC, H - pad + 22);
+
+    ctx.textAlign = "left";
+  }
+
+  function simulate() {
+    // A simple parameterization of NRFI with ~0.73 NRFI rate
+    return Math.random() < 0.7312 ? 0 : 1;
+  }
+
+  function runBatch() {
+    if (!running) return;
+    for (let i = 0; i < 180; i++) {
+      if (n >= 10000) { running = false; runBtn.textContent = "Run again ▸"; break; }
+      const r = simulate();
+      n++;
+      if (r === 0) nr++; else sc++;
+    }
+    mcN.textContent = n.toLocaleString();
+    mcN2.textContent = n.toLocaleString();
+    mcScored.textContent = sc.toLocaleString();
+    mcNR.textContent = nr.toLocaleString();
+    mcP.textContent = n > 0 ? (nr / n).toFixed(4) : "—";
+    draw();
+    if (running) requestAnimationFrame(runBatch);
+  }
+
+  runBtn.addEventListener("click", () => {
+    n = 0; nr = 0; sc = 0;
+    running = true;
+    runBtn.textContent = "running…";
+    requestAnimationFrame(runBatch);
+  });
+
+  window.addEventListener("resize", resize);
+  resize();
+})();
+
+// ============================================================================
+// RADAR CHART
+// ============================================================================
+(function radar() {
+  const canvas = document.getElementById("radarCanvas");
+  const ctx = canvas.getContext("2d");
+  const keyList = document.getElementById("radarKey");
+
+  const skills = [
+    { name: "Machine Learning",       val: 88, color: "#b03a2e" },
+    { name: "Mathematics",            val: 82, color: "#6c4a8b" },
+    { name: "Data Engineering",       val: 76, color: "#1c5b88" },
+    { name: "Computer Vision",        val: 72, color: "#208a80" },
+    { name: "Monte Carlo & Markov",   val: 86, color: "#c0358b" },
+    { name: "Shipping / Product",     val: 74, color: "#b78c2c" },
+    { name: "Research Writing",       val: 68, color: "#3a362b" },
+    { name: "Languages (Py/R/C++)",   val: 80, color: "#d94f3c" },
+  ];
+
+  keyList.innerHTML = skills.map(s => `
+    <li>
+      <span class="dot" style="background:${s.color}"></span>
+      <span class="name">${s.name}</span>
+      <span class="val">${s.val}</span>
+    </li>
+  `).join("");
+
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1, highlight = -1;
+  let anim = 0;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw(phase) {
+    ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+    const R = Math.min(W, H) / 2 - 42;
+    const n = skills.length;
+
+    // rings
+    ctx.strokeStyle = "rgba(15,14,10,.2)";
+    ctx.lineWidth = 1;
+    for (let ring = 1; ring <= 5; ring++) {
+      const r = (R / 5) * ring;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+    // spokes
+    ctx.strokeStyle = "rgba(15,14,10,.2)";
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+      ctx.stroke();
+    }
+
+    // data polygon
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const r = (skills[i].val / 100) * R * phase;
+      const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(176,58,46,.18)";
+    ctx.fill();
+    ctx.strokeStyle = "#b03a2e";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // dots
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const r = (skills[i].val / 100) * R * phase;
+      const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+      ctx.beginPath();
+      ctx.arc(x, y, i === highlight ? 7 : 4, 0, Math.PI * 2);
+      ctx.fillStyle = skills[i].color;
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "#0f0e0a";
+      ctx.stroke();
+    }
+
+    // labels
+    ctx.fillStyle = "#0f0e0a";
+    ctx.font = "11px JetBrains Mono, monospace";
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const lx = cx + Math.cos(a) * (R + 18);
+      const ly = cy + Math.sin(a) * (R + 18) + 3;
+      ctx.textAlign = Math.cos(a) > 0.3 ? "left" : Math.cos(a) < -0.3 ? "right" : "center";
+      const lbl = skills[i].name.length > 18 ? skills[i].name.slice(0, 16) + "…" : skills[i].name;
+      ctx.fillText(lbl.toUpperCase(), lx, ly);
+    }
+    ctx.textAlign = "left";
+  }
+
+  function animate() {
+    if (anim < 1) { anim = Math.min(1, anim + 0.02); requestAnimationFrame(animate); }
+    draw(anim);
+  }
+
+  // start when scrolled into view
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { animate(); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+  io.observe(canvas);
+
+  // hover highlights key item
+  keyList.addEventListener("mouseover", e => {
+    const li = e.target.closest("li");
+    if (!li) return;
+    highlight = [...keyList.children].indexOf(li);
+    draw(anim);
+  });
+  keyList.addEventListener("mouseleave", () => { highlight = -1; draw(anim); });
+
+  window.addEventListener("resize", () => { resize(); draw(anim); });
+  resize(); draw(0);
+})();
+
+// ============================================================================
+// NAV ACTIVE STATE
+// ============================================================================
+(function navSpy() {
+  const links = document.querySelectorAll(".topbar nav a");
+  const sections = ["abstract", "methods", "results", "experiments", "refs"].map(id => document.getElementById(id));
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY + 120;
+    let cur = "abstract";
+    sections.forEach(s => { if (s && s.offsetTop <= y) cur = s.id; });
+    links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + cur));
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

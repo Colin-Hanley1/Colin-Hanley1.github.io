@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:hariaksha.com)",
+      "WebFetch(domain:cjhanalytics.com)",
+      "Bash(curl -sL \"https://cjhanalytics.com/\" --max-time 15 -A \"Mozilla/5.0\")"
+    ]
+  }
+}

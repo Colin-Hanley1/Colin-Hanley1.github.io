@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Colin's Lunch Specials — Data Science Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bagel+Fat+One&family=Rampart+One&family=Rye&family=Shrikhand&family=Libre+Franklin:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:        #d6322c;
+    --red-dk:     #a6211b;
+    --red-item:   #d6322c;
+
+    --green-lt:   #d9e7a0;
+    --green-md:   #aacd5f;
+    --green-dk:   #4c7a1f;
+    --green-outline: #3d6818;
+
+    --orange-1:   #eaa875;
+    --orange-2:   #d68b4f;
+    --orange-3:   #b6663a;
+
+    --plate-blue: #1d3ea0;
+    --plate-cream:#fbfaf1;
+
+    --cream:      #fcfaf0;
+    --ink:        #161414;
+    --ink-soft:   #2f2a25;
+    --yellow:     #f3c63e;
+
+    --serif:  "Libre Franklin", Arial, sans-serif;
+    --script: "Caveat", cursive;
+    --head:   "Luckiest Guy", "Bagel Fat One", "Rampart One", cursive;
+    --head-alt: "Bagel Fat One", "Luckiest Guy", cursive;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #e9dfc3;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.45;
+    min-height: 100vh;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 700px 500px at 20% 10%, rgba(200,120,60,.12), transparent 70%),
+      radial-gradient(ellipse 500px 400px at 85% 90%, rgba(77,100,40,.12), transparent 70%);
+    padding: 22px 10px;
+    position: relative;
+  }
+  /* page noise */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: .25;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: multiply;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* =========== OUTER FRAME =========== */
+  .menu {
+    max-width: 860px;
+    margin: 18px auto;
+    background: var(--cream);
+    border: 6px solid var(--red);
+    padding: 0;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,.2);
+    font-family: var(--serif);
+    z-index: 1;
+  }
+  /* thin inner stroke inside the red frame */
+  .menu::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1.5px solid var(--red-dk);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .menu::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(214,50,44,.5);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* top banner */
+  .top-banner {
+    text-align: right;
+    padding: 10px 24px 7px;
+    font-family: "Caveat", cursive;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: .01em;
+    background:
+      linear-gradient(90deg, rgba(252,250,240,1) 0%, rgba(252,250,240,1) 100%);
+    border-bottom: 1px solid rgba(214,50,44,.2);
+  }
+  .top-banner a { color: var(--ink); }
+  .top-banner em { font-style: italic; }
+
+  /* =========== BODY GRID =========== */
+  .menu-body {
+    display: grid;
+    grid-template-columns: 178px 1fr;
+    border-top: 1px solid var(--red);
+    border-bottom: 1px solid var(--red);
+  }
+
+  /* =========== LEFT PLATES =========== */
+  .plates-left {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><circle cx='30' cy='30' r='1.2' fill='rgba(120,60,20,.15)'/></svg>"),
+      radial-gradient(ellipse 300px 200px at 50% 10%, rgba(255,220,180,.35), transparent 60%),
+      linear-gradient(180deg,
+        #efb582 0%,
+        #e09e67 20%,
+        #d0854a 50%,
+        #b26c34 80%,
+        #9a5627 100%);
+    background-size: 18px 18px, auto, auto;
+    padding: 14px 0 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-right: 1px solid var(--red);
+    position: relative;
+  }
+  .plates-left::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.4'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: .45;
+    pointer-events: none;
+  }
+  /* =========== BADGES / STAMPS (replaced plates) =========== */
+  .plates-left .plate,
+  .plates-bottom .plate {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+  }
+  .plates-left .plate { width: 160px; }
+  .plates-bottom .plate { width: 220px; }
+
+  /* ----- SEAL / CHOP (red square, rotated) ----- */
+  .seal {
+    width: 130px; height: 130px;
+    background: var(--red);
+    color: #fff7d8;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: var(--head);
+    font-size: 17px;
+    line-height: 1;
+    letter-spacing: .02em;
+    padding: 18px 12px;
+    position: relative;
+    box-shadow:
+      0 4px 0 rgba(0,0,0,.15),
+      0 6px 14px rgba(0,0,0,.3),
+      inset 0 0 0 3px #fff7d8,
+      inset 0 0 0 5px var(--red),
+      inset 0 0 0 7px #fff7d8;
+    transform: rotate(-4deg);
+    text-transform: uppercase;
+  }
+  .seal.flip { transform: rotate(3deg); }
+  .seal.green {
+    background: var(--green-outline);
+    box-shadow:
+      0 4px 0 rgba(0,0,0,.15),
+      0 6px 14px rgba(0,0,0,.3),
+      inset 0 0 0 3px #fff7d8,
+      inset 0 0 0 5px var(--green-outline),
+      inset 0 0 0 7px #fff7d8;
+  }
+  .seal .num {
+    display: block;
+    font-size: 34px;
+    line-height: 1;
+    color: var(--yellow);
+    -webkit-text-stroke: 1px rgba(0,0,0,.2);
+    margin-bottom: 6px;
+  }
+  .seal .ttl { display: block; font-size: 16px; padding: 0 4px; }
+
+  /* ----- CIRCULAR MEDAL ----- */
+  .medal {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--yellow), #b9881f 85%);
+    color: var(--red-dk);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: var(--head);
+    font-size: 18px;
+    line-height: 1;
+    padding: 16px;
+    position: relative;
+    box-shadow:
+      0 4px 0 rgba(0,0,0,.2),
+      0 8px 18px rgba(0,0,0,.3);
+    transform: rotate(3deg);
+  }
+  .medal::before {
+    content: "";
+    position: absolute; inset: 6px;
+    border: 2.5px dashed var(--red-dk);
+    border-radius: 50%;
+    opacity: .7;
+  }
+  .medal .num {
+    display: block;
+    font-size: 30px;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .medal .ttl { display: block; font-size: 13px; padding: 0 2px; }
+
+  /* ----- STARBURST (for "SPICY!" features) ----- */
+  .burst {
+    width: 150px; height: 150px;
+    background: var(--red);
+    color: var(--yellow);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: var(--head);
+    font-size: 20px;
+    line-height: 1;
+    padding: 14px;
+    position: relative;
+    clip-path: polygon(
+      50% 0%, 60% 12%, 75% 6%, 76% 22%, 92% 20%, 86% 35%, 100% 42%,
+      89% 54%, 99% 66%, 84% 70%, 90% 85%, 74% 82%, 72% 98%, 58% 88%,
+      50% 100%, 42% 88%, 28% 98%, 26% 82%, 10% 85%, 16% 70%, 1% 66%,
+      11% 54%, 0% 42%, 14% 35%, 8% 20%, 24% 22%, 25% 6%, 40% 12%
+    );
+    transform: rotate(-6deg);
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+  }
+  .burst .top {
+    display: block;
+    font-size: 14px;
+    color: #fff7d8;
+    letter-spacing: .05em;
+    margin-bottom: 4px;
+  }
+  .burst .ttl { display: block; font-size: 14px; }
+
+  /* ----- TICKET (perforated) ----- */
+  .ticket {
+    width: 160px;
+    background: #fff3d6;
+    color: var(--ink);
+    padding: 12px 14px 10px;
+    font-family: var(--head);
+    font-size: 14px;
+    line-height: 1.1;
+    position: relative;
+    transform: rotate(-2deg);
+    box-shadow:
+      0 4px 0 rgba(0,0,0,.12),
+      0 6px 14px rgba(0,0,0,.25);
+    border-top: 3px dashed var(--red);
+    border-bottom: 3px dashed var(--red);
+  }
+  .ticket::before, .ticket::after {
+    content: "";
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--orange-1);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .ticket::before { left: -6px; }
+  .ticket::after  { right: -6px; }
+  .ticket .ttl {
+    display: block;
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .ticket .stub {
+    display: block;
+    font-family: var(--serif);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .15em;
+    color: var(--green-outline);
+    padding-top: 6px;
+    border-top: 1px dotted rgba(0,0,0,.25);
+    margin-top: 4px;
+  }
+
+  /* ----- CAPTION BELOW BADGE ----- */
+  .plate-label {
+    font-family: var(--script);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.1;
+    padding: 4px 2px 0;
+    max-width: 180px;
+    font-style: italic;
+  }
+  .plate-label .chili { color: var(--red); font-size: 11px; margin-right: 2px; }
+  .plates-bottom .plate-label { max-width: 220px; font-size: 19px; }
+
+  /* =========== RIGHT PANEL =========== */
+  .menu-right {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><g fill='none' stroke='rgba(76,122,31,.18)' stroke-width='1'><path d='M15 40 Q25 20, 40 25 Q55 30, 65 45 Q60 55, 45 50 Q30 45, 15 40 Z'/><path d='M15 40 Q40 35, 65 45' stroke-width='.8'/></g></svg>"),
+      linear-gradient(135deg,
+        #dcead0 0%,
+        #d2e59a 25%,
+        #c8dc8c 55%,
+        #dee9a5 80%,
+        #d0e394 100%);
+    background-size: 120px 120px, auto;
+    padding: 8px 26px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-right::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.4'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: .45;
+    pointer-events: none;
+  }
+  .menu-right > * { position: relative; z-index: 1; }
+
+  /* "Lunch Specials" headline */
+  .headline-wrap {
+    text-align: center;
+    padding: 10px 0 8px;
+    position: relative;
+  }
+  .headline {
+    font-family: var(--head);
+    font-size: 96px;
+    font-weight: 400;
+    line-height: .9;
+    display: inline-block;
+    letter-spacing: .01em;
+    position: relative;
+  }
+  .headline .word {
+    display: inline-block;
+    font-family: var(--head);
+    color: var(--yellow);
+    -webkit-text-stroke: 3px var(--green-outline);
+    text-stroke: 3px var(--green-outline);
+    text-shadow:
+      4px 4px 0 rgba(214, 50, 44, .95),
+      5px 5px 0 var(--red-dk),
+      7px 7px 14px rgba(0,0,0,.22);
+    transform: rotate(-3deg);
+    position: relative;
+    padding: 0 4px;
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,.08));
+  }
+  .headline .word.w2 {
+    color: #eb5d2a;
+    -webkit-text-stroke: 3px #2c4f0d;
+    text-stroke: 3px #2c4f0d;
+    transform: rotate(2deg);
+    margin-left: 4px;
+    text-shadow:
+      4px 4px 0 rgba(60, 108, 24, .95),
+      5px 5px 0 #2c4f0d,
+      7px 7px 14px rgba(0,0,0,.22);
+  }
+  /* little decorative flourishes on either side of headline */
+  .headline-wrap::before,
+  .headline-wrap::after {
+    content: "❀";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    color: var(--red);
+    opacity: .85;
+  }
+  .headline-wrap::before { left: 14px; }
+  .headline-wrap::after  { right: 14px; }
+
+  /* Served-with block */
+  .served {
+    text-align: center;
+    font-family: var(--serif);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 4px 6px 14px;
+  }
+  .served .serve-main {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    color: var(--red);
+    font-size: 22px;
+    margin-bottom: 4px;
+    letter-spacing: .005em;
+  }
+  .served b { color: var(--red); font-weight: 700; }
+  .served .hours {
+    display: inline-block;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    font-size: 13.5px;
+  }
+
+  /* =========== MENU LIST =========== */
+  .menu-list {
+    list-style: none;
+    padding: 2px 4px 0;
+    margin: 0;
+  }
+  .menu-list li {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: baseline;
+    column-gap: 0;
+    padding: 3.5px 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16.5px;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .menu-list .code {
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .menu-list .title {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    min-width: 0;
+  }
+  .menu-list .title-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .menu-list .dots {
+    flex: 1;
+    min-width: 14px;
+    height: 0;
+    border-bottom: 2px dotted currentColor;
+    margin: 0 4px;
+    position: relative;
+    top: -5px;
+    opacity: .85;
+  }
+  .menu-list .price {
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    letter-spacing: 0.005em;
+    padding-left: 2px;
+  }
+  .menu-list li.spicy {
+    color: var(--red-item);
+  }
+  .menu-list li.spicy .code,
+  .menu-list li.spicy .title-text,
+  .menu-list li.spicy .price {
+    color: var(--red-item);
+    font-weight: 600;
+  }
+  .menu-list li.spicy .dots { color: var(--red-item); }
+  .menu-list .chili {
+    color: var(--red-item);
+    font-size: 13px;
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+  }
+
+  /* Hot & spicy note */
+  .footer-note {
+    margin-top: 12px;
+    padding-top: 10px;
+    text-align: center;
+    font-family: var(--serif);
+  }
+  .footer-note .legend {
+    color: var(--red);
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .footer-note .legend .chili {
+    color: var(--red);
+    font-size: 13px;
+    margin-right: 4px;
+  }
+  .footer-note .note {
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink);
+    margin-top: 2px;
+  }
+
+  /* =========== BOTTOM PLATES ROW =========== */
+  .plates-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px 22px 22px;
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><circle cx='30' cy='30' r='1.2' fill='rgba(120,60,20,.15)'/></svg>"),
+      radial-gradient(ellipse 500px 200px at 50% 0%, rgba(255,220,180,.3), transparent 70%),
+      linear-gradient(180deg,
+        #edb280 0%,
+        #d68b4f 55%,
+        #a85d2b 100%);
+    background-size: 18px 18px, auto, auto;
+    border-top: 1px solid var(--red);
+    justify-items: center;
+    position: relative;
+  }
+  .plates-bottom::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.4'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: .45;
+    pointer-events: none;
+  }
+  .plates-bottom > * { position: relative; z-index: 1; }
+
+  /* =========== CONTACT STRIP =========== */
+  .contact-strip {
+    background: var(--cream);
+    padding: 10px 22px 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink);
+    border-top: 1px solid var(--red);
+  }
+  .contact-strip .item b {
+    color: var(--red);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-size: 10px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .contact-strip .item a {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .contact-strip .item a:hover { color: var(--red); }
+
+  /* =========== RESPONSIVE =========== */
+  @media (max-width: 780px) {
+    .menu-body { grid-template-columns: 1fr; }
+    .plates-left {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 14px 10px 18px;
+      border-right: none;
+      border-bottom: 1px solid var(--red);
+    }
+    .plates-left .plate { width: 140px; }
+    .plates-left .dish { width: 130px; height: 130px; }
+    .plates-left .dish .emoji { font-size: 48px; }
+    .headline { font-size: 58px; }
+    .plates-bottom { grid-template-columns: 1fr; }
+    .plates-bottom .plate { width: 180px; }
+    .plates-bottom .dish { width: 160px; height: 160px; }
+    .plates-bottom .dish .emoji { font-size: 62px; }
+    .contact-strip { flex-direction: column; gap: 8px; }
+    .menu-list li { grid-template-columns: 36px 1fr auto; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+  <div class="menu">
+
+    <!-- top italic banner -->
+    <div class="top-banner">
+      <a href="mailto:colinhanleydev@gmail.com">colinhanleydev@gmail.com</a>
+      <span style="padding: 0 2px;">/</span>
+      <em>Discover Local Data Scientists</em>
+    </div>
+
+    <div class="menu-body">
+
+      <!-- ================ LEFT BADGES ================ -->
+      <aside class="plates-left">
+
+        <div class="plate">
+          <div class="seal">
+            <div>
+              <span class="num">N° 1</span>
+              <span class="ttl">House Special</span>
+            </div>
+          </div>
+          <div class="plate-label"><span class="chili">◆</span>College Basketball<br/>Predictor</div>
+        </div>
+
+        <div class="plate">
+          <div class="burst">
+            <div>
+              <span class="top">★ Spicy ★</span>
+              <span class="ttl">NRFI<br/>Markov</span>
+            </div>
+          </div>
+          <div class="plate-label"><span class="chili">◆</span>Markovian<br/>Inning Model</div>
+        </div>
+
+        <div class="plate">
+          <div class="medal">
+            <div>
+              <span class="num">03</span>
+              <span class="ttl">Policy<br/>Sim</span>
+            </div>
+          </div>
+          <div class="plate-label">COVID-19<br/>Simulator</div>
+        </div>
+
+        <div class="plate">
+          <div class="seal flip green">
+            <div>
+              <span class="num">04</span>
+              <span class="ttl">Thermal CV</span>
+            </div>
+          </div>
+          <div class="plate-label"><span class="chili">◆</span>Poacher Detection<br/>(Infrared)</div>
+        </div>
+
+        <div class="plate">
+          <div class="ticket">
+            <span class="ttl">RESEARCH<br/>N° 05</span>
+            <span class="stub">ASSURE GRANT</span>
+          </div>
+          <div class="plate-label">Groundwater<br/>Research</div>
+        </div>
+
+      </aside>
+
+      <!-- ================ RIGHT MENU ================ -->
+      <section class="menu-right">
+
+        <div class="headline-wrap">
+          <h1 class="headline">
+            <span class="word">Lunch</span>
+            <span class="word w2">Specials</span>
+          </h1>
+        </div>
+
+        <div class="served">
+          <div class="serve-main">Served w. Python &amp; Coffee</div>
+          (R or MATLAB <b>50¢ extra</b>) (C++ <b>75¢ extra</b>) &amp; Egg Roll or Soda<br/>
+          <span class="hours">(Available Year-Round · GPA 3.97/4.00 · Univ. of Alabama)</span>
+        </div>
+
+        <ul class="menu-list">
+
+          <li class="spicy">
+            <span class="code">L 1.</span>
+            <span class="title"><span class="chili">◆</span><span class="title-text">College Basketball Predictive Model</span><span class="dots"></span></span>
+            <span class="price">2026</span>
+          </li>
+          <li class="spicy">
+            <span class="code">L 2.</span>
+            <span class="title"><span class="chili">◆</span><span class="title-text">Markovian Inning Model (NRFI)</span><span class="dots"></span></span>
+            <span class="price">2026</span>
+          </li>
+          <li>
+            <span class="code">L 3.</span>
+            <span class="title"><span class="title-text">Agent-based COVID-19 Simulator</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li class="spicy">
+            <span class="code">L 4.</span>
+            <span class="title"><span class="chili">◆</span><span class="title-text">Poacher Detection in Infrared</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li>
+            <span class="code">L 5.</span>
+            <span class="title"><span class="title-text">Groundwater Transformer Research</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li>
+            <span class="code">L 6.</span>
+            <span class="title"><span class="title-text">HL7 Parser &amp; PHI Redactor</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li>
+            <span class="code">L 7.</span>
+            <span class="title"><span class="title-text">Genetic Fantasy Football Drafter</span><span class="dots"></span></span>
+            <span class="price">2024</span>
+          </li>
+          <li>
+            <span class="code">L 8.</span>
+            <span class="title"><span class="title-text">PyTorch / TensorFlow Models</span><span class="dots"></span></span>
+            <span class="price">daily</span>
+          </li>
+          <li>
+            <span class="code">L 9.</span>
+            <span class="title"><span class="title-text">Scikit-learn &amp; YOLOv5 Fine-tuning</span><span class="dots"></span></span>
+            <span class="price">daily</span>
+          </li>
+          <li>
+            <span class="code">L10.</span>
+            <span class="title"><span class="title-text">SQL · Pandas · NumPy Pipelines</span><span class="dots"></span></span>
+            <span class="price">daily</span>
+          </li>
+          <li>
+            <span class="code">L11.</span>
+            <span class="title"><span class="title-text">Probability &amp; Linear Algebra</span><span class="dots"></span></span>
+            <span class="price">daily</span>
+          </li>
+          <li class="spicy">
+            <span class="code">L12.</span>
+            <span class="title"><span class="chili">◆</span><span class="title-text">Markov Chains &amp; Monte Carlo</span><span class="dots"></span></span>
+            <span class="price">lately</span>
+          </li>
+          <li>
+            <span class="code">L13.</span>
+            <span class="title"><span class="title-text">Transformers / Hash Encoding</span><span class="dots"></span></span>
+            <span class="price">lately</span>
+          </li>
+          <li>
+            <span class="code">L14.</span>
+            <span class="title"><span class="title-text">Mesa · Agent-Based Modeling</span><span class="dots"></span></span>
+            <span class="price">sides</span>
+          </li>
+          <li>
+            <span class="code">L15.</span>
+            <span class="title"><span class="title-text">R · MATLAB · C++</span><span class="dots"></span></span>
+            <span class="price">à la carte</span>
+          </li>
+          <li>
+            <span class="code">L16.</span>
+            <span class="title"><span class="title-text">GitHub Actions / Automation</span><span class="dots"></span></span>
+            <span class="price">sides</span>
+          </li>
+          <li>
+            <span class="code">L17.</span>
+            <span class="title"><span class="title-text">Web Scraping · Entity Resolution</span><span class="dots"></span></span>
+            <span class="price">sides</span>
+          </li>
+          <li>
+            <span class="code">L18.</span>
+            <span class="title"><span class="title-text">UA Math Dept. Research Assistant</span><span class="dots"></span></span>
+            <span class="price">'25-now</span>
+          </li>
+          <li>
+            <span class="code">L19.</span>
+            <span class="title"><span class="title-text">PSIA Snowsports Instructor (MT)</span><span class="dots"></span></span>
+            <span class="price">'21-'25</span>
+          </li>
+          <li>
+            <span class="code">L20.</span>
+            <span class="title"><span class="title-text">ASSURE Grant Awardee</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li class="spicy">
+            <span class="code">L21.</span>
+            <span class="title"><span class="chili">◆</span><span class="title-text">2nd Place · UA Innovate</span><span class="dots"></span></span>
+            <span class="price">2025</span>
+          </li>
+          <li>
+            <span class="code">L22.</span>
+            <span class="title"><span class="title-text">Data Sci. &amp; AI Clubs — Alabama</span><span class="dots"></span></span>
+            <span class="price">ongoing</span>
+          </li>
+        </ul>
+
+        <div class="footer-note">
+          <div class="legend"><span class="chili">◆</span>Hot &amp; Spicy (Featured)</div>
+          <div class="note">We can alter the stack upon your request.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================ BOTTOM BADGES ================ -->
+    <div class="plates-bottom">
+      <div class="plate">
+        <div class="burst" style="width: 170px; height: 170px; transform: rotate(-4deg);">
+          <div>
+            <span class="top">★ Chef's Pick ★</span>
+            <span class="ttl" style="font-size:18px;">2nd<br/>UA Innovate</span>
+          </div>
+        </div>
+        <div class="plate-label">Featured &amp; award-winning</div>
+      </div>
+      <div class="plate">
+        <div class="seal" style="width: 160px; height: 160px; transform: rotate(2deg);">
+          <div>
+            <span class="num" style="font-size:44px;">3.97</span>
+            <span class="ttl" style="font-size:16px;">GPA · 4.00</span>
+          </div>
+        </div>
+        <div class="plate-label">Honest transcript</div>
+      </div>
+      <div class="plate">
+        <div class="medal" style="width: 170px; height: 170px; transform: rotate(-2deg);">
+          <div>
+            <span class="num" style="font-size:38px;">'27</span>
+            <span class="ttl" style="font-size:13px;">B.S. Math<br/>&amp; Data Sci.</span>
+          </div>
+        </div>
+        <div class="plate-label">Graduating Spring '27</div>
+      </div>
+    </div>
+
+    <!-- ================ CONTACT STRIP ================ -->
+    <div class="contact-strip">
+      <div class="item">
+        <b>✉ Order / Email</b>
+        <a href="mailto:colinhanleydev@gmail.com">colinhanleydev@gmail.com</a>
+      </div>
+      <div class="item">
+        <b>☏ LinkedIn</b>
+        <a href="https://www.linkedin.com/in/colin-hanley1836">colin-hanley1836</a>
+      </div>
+      <div class="item">
+        <b>⚐ GitHub</b>
+        <a href="https://github.com/Colin-Hanley1">Colin-Hanley1</a>
+      </div>
+      <div class="item">
+        <b>◷ Hours</b>
+        <span>M–Sa · 11:00 AM – 3:00 AM</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
